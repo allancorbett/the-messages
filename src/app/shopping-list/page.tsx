@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { ShoppingList } from "@/components/shopping/ShoppingList";
+import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { Meal, ShoppingListItem } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -11,6 +12,7 @@ import {
   getShoppingList,
   clearShoppingList,
   removeMealFromShoppingList,
+  getMealById,
 } from "@/app/actions/meals";
 
 interface MealMetadata {
@@ -24,6 +26,8 @@ export default function ShoppingListPage() {
   const [mealMetadata, setMealMetadata] = useState<MealMetadata[]>([]);
   const [items, setItems] = useState<ShoppingListItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMealForDetail, setSelectedMealForDetail] =
+    useState<Meal | null>(null);
 
   const loadShoppingList = useCallback(async () => {
     const supabase = createClient();
@@ -120,6 +124,15 @@ export default function ShoppingListPage() {
     }
   }
 
+  async function handleViewMeal(mealId: string) {
+    const result = await getMealById(mealId);
+    if (result.data) {
+      setSelectedMealForDetail(result.data);
+    } else {
+      alert("Failed to load meal details");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-peat-50">
       <Header userEmail={userEmail} />
@@ -180,10 +193,20 @@ export default function ShoppingListPage() {
               mealMetadata={mealMetadata}
               onClear={handleClearList}
               onRemoveMeal={handleRemoveMeal}
+              onViewMeal={handleViewMeal}
             />
           </div>
         )}
       </main>
+
+      {selectedMealForDetail && (
+        <MealDetailModal
+          meal={selectedMealForDetail}
+          isOpen={true}
+          onClose={() => setSelectedMealForDetail(null)}
+          showShareButton={true}
+        />
+      )}
     </div>
   );
 }
