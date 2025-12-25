@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
+import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { MealFilters } from "@/components/meals/MealFilters";
 import { MealList } from "@/components/meals/MealList";
-import { MealDetailModal } from "@/components/meals/MealDetailModal";
-import { Meal, MealType, BudgetLevel, Season } from "@/types";
-import { getCurrentSeason } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { getCurrentSeason } from "@/lib/utils";
+import { BudgetLevel, Meal, MealType, Season } from "@/types";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function PlanPage() {
   const router = useRouter();
@@ -29,7 +29,6 @@ export default function PlanPage() {
   const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
   const [selectedMealForDetail, setSelectedMealForDetail] =
     useState<Meal | null>(null);
 
@@ -97,7 +96,6 @@ export default function PlanPage() {
   }
 
   async function saveMeal(meal: Meal) {
-    setSaving(true);
     try {
       const supabase = createClient();
       const {
@@ -127,8 +125,6 @@ export default function PlanPage() {
       alert("Meal saved!");
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to save meal");
-    } finally {
-      setSaving(false);
     }
   }
 
