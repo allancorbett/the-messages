@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Meal, ShoppingListItem, IngredientCategory } from "@/types";
+import { useMemo } from "react";
+import { ShoppingListItem, IngredientCategory } from "@/types";
 import { groupBy, capitalise, cn } from "@/lib/utils";
+import { updateShoppingListItem } from "@/app/actions/meals";
+
+interface MealMetadata {
+  id: string;
+  name: string;
+}
 
 interface ShoppingListProps {
-  meals: Meal[];
+  items: ShoppingListItem[];
+  mealMetadata: MealMetadata[];
   onClear?: () => void;
   onRemoveMeal?: (mealId: string) => void;
 }
@@ -30,36 +37,7 @@ const categoryEmojis: Record<IngredientCategory, string> = {
   storecupboard: "🫙",
 };
 
-export function ShoppingList({ meals, onClear, onRemoveMeal }: ShoppingListProps) {
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
-
-  // Aggregate ingredients from all meals
-  const items = useMemo(() => {
-    const ingredientMap = new Map<string, ShoppingListItem>();
-
-    meals.forEach((meal) => {
-      meal.ingredients.forEach((ing) => {
-        const key = `${ing.name.toLowerCase()}-${ing.category}`;
-        const existing = ingredientMap.get(key);
-
-        if (existing) {
-          // Try to combine quantities (simplified)
-          existing.quantity = `${existing.quantity}, ${ing.quantity}`;
-          existing.fromMeals.push(meal.name);
-        } else {
-          ingredientMap.set(key, {
-            ...ing,
-            name: ing.name,
-            checked: false,
-            fromMeals: [meal.name],
-          });
-        }
-      });
-    });
-
-    return Array.from(ingredientMap.values());
-  }, [meals]);
-
+export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal }: ShoppingListProps) {
   const groupedItems = useMemo(() => {
     const grouped = groupBy(items, "category");
     // Sort by category order
@@ -74,16 +52,9 @@ export function ShoppingList({ meals, onClear, onRemoveMeal }: ShoppingListProps
     return sorted;
   }, [items]);
 
-  function toggleItem(itemKey: string) {
-    setCheckedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(itemKey)) {
-        next.delete(itemKey);
-      } else {
-        next.add(itemKey);
-      }
-      return next;
-    });
+  async function toggleItem(itemIndex: number, currentChecked: boolean) {
+    // Update database (server action handles revalidation)
+    await updateShoppingListItem(itemIndex, !currentChecked);
   }
 
   function copyToClipboard() {
@@ -100,36 +71,8 @@ export function ShoppingList({ meals, onClear, onRemoveMeal }: ShoppingListProps
     navigator.clipboard.writeText(text);
   }
 
-  const checkedCount = checkedItems.size;
+  const checkedCount = items.filter(item => item.checked).length;
   const totalCount = items.length;
-
-  if (meals.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 rounded-full bg-peat-100 flex items-center justify-center mx-auto mb-4">
-          <svg
-            className="w-8 h-8 text-peat-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-            />
-          </svg>
-        </div>
-        <h3 className="text-lg font-medium text-peat-900 mb-1">
-          No meals selected
-        </h3>
-        <p className="text-peat-600">
-          Select some meals to generate your shopping list
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -171,20 +114,20 @@ export function ShoppingList({ meals, onClear, onRemoveMeal }: ShoppingListProps
       {/* Meals included */}
       <div className="mb-6 p-4 rounded-lg bg-brine-50 border border-brine-200">
         <p className="text-sm font-medium text-brine-800 mb-2">
-          Shopping for {meals.length} meal{meals.length !== 1 ? 's' : ''}:
+          Shopping for {mealMetadata.length} meal{mealMetadata.length !== 1 ? 's' : ''}:
         </p>
         <div className="flex flex-wrap gap-2">
-          {meals.map((meal) => (
+          {mealMetadata.map((meal) => (
             <span
               key={meal.id}
               className="group text-xs px-2 py-1 rounded bg-white text-brine-700 border border-brine-200 flex items-center gap-1"
             >
               {meal.name}
-              {onRemoveMeal && meal.id && (
+              {onRemoveMeal && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (meal.id && confirm(`Remove "${meal.name}" from shopping list?`)) {
+                    if (confirm(`Remove "${meal.name}" from shopping list?`)) {
                       onRemoveMeal(meal.id);
                     }
                   }}
@@ -223,17 +166,19 @@ export function ShoppingList({ meals, onClear, onRemoveMeal }: ShoppingListProps
               </span>
             </h3>
             <ul className="space-y-2">
-              {categoryItems.map((item) => {
-                const itemKey = `${item.name}-${item.category}`;
-                const isChecked = checkedItems.has(itemKey);
+              {categoryItems.map((item, idx) => {
+                // Find the actual index in the full items array for server action
+                const itemIndex = items.findIndex(
+                  (i) => i.name === item.name && i.category === item.category
+                );
 
                 return (
                   <li
-                    key={itemKey}
-                    onClick={() => toggleItem(itemKey)}
+                    key={`${item.name}-${item.category}-${idx}`}
+                    onClick={() => toggleItem(itemIndex, item.checked)}
                     className={cn(
                       "flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-all",
-                      isChecked
+                      item.checked
                         ? "bg-peat-100 text-peat-500"
                         : "bg-white hover:bg-peat-50"
                     )}
@@ -241,12 +186,12 @@ export function ShoppingList({ meals, onClear, onRemoveMeal }: ShoppingListProps
                     <div
                       className={cn(
                         "w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors",
-                        isChecked
+                        item.checked
                           ? "bg-brine-500 border-brine-500"
                           : "border-peat-300"
                       )}
                     >
-                      {isChecked && (
+                      {item.checked && (
                         <svg
                           className="w-3 h-3 text-white"
                           fill="none"
@@ -266,7 +211,7 @@ export function ShoppingList({ meals, onClear, onRemoveMeal }: ShoppingListProps
                       <span
                         className={cn(
                           "font-medium",
-                          isChecked && "line-through"
+                          item.checked && "line-through"
                         )}
                       >
                         {item.name}

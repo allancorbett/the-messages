@@ -8,20 +8,7 @@ import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { Meal } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { addMealToShoppingList } from "@/app/actions/meals";
-
-interface SavedMealRow {
-  id: string;
-  name: string;
-  description: string;
-  meal_type: string;
-  price_level: number;
-  prep_time: number;
-  servings: number;
-  season: string[];
-  ingredients: Meal["ingredients"];
-  instructions: string[];
-  created_at: string;
-}
+import { transformSavedMealToMeal } from "@/lib/meal-utils";
 
 export default function SavedPage() {
   const router = useRouter();
@@ -59,18 +46,7 @@ export default function SavedPage() {
         setError(error.message);
       } else if (data) {
         // Transform database rows to Meal type
-        const transformedMeals: Meal[] = (data as SavedMealRow[]).map((row) => ({
-          id: row.id,
-          name: row.name,
-          description: row.description,
-          mealType: row.meal_type as Meal["mealType"],
-          priceLevel: row.price_level as Meal["priceLevel"],
-          prepTime: row.prep_time,
-          servings: row.servings,
-          seasons: row.season as Meal["seasons"],
-          ingredients: row.ingredients,
-          instructions: row.instructions,
-        }));
+        const transformedMeals: Meal[] = data.map(transformSavedMealToMeal);
         setMeals(transformedMeals);
       }
 
