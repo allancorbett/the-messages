@@ -168,6 +168,7 @@ export default function SavedPage() {
                   <MealCard
                     meal={meal}
                     showCheckbox={false}
+                    showShareButton={true}
                     onViewDetails={setSelectedMealForDetail}
                   />
                   <button
@@ -202,6 +203,7 @@ export default function SavedPage() {
           isOpen={true}
           onClose={() => setSelectedMealForDetail(null)}
           onAddToShoppingList={() => addToShoppingList(selectedMealForDetail)}
+          showShareButton={true}
         />
       )}
     </div>

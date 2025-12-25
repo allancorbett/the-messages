@@ -186,3 +186,37 @@ export async function saveGeneratedMeals(meals: Meal[]) {
   revalidatePath("/saved");
   return { success: true, meals: data };
 }
+
+export async function getMealById(id: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("saved_meals")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    return { error: error.message, data: null };
+  }
+
+  if (!data) {
+    return { error: "Meal not found", data: null };
+  }
+
+  // Transform database row to Meal type
+  const meal: Meal = {
+    id: data.id,
+    name: data.name,
+    description: data.description,
+    mealType: data.meal_type as Meal["mealType"],
+    priceLevel: data.price_level as Meal["priceLevel"],
+    prepTime: data.prep_time,
+    servings: data.servings,
+    seasons: data.season as Meal["seasons"],
+    ingredients: data.ingredients as Meal["ingredients"],
+    instructions: data.instructions,
+  };
+
+  return { data: meal };
+}
