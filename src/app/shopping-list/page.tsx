@@ -7,9 +7,10 @@ import { ShoppingList } from "@/components/shopping/ShoppingList";
 import { Meal } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import {
-  saveShoppingList,
+  addMealToShoppingList,
   getShoppingList,
   clearShoppingList,
+  removeMealFromShoppingList,
 } from "@/app/actions/meals";
 
 export default function ShoppingListPage() {
@@ -17,6 +18,41 @@ export default function ShoppingListPage() {
   const [userEmail, setUserEmail] = useState<string>("");
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
+
+  async function loadMeals() {
+    const supabase = createClient();
+
+    // Load existing shopping list from database
+    const result = await getShoppingList();
+    if (result.data) {
+      const mealIds = result.data.meal_ids as string[];
+
+      if (mealIds.length > 0) {
+        // Fetch meal data for each ID
+        const { data: mealsData } = await supabase
+          .from("saved_meals")
+          .select("*")
+          .in("id", mealIds);
+
+        if (mealsData) {
+          // Transform database rows to Meal type
+          const transformedMeals: Meal[] = mealsData.map((row) => ({
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            mealType: row.meal_type as Meal["mealType"],
+            priceLevel: row.price_level as Meal["priceLevel"],
+            prepTime: row.prep_time,
+            servings: row.servings,
+            seasons: row.season as Meal["seasons"],
+            ingredients: row.ingredients,
+            instructions: row.instructions,
+          }));
+          setMeals(transformedMeals);
+        }
+      }
+    }
+  }
 
   useEffect(() => {
     async function init() {
@@ -34,23 +70,23 @@ export default function ShoppingListPage() {
       if (storedMeals) {
         try {
           const parsedMeals = JSON.parse(storedMeals);
-          setMeals(parsedMeals);
-          // Save to database
-          await saveShoppingList(parsedMeals);
+
+          // Add each meal to the shopping list
+          for (const meal of parsedMeals) {
+            await addMealToShoppingList(meal);
+          }
+
           // Clear sessionStorage
           sessionStorage.removeItem("selectedMeals");
+
+          // Reload meals from database
+          await loadMeals();
         } catch (error) {
           console.error("Error saving shopping list:", error);
         }
       } else {
-        // Load existing shopping list from database
-        const result = await getShoppingList();
-        if (result.data) {
-          // Convert back to meals format (we'll need to reconstruct this)
-          // For now, just show we have a shopping list
-          // We'll need to update the ShoppingList component to work with items directly
-          setMeals([]); // We'll fix this in the next step
-        }
+        // Load existing shopping list
+        await loadMeals();
       }
 
       setLoading(false);
@@ -59,11 +95,25 @@ export default function ShoppingListPage() {
   }, []);
 
   async function handleClearList() {
+    if (!confirm("Are you sure you want to clear your entire shopping list?")) {
+      return;
+    }
+
     const result = await clearShoppingList();
     if (result.error) {
       alert("Failed to clear shopping list");
     } else {
       setMeals([]);
+    }
+  }
+
+  async function handleRemoveMeal(mealId: string) {
+    const result = await removeMealFromShoppingList(mealId);
+    if (result.error) {
+      alert("Failed to remove meal from shopping list");
+    } else {
+      // Reload meals
+      await loadMeals();
     }
   }
 
@@ -122,7 +172,11 @@ export default function ShoppingListPage() {
           </div>
         ) : (
           <div className="card">
-            <ShoppingList meals={meals} onClear={handleClearList} />
+            <ShoppingList
+              meals={meals}
+              onClear={handleClearList}
+              onRemoveMeal={handleRemoveMeal}
+            />
           </div>
         )}
       </main>

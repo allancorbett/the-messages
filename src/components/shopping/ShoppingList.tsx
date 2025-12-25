@@ -7,6 +7,7 @@ import { groupBy, capitalise, cn } from "@/lib/utils";
 interface ShoppingListProps {
   meals: Meal[];
   onClear?: () => void;
+  onRemoveMeal?: (mealId: string) => void;
 }
 
 const categoryOrder: IngredientCategory[] = [
@@ -29,7 +30,7 @@ const categoryEmojis: Record<IngredientCategory, string> = {
   storecupboard: "🫙",
 };
 
-export function ShoppingList({ meals, onClear }: ShoppingListProps) {
+export function ShoppingList({ meals, onClear, onRemoveMeal }: ShoppingListProps) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
   // Aggregate ingredients from all meals
@@ -170,15 +171,41 @@ export function ShoppingList({ meals, onClear }: ShoppingListProps) {
       {/* Meals included */}
       <div className="mb-6 p-4 rounded-lg bg-brine-50 border border-brine-200">
         <p className="text-sm font-medium text-brine-800 mb-2">
-          Shopping for {meals.length} meals:
+          Shopping for {meals.length} meal{meals.length !== 1 ? 's' : ''}:
         </p>
         <div className="flex flex-wrap gap-2">
           {meals.map((meal) => (
             <span
               key={meal.id}
-              className="text-xs px-2 py-1 rounded bg-white text-brine-700 border border-brine-200"
+              className="group text-xs px-2 py-1 rounded bg-white text-brine-700 border border-brine-200 flex items-center gap-1"
             >
               {meal.name}
+              {onRemoveMeal && meal.id && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (meal.id && confirm(`Remove "${meal.name}" from shopping list?`)) {
+                      onRemoveMeal(meal.id);
+                    }
+                  }}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
+                  title="Remove from shopping list"
+                >
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              )}
             </span>
           ))}
         </div>

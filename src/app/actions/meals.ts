@@ -220,3 +220,199 @@ export async function getMealById(id: string) {
 
   return { data: meal };
 }
+
+export async function addMealToShoppingList(meal: Meal) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { error: "Unauthorized" };
+  }
+
+  if (!meal.id) {
+    return { error: "Meal must have an ID" };
+  }
+
+  // Get current shopping list
+  const { data: currentList } = await supabase
+    .from("shopping_lists")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  let newMealIds: string[];
+  let newItems: Array<{
+    name: string;
+    quantity: string;
+    category: string;
+    checked: boolean;
+    fromMeals: string[];
+  }>;
+
+  if (currentList) {
+    // Check if meal is already in the list
+    const existingMealIds = currentList.meal_ids as string[];
+    if (existingMealIds.includes(meal.id)) {
+      return { error: "Meal already in shopping list" };
+    }
+
+    // Add meal ID to the list
+    newMealIds = [...existingMealIds, meal.id];
+
+    // Merge ingredients
+    const existingItems = currentList.items as typeof newItems;
+    newItems = [...existingItems];
+
+    // Add new ingredients from the meal
+    meal.ingredients.forEach((ingredient) => {
+      // Find if ingredient already exists (same name and category)
+      const existingIndex = newItems.findIndex(
+        (item) =>
+          item.name.toLowerCase() === ingredient.name.toLowerCase() &&
+          item.category === ingredient.category
+      );
+
+      if (existingIndex >= 0) {
+        // Update existing ingredient - add meal to fromMeals
+        if (!newItems[existingIndex].fromMeals.includes(meal.name)) {
+          newItems[existingIndex].fromMeals.push(meal.name);
+        }
+        // Note: We don't combine quantities as they might be different units
+      } else {
+        // Add new ingredient
+        newItems.push({
+          ...ingredient,
+          checked: false,
+          fromMeals: [meal.name],
+        });
+      }
+    });
+
+    // Update existing shopping list
+    const { error } = await supabase
+      .from("shopping_lists")
+      .update({ meal_ids: newMealIds, items: newItems })
+      .eq("id", currentList.id);
+
+    if (error) {
+      return { error: error.message };
+    }
+  } else {
+    // Create new shopping list
+    newMealIds = [meal.id];
+    newItems = meal.ingredients.map((ingredient) => ({
+      ...ingredient,
+      checked: false,
+      fromMeals: [meal.name],
+    }));
+
+    const { error } = await supabase.from("shopping_lists").insert({
+      user_id: user.id,
+      meal_ids: newMealIds,
+      items: newItems,
+    });
+
+    if (error) {
+      return { error: error.message };
+    }
+  }
+
+  revalidatePath("/shopping-list");
+  return { success: true };
+}
+
+export async function removeMealFromShoppingList(mealId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { error: "Unauthorized" };
+  }
+
+  // Get current shopping list
+  const { data: currentList } = await supabase
+    .from("shopping_lists")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (!currentList) {
+    return { error: "Shopping list not found" };
+  }
+
+  const existingMealIds = currentList.meal_ids as string[];
+  if (!existingMealIds.includes(mealId)) {
+    return { error: "Meal not in shopping list" };
+  }
+
+  // Get the meal to find its name
+  const { data: mealData } = await supabase
+    .from("saved_meals")
+    .select("name")
+    .eq("id", mealId)
+    .single();
+
+  if (!mealData) {
+    return { error: "Meal not found" };
+  }
+
+  const mealName = mealData.name;
+
+  // Remove meal ID
+  const newMealIds = existingMealIds.filter((id) => id !== mealId);
+
+  // Update ingredients - remove meal from fromMeals and delete items that only belonged to this meal
+  const existingItems = currentList.items as Array<{
+    name: string;
+    quantity: string;
+    category: string;
+    checked: boolean;
+    fromMeals: string[];
+  }>;
+
+  const newItems = existingItems
+    .map((item) => {
+      // Remove this meal from the ingredient's fromMeals array
+      const updatedFromMeals = item.fromMeals.filter((m) => m !== mealName);
+      return {
+        ...item,
+        fromMeals: updatedFromMeals,
+      };
+    })
+    .filter((item) => item.fromMeals.length > 0); // Only keep items that belong to other meals
+
+  if (newMealIds.length === 0) {
+    // If no meals left, delete the shopping list
+    const { error } = await supabase
+      .from("shopping_lists")
+      .delete()
+      .eq("id", currentList.id);
+
+    if (error) {
+      return { error: error.message };
+    }
+  } else {
+    // Update shopping list
+    const { error } = await supabase
+      .from("shopping_lists")
+      .update({ meal_ids: newMealIds, items: newItems })
+      .eq("id", currentList.id);
+
+    if (error) {
+      return { error: error.message };
+    }
+  }
+
+  revalidatePath("/shopping-list");
+  return { success: true };
+}

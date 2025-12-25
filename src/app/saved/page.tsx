@@ -7,6 +7,7 @@ import { MealCard } from "@/components/meals/MealCard";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { Meal } from "@/types";
 import { createClient } from "@/lib/supabase/client";
+import { addMealToShoppingList } from "@/app/actions/meals";
 
 interface SavedMealRow {
   id: string;
@@ -97,10 +98,17 @@ export default function SavedPage() {
     }
   }
 
-  function addToShoppingList(meal: Meal) {
-    // Store the meal in sessionStorage for the shopping list page
-    sessionStorage.setItem("selectedMeals", JSON.stringify([meal]));
-    router.push("/shopping-list");
+  async function addToShoppingList(meal: Meal) {
+    const result = await addMealToShoppingList(meal);
+    if (result.error) {
+      if (result.error === "Meal already in shopping list") {
+        alert("This meal is already in your shopping list");
+      } else {
+        alert("Failed to add meal to shopping list");
+      }
+    } else {
+      router.push("/shopping-list");
+    }
   }
 
   return (
