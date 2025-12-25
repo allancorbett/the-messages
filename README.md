@@ -1,12 +1,12 @@
 # The Messages 🛒
 
-Seasonal meal planning for Scotland. Get the messages sorted.
+Seasonal meal planning based on your location. Get the messages sorted.
 
 ## What is this?
 
 A meal planning app that:
-- Suggests meals based on seasonal Scottish ingredients
-- Lets you filter by breakfast/lunch/dinner and budget (£/££/£££)
+- Suggests meals based on seasonal local ingredients (auto-detects your region)
+- Lets you filter by breakfast/lunch/dinner and budget (economic/mid-range/fancy)
 - Generates aggregated shopping lists from your selected meals
 - Saves your favourite meals for later
 
@@ -108,7 +108,7 @@ src/
 ## Features
 
 ### Meal Generation
-- Seasonal ingredients for Scotland
+- Location-aware seasonal ingredients (UK, Ireland, US, Canada, France, Germany, Australia, New Zealand, and more)
 - Budget levels: Economic (under £2/serving), Mid (£2-5), Fancy (£5+)
 - Breakfast, lunch, dinner options
 - Configurable serving sizes

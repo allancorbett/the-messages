@@ -10,10 +10,12 @@ import { BudgetLevel, Meal, MealType, Season } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { saveGeneratedMeals } from "@/app/actions/meals";
+import { getUserLocation, formatLocation, type LocationData } from "@/lib/geolocation";
 
 export default function PlanPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string>("");
+  const [location, setLocation] = useState<LocationData | null>(null);
 
   // Filters
   const [season, setSeason] = useState<Season>(getCurrentSeason());
@@ -46,6 +48,14 @@ export default function PlanPage() {
     getUser();
   }, []);
 
+  useEffect(() => {
+    async function detectLocation() {
+      const locationData = await getUserLocation();
+      setLocation(locationData);
+    }
+    detectLocation();
+  }, []);
+
   async function generateMeals() {
     setLoading(true);
     setError(null);
@@ -61,6 +71,7 @@ export default function PlanPage() {
           mealTypes,
           budget,
           householdSize,
+          countryCode: location?.country,
         }),
       });
 
@@ -120,7 +131,7 @@ export default function PlanPage() {
             Plan Your Meals
           </h1>
           <p className="text-peat-600">
-            Choose your preferences and we&apos;ll suggest seasonal meals for you
+            Choose your preferences and we&apos;ll suggest seasonal meals for {formatLocation(location)}
           </p>
         </div>
 
@@ -290,7 +301,7 @@ export default function PlanPage() {
                 </h2>
                 <p className="text-peat-600 max-w-md mx-auto mb-6">
                   Set your preferences on the left and hit Generate to get 10
-                  seasonal meal suggestions tailored to Scottish supermarkets.
+                  seasonal meal suggestions tailored to local supermarkets.
                 </p>
                 <button onClick={generateMeals} className="btn-primary">
                   <svg

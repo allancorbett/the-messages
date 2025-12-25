@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-The Messages is a seasonal meal planning app for Scotland that uses Claude AI to generate meal suggestions based on seasonal Scottish ingredients, budget levels, and dietary preferences. Users can save meals, generate shopping lists, and manage their preferences through Supabase authentication.
+The Messages is a location-aware seasonal meal planning app that uses Claude AI to generate meal suggestions based on seasonal local ingredients, budget levels, and dietary preferences. The app auto-detects the user's location via IP geolocation and provides regionally-appropriate seasonal ingredients. Users can save meals, generate shopping lists, and manage their preferences through Supabase authentication.
 
 ## Development Commands
 
@@ -47,7 +47,7 @@ Always use the appropriate client based on execution context. The server client 
 6. Response validated against `generateMealsResponseSchema` before returning to client
 7. Each meal gets a unique ID: `meal-${Date.now()}-${index}`
 
-The prompt in `src/app/api/generate-meals/route.ts` includes seasonal ingredient mappings specific to Scotland and budget descriptions that guide Claude's output.
+The prompt in `src/app/api/generate-meals/route.ts` dynamically includes seasonal ingredient mappings based on the user's detected location (via `src/lib/geolocation.ts`) and budget descriptions that guide Claude's output. Regional configurations exist for UK, Ireland, US, Canada, France, Germany, Australia, New Zealand, with a fallback for other regions.
 
 ### Type System
 

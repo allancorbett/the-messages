@@ -39,6 +39,7 @@ export interface GenerateMealsParams {
   householdSize: number;
   dietaryRequirements?: string[];
   excludeIngredients?: string[];
+  countryCode?: string;
 }
 
 export interface ShoppingListItem extends Ingredient {

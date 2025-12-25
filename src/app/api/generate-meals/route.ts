@@ -5,6 +5,7 @@ import {
   generateMealsResponseSchema,
 } from "@/lib/validation";
 import { GenerateMealsParams } from "@/types";
+import { getRegionalConfig } from "@/lib/geolocation";
 
 const anthropic = new Anthropic();
 
@@ -16,22 +17,20 @@ function buildPrompt(params: GenerateMealsParams): string {
     householdSize,
     dietaryRequirements = [],
     excludeIngredients = [],
+    countryCode,
   } = params;
 
+  // Get regional configuration based on country
+  const regionalConfig = getRegionalConfig(countryCode);
+  const locationName = regionalConfig.displayName;
+
   const budgetDescriptions = {
-    1: "economic (under £2 per serving, using budget-friendly ingredients)",
-    2: "mid-range (£2-5 per serving, good quality everyday ingredients)",
-    3: "fancy (£5+ per serving, premium ingredients and special occasion worthy)",
+    1: "economic (budget-friendly ingredients, keeping costs low)",
+    2: "mid-range (good quality everyday ingredients, balanced cost)",
+    3: "fancy (premium ingredients, special occasion worthy)",
   };
 
-  const seasonalIngredients = {
-    winter: `Root vegetables (parsnips, carrots, swede, turnip, celeriac), brassicas (cabbage, kale, Brussels sprouts, cauliflower, broccoli), leeks, onions, potatoes, beetroot, Scottish beef, lamb, game (venison, pheasant), smoked fish (haddock, salmon), mussels, stored apples and pears`,
-    spring: `Early greens, spring onions, radishes, rhubarb, wild garlic, asparagus (late spring), lamb, trout, crab`,
-    summer: `Soft fruits (strawberries, raspberries, blackcurrants), broad beans, peas, courgettes, tomatoes, lettuce, cucumber, new potatoes, salmon, mackerel`,
-    autumn: `Apples, pears, plums, brambles (blackberries), squash, pumpkin, mushrooms, sweetcorn, game birds, venison, mussels`,
-  };
-
-  return `You are a Scottish meal planning assistant. Generate exactly 10 meal suggestions that would appeal to home cooks in Scotland.
+  return `You are a local meal planning assistant. Generate exactly 10 meal suggestions that would appeal to home cooks in ${locationName}.
 
 CONTEXT:
 - Current season: ${season}
@@ -42,11 +41,11 @@ CONTEXT:
 - Ingredients to avoid: ${excludeIngredients.length > 0 ? excludeIngredients.join(", ") : "none"}
 
 SEASONAL INGREDIENTS TO PRIORITISE FOR ${season.toUpperCase()}:
-${seasonalIngredients[season]}
+${regionalConfig.seasonalIngredients[season]}
 
 REQUIREMENTS:
-1. Use ingredients commonly available in Scottish supermarkets (Tesco, Sainsbury's, Aldi, Lidl, Co-op, Asda)
-2. Prioritise seasonal produce for ${season} in Scotland
+1. Use ingredients commonly available in local supermarkets (${regionalConfig.supermarkets})
+2. Prioritise seasonal produce for ${season} in ${locationName}
 3. Match the budget level exactly - be realistic about costs
 4. Include a good mix of the requested meal types (${mealTypes.join(", ")})
 5. Vary the cuisines and cooking styles - don't make everything similar

@@ -4,11 +4,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "The Messages | Seasonal Meal Planning",
   description:
-    "Plan your weekly meals with seasonal Scottish ingredients. Get the messages sorted.",
+    "Plan your weekly meals with seasonal local ingredients. Get the messages sorted.",
   keywords: [
     "meal planning",
     "seasonal cooking",
-    "Scottish food",
+    "local food",
     "grocery list",
     "recipes",
   ],
