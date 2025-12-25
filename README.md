@@ -1,0 +1,135 @@
+# The Messages 🛒
+
+Seasonal meal planning for Scotland. Get the messages sorted.
+
+## What is this?
+
+A meal planning app that:
+- Suggests meals based on seasonal Scottish ingredients
+- Lets you filter by breakfast/lunch/dinner and budget (£/££/£££)
+- Generates aggregated shopping lists from your selected meals
+- Saves your favourite meals for later
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS
+- **Auth & Database**: Supabase
+- **AI**: Claude API (Anthropic)
+- **Hosting**: Vercel (recommended)
+
+## Setup Instructions
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/allancorbett/the-messages.git
+cd the-messages
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up Supabase
+
+Your Supabase project is already created. Now run the database migration:
+
+1. Go to [Supabase SQL Editor](https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/sql)
+2. Copy the contents of `supabase/migrations/001_initial_schema.sql`
+3. Paste and run it
+
+This creates the tables for user preferences, saved meals, and shopping lists.
+
+### 4. Configure environment variables
+
+Copy the example env file:
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` and add your Anthropic API key:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://eedyiwnbbljjglewdlpt.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_L62pclkfM94BtQ4MZuHHCg_cmlk42-6
+ANTHROPIC_API_KEY=your-anthropic-api-key-here
+```
+
+### 5. Run locally
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+## Deploying to Vercel
+
+1. Push to GitHub
+2. Import the repo in [Vercel](https://vercel.com/new)
+3. Add environment variables in Vercel dashboard:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `ANTHROPIC_API_KEY`
+4. Deploy!
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   └── generate-meals/    # Claude API integration
+│   ├── auth/
+│   │   └── callback/          # Supabase auth callback
+│   ├── login/                 # Login page
+│   ├── signup/                # Signup page
+│   ├── plan/                  # Main meal planning page
+│   ├── saved/                 # Saved meals page
+│   ├── shopping-list/         # Shopping list page
+│   ├── actions/               # Server actions
+│   └── page.tsx               # Landing page
+├── components/
+│   ├── meals/                 # Meal-related components
+│   ├── shopping/              # Shopping list components
+│   └── Header.tsx             # Navigation header
+├── lib/
+│   ├── supabase/              # Supabase client setup
+│   ├── utils.ts               # Helper functions
+│   └── validation.ts          # Zod schemas
+└── types/
+    └── index.ts               # TypeScript types
+```
+
+## Features
+
+### Meal Generation
+- Seasonal ingredients for Scotland
+- Budget levels: Economic (under £2/serving), Mid (£2-5), Fancy (£5+)
+- Breakfast, lunch, dinner options
+- Configurable serving sizes
+
+### Shopping List
+- Aggregated ingredients from selected meals
+- Grouped by supermarket section
+- Tick items off as you shop
+- Copy to clipboard
+
+### User Accounts
+- Email/password auth via Supabase
+- Save favourite meals
+- Persistent preferences
+
+## API Costs
+
+Claude API (Sonnet):
+- ~$0.03 per meal generation (10 meals)
+- 100 generations/month ≈ $3
+
+## Licence
+
+MIT
