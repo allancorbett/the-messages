@@ -64,8 +64,13 @@ Ingredient categories (`produce`, `dairy`, `meat`, `fish`, `storecupboard`, `fro
 Three main tables (see `supabase/migrations/001_initial_schema.sql`):
 
 1. **user_preferences**: Stores household_size, dietary_requirements (text[]), default_budget
-2. **saved_meals**: Stores user's saved meals with ingredients as JSONB, instructions as text[]
-3. **shopping_lists**: Optional history tracking of generated shopping lists
+2. **saved_meals**: All generated and manually saved meals with ingredients as JSONB, instructions as text[]
+   - Generated meals are automatically saved here when AI creates them
+   - Users can delete meals from their collection
+3. **shopping_lists**: Current shopping list for the user (one active list per user)
+   - Stores meal_ids array and items as JSONB
+   - Replaces previous list when new meals are selected
+   - Items include checked status for tracking shopping progress
 
 All tables have Row Level Security enabled with policies ensuring users can only access their own data via `auth.uid() = user_id`.
 
@@ -75,6 +80,17 @@ All tables have Row Level Security enabled with policies ensuring users can only
 - Email confirmation required (redirects to `/auth/callback`)
 - Middleware (`src/middleware.ts`) refreshes sessions on every request except static assets
 - Protected routes should check auth using `getUser()` server action or `createClient().auth.getUser()`
+
+### Server Actions
+
+`src/app/actions/meals.ts` contains meal and shopping list operations:
+- `saveGeneratedMeals()`: Auto-saves all AI-generated meals to database
+- `saveShoppingList()`: Saves/replaces shopping list (deletes old, inserts new)
+- `getShoppingList()`: Retrieves current shopping list from database
+- `updateShoppingListItem()`: Updates checked status of individual items
+- `clearShoppingList()`: Deletes user's shopping list from database
+
+Shopping lists use sessionStorage as a temporary handoff between pages, then persist to database.
 
 ### Validation Strategy
 

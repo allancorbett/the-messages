@@ -9,6 +9,7 @@ import { getCurrentSeason } from "@/lib/utils";
 import { BudgetLevel, Meal, MealType, Season } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { saveGeneratedMeals } from "@/app/actions/meals";
 
 export default function PlanPage() {
   const router = useRouter();
@@ -70,6 +71,13 @@ export default function PlanPage() {
 
       const data = await response.json();
       setMeals(data.meals);
+
+      // Auto-save all generated meals to database
+      const saveResult = await saveGeneratedMeals(data.meals);
+      if (saveResult.error) {
+        console.error("Failed to auto-save meals:", saveResult.error);
+        // Don't show error to user, just log it
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -95,38 +103,6 @@ export default function PlanPage() {
     setSelectedMeals([]);
   }
 
-  async function saveMeal(meal: Meal) {
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        throw new Error("Not authenticated");
-      }
-
-      const { error } = await supabase.from("saved_meals").insert({
-        user_id: user.id,
-        name: meal.name,
-        description: meal.description,
-        meal_type: meal.mealType,
-        price_level: meal.priceLevel,
-        prep_time: meal.prepTime,
-        servings: meal.servings,
-        season: meal.seasons,
-        ingredients: meal.ingredients,
-        instructions: meal.instructions,
-      });
-
-      if (error) throw error;
-
-      // Show brief success feedback
-      alert("Meal saved!");
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to save meal");
-    }
-  }
 
   function goToShoppingList() {
     // Store selected meals in sessionStorage for the shopping list page
@@ -223,27 +199,44 @@ export default function PlanPage() {
             )}
 
             {meals.length > 0 && (
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-peat-600">
-                    {selectedMeals.length} of {meals.length} selected
-                  </span>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={selectAll}
-                      className="text-sm text-brine-600 hover:text-brine-700"
-                    >
-                      Select all
-                    </button>
-                    <span className="text-peat-300">|</span>
-                    <button
-                      onClick={deselectAll}
-                      className="text-sm text-peat-500 hover:text-peat-700"
-                    >
-                      Clear
-                    </button>
-                  </div>
+              <>
+                <div className="mb-3 p-3 bg-brine-50 border border-brine-200 rounded-lg flex items-center gap-2 text-sm text-brine-700">
+                  <svg
+                    className="w-4 h-4 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span>All generated meals are automatically saved to your collection</span>
                 </div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-peat-600">
+                      {selectedMeals.length} of {meals.length} selected
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={selectAll}
+                        className="text-sm text-brine-600 hover:text-brine-700"
+                      >
+                        Select all
+                      </button>
+                      <span className="text-peat-300">|</span>
+                      <button
+                        onClick={deselectAll}
+                        className="text-sm text-peat-500 hover:text-peat-700"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
 
                 {selectedMeals.length > 0 && (
                   <button onClick={goToShoppingList} className="btn-primary">
@@ -263,14 +256,14 @@ export default function PlanPage() {
                     Get the Messages
                   </button>
                 )}
-              </div>
+                </div>
+              </>
             )}
 
             <MealList
               meals={meals}
               selectedMeals={selectedMeals}
               onToggleSelect={toggleMealSelection}
-              onSave={saveMeal}
               onViewDetails={setSelectedMealForDetail}
               loading={loading}
             />

@@ -6,11 +6,17 @@ import { Header } from "@/components/Header";
 import { ShoppingList } from "@/components/shopping/ShoppingList";
 import { Meal } from "@/types";
 import { createClient } from "@/lib/supabase/client";
+import {
+  saveShoppingList,
+  getShoppingList,
+  clearShoppingList,
+} from "@/app/actions/meals";
 
 export default function ShoppingListPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string>("");
   const [meals, setMeals] = useState<Meal[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function init() {
@@ -23,22 +29,42 @@ export default function ShoppingListPage() {
         setUserEmail(user.email);
       }
 
-      // Get meals from sessionStorage
+      // Check if there are new meals from sessionStorage (just navigated from plan/saved page)
       const storedMeals = sessionStorage.getItem("selectedMeals");
       if (storedMeals) {
         try {
-          setMeals(JSON.parse(storedMeals));
-        } catch {
-          // Invalid data, ignore
+          const parsedMeals = JSON.parse(storedMeals);
+          setMeals(parsedMeals);
+          // Save to database
+          await saveShoppingList(parsedMeals);
+          // Clear sessionStorage
+          sessionStorage.removeItem("selectedMeals");
+        } catch (error) {
+          console.error("Error saving shopping list:", error);
+        }
+      } else {
+        // Load existing shopping list from database
+        const result = await getShoppingList();
+        if (result.data) {
+          // Convert back to meals format (we'll need to reconstruct this)
+          // For now, just show we have a shopping list
+          // We'll need to update the ShoppingList component to work with items directly
+          setMeals([]); // We'll fix this in the next step
         }
       }
+
+      setLoading(false);
     }
     init();
   }, []);
 
-  function clearList() {
-    setMeals([]);
-    sessionStorage.removeItem("selectedMeals");
+  async function handleClearList() {
+    const result = await clearShoppingList();
+    if (result.error) {
+      alert("Failed to clear shopping list");
+    } else {
+      setMeals([]);
+    }
   }
 
   return (
@@ -55,7 +81,15 @@ export default function ShoppingListPage() {
           </p>
         </div>
 
-        {meals.length === 0 ? (
+        {loading ? (
+          <div className="card">
+            <div className="animate-pulse space-y-4">
+              <div className="h-6 w-1/3 bg-peat-200 rounded" />
+              <div className="h-4 w-2/3 bg-peat-200 rounded" />
+              <div className="h-4 w-1/2 bg-peat-200 rounded" />
+            </div>
+          </div>
+        ) : meals.length === 0 ? (
           <div className="card text-center py-16">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
               <svg
@@ -88,7 +122,7 @@ export default function ShoppingListPage() {
           </div>
         ) : (
           <div className="card">
-            <ShoppingList meals={meals} onClear={clearList} />
+            <ShoppingList meals={meals} onClear={handleClearList} />
           </div>
         )}
       </main>
