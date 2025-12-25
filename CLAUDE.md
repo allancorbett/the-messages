@@ -105,10 +105,11 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-key>
 ANTHROPIC_API_KEY=<your-key>
 ```
 
-Optional for production:
+**REQUIRED for production:**
 ```
-NEXT_PUBLIC_SITE_URL=<production-url>  # Used for auth redirects
+NEXT_PUBLIC_SITE_URL=https://the-messages.vercel.app
 ```
+This is critical for authentication to work correctly. Without this, email confirmation links will redirect to localhost instead of your production domain, causing registration failures.
 
 ## Database Migrations
 
@@ -118,6 +119,38 @@ Run migrations manually in Supabase SQL Editor:
 3. Execute the SQL
 
 Do not use Supabase CLI for migrations in this project.
+
+## Vercel Deployment
+
+### Setting Environment Variables in Vercel
+
+**Critical:** The app will fail authentication on production without proper environment variables.
+
+1. Go to your Vercel project dashboard: https://vercel.com/dashboard
+2. Navigate to **Settings** → **Environment Variables**
+3. Add the following variables for **Production**, **Preview**, and **Development** environments:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://eedyiwnbbljjglewdlpt.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+ANTHROPIC_API_KEY=<your-anthropic-api-key>
+NEXT_PUBLIC_SITE_URL=https://the-messages.vercel.app
+```
+
+4. After adding environment variables, **redeploy** the application for changes to take effect
+5. Verify authentication works by testing user registration
+
+### Supabase Authentication Configuration
+
+Ensure your Supabase project has the correct redirect URLs configured:
+
+1. Go to https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/auth/url-configuration
+2. Add the following to **Redirect URLs**:
+   - `https://the-messages.vercel.app/auth/callback`
+   - `http://localhost:3000/auth/callback` (for local development)
+3. Save changes
+
+Without these redirect URLs configured, email confirmation links will fail.
 
 ## Key Dependencies
 
