@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { MealCard } from "@/components/meals/MealCard";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
@@ -22,6 +23,7 @@ interface SavedMealRow {
 }
 
 export default function SavedPage() {
+  const router = useRouter();
   const [userEmail, setUserEmail] = useState<string>("");
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,6 +95,12 @@ export default function SavedPage() {
     } else {
       setMeals((prev) => prev.filter((m) => m.id !== mealId));
     }
+  }
+
+  function addToShoppingList(meal: Meal) {
+    // Store the meal in sessionStorage for the shopping list page
+    sessionStorage.setItem("selectedMeals", JSON.stringify([meal]));
+    router.push("/shopping-list");
   }
 
   return (
@@ -193,6 +201,7 @@ export default function SavedPage() {
           meal={selectedMealForDetail}
           isOpen={true}
           onClose={() => setSelectedMealForDetail(null)}
+          onAddToShoppingList={() => addToShoppingList(selectedMealForDetail)}
         />
       )}
     </div>
