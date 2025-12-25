@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Meal } from "@/types";
 import { revalidatePath } from "next/cache";
+import { transformSavedMealToMeal } from "@/lib/meal-utils";
 
 export async function saveShoppingList(meals: Meal[]) {
   const supabase = await createClient();
@@ -204,21 +205,7 @@ export async function getMealById(id: string) {
     return { error: "Meal not found", data: null };
   }
 
-  // Transform database row to Meal type
-  const meal: Meal = {
-    id: data.id,
-    name: data.name,
-    description: data.description,
-    mealType: data.meal_type as Meal["mealType"],
-    priceLevel: data.price_level as Meal["priceLevel"],
-    prepTime: data.prep_time,
-    servings: data.servings,
-    seasons: data.season as Meal["seasons"],
-    ingredients: data.ingredients as Meal["ingredients"],
-    instructions: data.instructions,
-  };
-
-  return { data: meal };
+  return { data: transformSavedMealToMeal(data) };
 }
 
 export async function addMealToShoppingList(meal: Meal) {
