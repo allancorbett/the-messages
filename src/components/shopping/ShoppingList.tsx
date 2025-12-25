@@ -15,6 +15,7 @@ interface ShoppingListProps {
   mealMetadata: MealMetadata[];
   onClear?: () => void;
   onRemoveMeal?: (mealId: string) => void;
+  onViewMeal?: (mealId: string) => void;
 }
 
 const categoryOrder: IngredientCategory[] = [
@@ -37,7 +38,7 @@ const categoryEmojis: Record<IngredientCategory, string> = {
   storecupboard: "🫙",
 };
 
-export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal }: ShoppingListProps) {
+export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onViewMeal }: ShoppingListProps) {
   const groupedItems = useMemo(() => {
     const grouped = groupBy(items, "category");
     // Sort by category order
@@ -51,6 +52,15 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal }: Sho
     });
     return sorted;
   }, [items]);
+
+  // Create a map from meal name to meal ID for quick lookups
+  const mealNameToId = useMemo(() => {
+    const map: Record<string, string> = {};
+    mealMetadata.forEach((meal) => {
+      map[meal.name] = meal.id;
+    });
+    return map;
+  }, [mealMetadata]);
 
   async function toggleItem(itemIndex: number, currentChecked: boolean) {
     // Update database (server action handles revalidation)
@@ -118,11 +128,17 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal }: Sho
         </p>
         <div className="flex flex-wrap gap-2">
           {mealMetadata.map((meal) => (
-            <span
+            <div
               key={meal.id}
               className="group text-xs px-2 py-1 rounded bg-white text-brine-700 border border-brine-200 flex items-center gap-1"
             >
-              {meal.name}
+              <button
+                onClick={() => onViewMeal?.(meal.id)}
+                className="hover:underline cursor-pointer"
+                title="View recipe"
+              >
+                {meal.name}
+              </button>
               {onRemoveMeal && (
                 <button
                   onClick={(e) => {
@@ -149,7 +165,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal }: Sho
                   </svg>
                 </button>
               )}
-            </span>
+            </div>
           ))}
         </div>
       </div>
@@ -221,7 +237,25 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal }: Sho
                       </span>
                       {item.fromMeals.length > 1 && (
                         <p className="text-xs text-peat-400 mt-0.5">
-                          For: {item.fromMeals.join(", ")}
+                          For:{" "}
+                          {item.fromMeals.map((mealName, idx) => (
+                            <span key={mealName}>
+                              {idx > 0 && ", "}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const mealId = mealNameToId[mealName];
+                                  if (mealId && onViewMeal) {
+                                    onViewMeal(mealId);
+                                  }
+                                }}
+                                className="hover:underline cursor-pointer hover:text-peat-600"
+                                title="View recipe"
+                              >
+                                {mealName}
+                              </button>
+                            </span>
+                          ))}
                         </p>
                       )}
                     </div>
