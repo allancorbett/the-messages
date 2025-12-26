@@ -118,21 +118,21 @@ All user input and AI output validated with Zod schemas in `src/lib/validation.t
 
 Required in `.env.local`:
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://eedyiwnbbljjglewdlpt.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-key>
-ANTHROPIC_API_KEY=<your-key>
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+ANTHROPIC_API_KEY=<your-anthropic-api-key>
 ```
 
 **REQUIRED for production:**
 ```
-NEXT_PUBLIC_SITE_URL=https://the-messages.vercel.app
+NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 ```
 This is critical for authentication to work correctly. Without this, email confirmation links will redirect to localhost instead of your production domain, causing registration failures.
 
 ## Database Migrations
 
 Run migrations manually in Supabase SQL Editor:
-1. Go to https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/sql
+1. Go to https://supabase.com/dashboard/project/YOUR_PROJECT_ID/sql
 2. Copy contents of `supabase/migrations/001_initial_schema.sql`
 3. Execute the SQL
 
@@ -149,10 +149,10 @@ Do not use Supabase CLI for migrations in this project.
 3. Add the following variables for **Production**, **Preview**, and **Development** environments:
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://eedyiwnbbljjglewdlpt.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
 ANTHROPIC_API_KEY=<your-anthropic-api-key>
-NEXT_PUBLIC_SITE_URL=https://the-messages.vercel.app
+NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 ```
 
 4. After adding environment variables, **redeploy** the application for changes to take effect
@@ -162,9 +162,9 @@ NEXT_PUBLIC_SITE_URL=https://the-messages.vercel.app
 
 Ensure your Supabase project has the correct redirect URLs configured:
 
-1. Go to https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/auth/url-configuration
+1. Go to https://supabase.com/dashboard/project/YOUR_PROJECT_ID/auth/url-configuration
 2. Add the following to **Redirect URLs**:
-   - `https://the-messages.vercel.app/auth/callback`
+   - `https://your-domain.vercel.app/auth/callback`
    - `http://localhost:3000/auth/callback` (for local development)
 3. Save changes
 
