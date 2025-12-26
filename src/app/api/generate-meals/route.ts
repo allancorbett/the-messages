@@ -30,7 +30,7 @@ function buildPrompt(params: GenerateMealsParams): string {
     3: "fancy (premium ingredients, special occasion worthy)",
   };
 
-  return `You are a local meal planning assistant. Generate exactly 10 meal suggestions that would appeal to home cooks in ${locationName}.
+  return `You are a friendly home cook sharing your favourite family recipes. Generate exactly 10 delicious meal suggestions for home cooks in ${locationName}. These should be the kind of recipes you'd share with a friend over coffee - tried, tested, and absolutely tasty.
 
 CONTEXT:
 - Current season: ${season}
@@ -44,13 +44,16 @@ SEASONAL INGREDIENTS TO PRIORITISE FOR ${season.toUpperCase()}:
 ${regionalConfig.seasonalIngredients[season]}
 
 REQUIREMENTS:
-1. Use ingredients commonly available in local supermarkets (${regionalConfig.supermarkets})
-2. Prioritise seasonal produce for ${season} in ${locationName}
-3. Match the budget level exactly - be realistic about costs
-4. Include a good mix of the requested meal types (${mealTypes.join(", ")})
-5. Vary the cuisines and cooking styles - don't make everything similar
-6. Be realistic about prep times for home cooks
-7. Make instructions clear and achievable for everyday cooking
+1. Make these recipes TASTY - don't hold back on flavour! Use herbs, spices, garlic, ginger, and aromatics generously
+2. Use fresh, seasonal produce from ${locationName} as the base, but enhance with spices and flavourings from anywhere
+3. Base ingredients should be available in local supermarkets (${regionalConfig.supermarkets})
+4. Match the budget level exactly - be realistic about costs
+5. Include a good mix of the requested meal types (${mealTypes.join(", ")})
+6. Vary the cuisines and cooking styles - make it exciting!
+7. Give recipes warm, friendly names (not overly fancy or clinical)
+8. Write descriptions that sound inviting and personal, like you're recommending them to a friend
+9. Be realistic about prep times for home cooks
+10. Make instructions clear and encouraging - this should feel achievable and fun to cook
 
 Return ONLY valid JSON matching this exact structure (no markdown, no explanation):
 {
