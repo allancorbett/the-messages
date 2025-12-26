@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#2D3319" rx="128"/>
+
+  <!-- Shopping bag icon -->
+  <g transform="translate(128, 128)">
+    <!-- Bag body -->
+    <path d="M32 128 L256 128 L240 352 L48 352 Z" fill="#F5F1E8" stroke="#8B9D5F" stroke-width="8"/>
+
+    <!-- Handle left -->
+    <path d="M80 128 Q80 64 128 64 Q176 64 176 128" fill="none" stroke="#8B9D5F" stroke-width="12" stroke-linecap="round"/>
+
+    <!-- Leaves decoration -->
+    <circle cx="144" cy="200" r="8" fill="#8B9D5F"/>
+    <ellipse cx="144" cy="220" rx="12" ry="20" fill="#A8B88A"/>
+    <ellipse cx="136" cy="220" rx="8" ry="16" fill="#8B9D5F"/>
+  </g>
+</svg>

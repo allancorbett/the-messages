@@ -9,6 +9,18 @@ import { getRegionalConfig } from "@/lib/geolocation";
 
 const anthropic = new Anthropic();
 
+/**
+ * Sanitizes user input to prevent prompt injection
+ * Removes control characters and limits length
+ */
+function sanitizeInput(input: string, maxLength: number = 100): string {
+  return input
+    .replace(/[\n\r\t]/g, " ") // Remove newlines and tabs
+    .replace(/[^\w\s,.-]/g, "") // Keep only alphanumeric, spaces, commas, dots, dashes
+    .trim()
+    .slice(0, maxLength);
+}
+
 function buildPrompt(params: GenerateMealsParams): string {
   const {
     season,
@@ -27,26 +39,40 @@ function buildPrompt(params: GenerateMealsParams): string {
   // Get regional configuration based on country
   const regionalConfig = getRegionalConfig(countryCode);
 
-  // Build precise location name
+  // Build precise location name with sanitized inputs
   let locationName = regionalConfig.displayName;
   if (city && region) {
-    locationName = `${city}, ${region}`;
+    locationName = `${sanitizeInput(city)}, ${sanitizeInput(region)}`;
   } else if (city) {
-    locationName = city;
+    locationName = sanitizeInput(city);
   } else if (region) {
-    locationName = region;
+    locationName = sanitizeInput(region);
   }
 
-  // Add coordinate information for hyper-local context
-  const coordinateContext = latitude && longitude
-    ? `\n- User location coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} (use this for hyper-local ingredient availability)`
-    : "";
+  // Add coordinate information for hyper-local context (validate coordinates)
+  const coordinateContext =
+    latitude &&
+    longitude &&
+    latitude >= -90 &&
+    latitude <= 90 &&
+    longitude >= -180 &&
+    longitude <= 180
+      ? `\n- User location coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} (use this for hyper-local ingredient availability)`
+      : "";
 
   const budgetDescriptions = {
     1: "economic (budget-friendly ingredients, keeping costs low)",
     2: "mid-range (good quality everyday ingredients, balanced cost)",
     3: "fancy (premium ingredients, special occasion worthy)",
   };
+
+  // Sanitize user-provided arrays
+  const safeDietaryRequirements = dietaryRequirements.map((req) =>
+    sanitizeInput(req, 50)
+  );
+  const safeExcludeIngredients = excludeIngredients.map((ing) =>
+    sanitizeInput(ing, 50)
+  );
 
   return `Generate exactly 10 delicious meal suggestions for home cooks in ${locationName}. These should be the kind of trusted recipes passed between friends - tried, tested, and absolutely tasty.
 
@@ -55,8 +81,8 @@ CONTEXT:
 - Meal types needed: ${mealTypes.join(", ")}
 - Budget level: ${budgetDescriptions[budget]}
 - Servings per meal: ${householdSize}
-- Dietary requirements: ${dietaryRequirements.length > 0 ? dietaryRequirements.join(", ") : "none"}
-- Ingredients to avoid: ${excludeIngredients.length > 0 ? excludeIngredients.join(", ") : "none"}${coordinateContext}
+- Dietary requirements: ${safeDietaryRequirements.length > 0 ? safeDietaryRequirements.join(", ") : "none"}
+- Ingredients to avoid: ${safeExcludeIngredients.length > 0 ? safeExcludeIngredients.join(", ") : "none"}${coordinateContext}
 
 SEASONAL INGREDIENTS TO PRIORITISE FOR ${season.toUpperCase()}:
 ${regionalConfig.seasonalIngredients[season]}

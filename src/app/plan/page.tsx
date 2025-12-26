@@ -51,8 +51,14 @@ export default function PlanPage() {
 
   useEffect(() => {
     async function detectLocation() {
-      const locationData = await getUserLocation();
-      setLocation(locationData);
+      try {
+        const locationData = await getUserLocation();
+        setLocation(locationData);
+      } catch (error) {
+        console.warn("Failed to get user location:", error);
+        // Fallback to null location (will use default regional config)
+        setLocation(null);
+      }
     }
     detectLocation();
   }, []);
