@@ -1,5 +1,7 @@
 // Geolocation utilities for determining user location
 
+import { track } from "@vercel/analytics";
+
 export interface LocationData {
   country: string;
   countryCode: string;
@@ -123,11 +125,40 @@ export const DEFAULT_CONFIG: RegionalConfig = {
   },
 };
 
+const LOCATION_CACHE_KEY = "the-messages-location-cache";
+const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+interface CachedLocation {
+  data: LocationData;
+  timestamp: number;
+}
+
 /**
  * Gets user's precise location using browser Geolocation API
  * Falls back to IP-based geolocation if permission denied or unavailable
+ * Caches location in localStorage for 24 hours
  */
 export async function getUserLocation(): Promise<LocationData | null> {
+  // Check localStorage cache first
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem(LOCATION_CACHE_KEY);
+      if (cached) {
+        const { data, timestamp }: CachedLocation = JSON.parse(cached);
+        const age = Date.now() - timestamp;
+
+        // Return cached data if less than 24 hours old
+        if (age < CACHE_DURATION_MS) {
+          console.log("Using cached location data");
+          return data;
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to read location cache:", error);
+      // Continue to fetch fresh location
+    }
+  }
+
   // Try browser geolocation first (requires HTTPS and user permission)
   if (typeof window !== "undefined" && "geolocation" in navigator) {
     try {
@@ -148,15 +179,60 @@ export async function getUserLocation(): Promise<LocationData | null> {
       );
 
       if (locationData) {
+        // Cache the location data
+        cacheLocation(locationData);
+        // Track successful geolocation
+        track("geolocation_success", { method: "browser" });
         return locationData;
       }
     } catch (error) {
       console.warn("Browser geolocation failed, falling back to IP:", error);
+      // Track geolocation failure
+      track("geolocation_failure", {
+        method: "browser",
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   }
 
   // Fallback to IP-based geolocation
-  return getUserLocationFromIP();
+  try {
+    const locationData = await getUserLocationFromIP();
+    if (locationData) {
+      // Cache the location data
+      cacheLocation(locationData);
+      // Track successful IP geolocation
+      track("geolocation_success", { method: "ip" });
+      return locationData;
+    } else {
+      // Track IP geolocation failure
+      track("geolocation_failure", { method: "ip", error: "No data returned" });
+    }
+  } catch (error) {
+    // Track IP geolocation failure
+    track("geolocation_failure", {
+      method: "ip",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+  return null;
+}
+
+/**
+ * Caches location data in localStorage
+ */
+function cacheLocation(data: LocationData): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    const cacheData: CachedLocation = {
+      data,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(LOCATION_CACHE_KEY, JSON.stringify(cacheData));
+  } catch (error) {
+    console.warn("Failed to cache location:", error);
+  }
 }
 
 /**
