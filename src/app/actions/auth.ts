@@ -67,3 +67,20 @@ export async function getUser() {
   } = await supabase.auth.getUser();
   return user;
 }
+
+export async function signInWithOAuth(provider: "google" | "apple") {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { data };
+}
