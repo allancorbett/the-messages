@@ -1,5 +1,5 @@
 -- The Messages - Database Schema
--- Run this in Supabase SQL Editor (https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/sql)
+-- Run this in Supabase SQL Editor (https://supabase.com/dashboard/project/YOUR_PROJECT_ID/sql)
 
 -- User preferences table
 create table if not exists user_preferences (

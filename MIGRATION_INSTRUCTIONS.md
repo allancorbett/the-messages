@@ -7,7 +7,7 @@ To enable public recipe sharing, you need to run the migration in `supabase/migr
 ### Steps:
 
 1. Go to the Supabase SQL Editor:
-   https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/sql
+   https://supabase.com/dashboard/project/YOUR_PROJECT_ID/sql
 
 2. Copy the contents of `supabase/migrations/002_public_meal_sharing.sql`
 

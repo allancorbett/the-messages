@@ -35,9 +35,9 @@ npm install
 
 ### 3. Set up Supabase
 
-Your Supabase project is already created. Now run the database migration:
+Create a new Supabase project at [supabase.com](https://supabase.com), then run the database migration:
 
-1. Go to [Supabase SQL Editor](https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/sql)
+1. Go to your Supabase SQL Editor: `https://supabase.com/dashboard/project/YOUR_PROJECT_ID/sql`
 2. Copy the contents of `supabase/migrations/001_initial_schema.sql`
 3. Paste and run it
 
@@ -51,12 +51,13 @@ Copy the example env file:
 cp .env.example .env.local
 ```
 
-Edit `.env.local` and add your Anthropic API key:
+Edit `.env.local` and add your credentials (get these from Supabase Dashboard → Settings → API):
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://eedyiwnbbljjglewdlpt.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_L62pclkfM94BtQ4MZuHHCg_cmlk42-6
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ANTHROPIC_API_KEY=your-anthropic-api-key-here
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ### 5. Run locally
