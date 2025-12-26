@@ -1,22 +1,64 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { ShoppingList } from "@/components/shopping/ShoppingList";
-import { Meal } from "@/types";
+import { MealDetailModal } from "@/components/meals/MealDetailModal";
+import { Meal, ShoppingListItem } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import {
-  saveShoppingList,
+  addMealToShoppingList,
   getShoppingList,
   clearShoppingList,
+  removeMealFromShoppingList,
+  getMealById,
 } from "@/app/actions/meals";
+
+interface MealMetadata {
+  id: string;
+  name: string;
+}
 
 export default function ShoppingListPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string>("");
-  const [meals, setMeals] = useState<Meal[]>([]);
+  const [mealMetadata, setMealMetadata] = useState<MealMetadata[]>([]);
+  const [items, setItems] = useState<ShoppingListItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMealForDetail, setSelectedMealForDetail] =
+    useState<Meal | null>(null);
+
+  const loadShoppingList = useCallback(async () => {
+    const supabase = createClient();
+
+    // Load existing shopping list from database
+    const result = await getShoppingList();
+    if (result.data) {
+      const mealIds = result.data.meal_ids as string[];
+      const dbItems = result.data.items as ShoppingListItem[];
+
+      // Set items directly from database (includes checked state and fromMeals)
+      setItems(dbItems);
+
+      if (mealIds.length > 0) {
+        // Only fetch minimal meal data (id, name) for display
+        const { data: mealsData } = await supabase
+          .from("saved_meals")
+          .select("id, name")
+          .in("id", mealIds);
+
+        if (mealsData) {
+          setMealMetadata(mealsData as MealMetadata[]);
+        }
+      } else {
+        setMealMetadata([]);
+      }
+    } else {
+      setItems([]);
+      setMealMetadata([]);
+    }
+  }, []);
 
   useEffect(() => {
     async function init() {
@@ -34,36 +76,60 @@ export default function ShoppingListPage() {
       if (storedMeals) {
         try {
           const parsedMeals = JSON.parse(storedMeals);
-          setMeals(parsedMeals);
-          // Save to database
-          await saveShoppingList(parsedMeals);
+
+          // Add all meals in parallel for better performance
+          await Promise.all(
+            parsedMeals.map((meal: Meal) => addMealToShoppingList(meal))
+          );
+
           // Clear sessionStorage
           sessionStorage.removeItem("selectedMeals");
+
+          // Reload shopping list from database
+          await loadShoppingList();
         } catch (error) {
           console.error("Error saving shopping list:", error);
         }
       } else {
-        // Load existing shopping list from database
-        const result = await getShoppingList();
-        if (result.data) {
-          // Convert back to meals format (we'll need to reconstruct this)
-          // For now, just show we have a shopping list
-          // We'll need to update the ShoppingList component to work with items directly
-          setMeals([]); // We'll fix this in the next step
-        }
+        // Load existing shopping list
+        await loadShoppingList();
       }
 
       setLoading(false);
     }
     init();
-  }, []);
+  }, [loadShoppingList]);
 
   async function handleClearList() {
+    if (!confirm("Are you sure you want to clear your entire shopping list?")) {
+      return;
+    }
+
     const result = await clearShoppingList();
     if (result.error) {
       alert("Failed to clear shopping list");
     } else {
-      setMeals([]);
+      setItems([]);
+      setMealMetadata([]);
+    }
+  }
+
+  async function handleRemoveMeal(mealId: string) {
+    const result = await removeMealFromShoppingList(mealId);
+    if (result.error) {
+      alert("Failed to remove meal from shopping list");
+    } else {
+      // Reload shopping list from database
+      await loadShoppingList();
+    }
+  }
+
+  async function handleViewMeal(mealId: string) {
+    const result = await getMealById(mealId);
+    if (result.data) {
+      setSelectedMealForDetail(result.data);
+    } else {
+      alert("Failed to load meal details");
     }
   }
 
@@ -89,7 +155,7 @@ export default function ShoppingListPage() {
               <div className="h-4 w-1/2 bg-peat-200 rounded" />
             </div>
           </div>
-        ) : meals.length === 0 ? (
+        ) : items.length === 0 ? (
           <div className="card text-center py-16">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
               <svg
@@ -122,10 +188,25 @@ export default function ShoppingListPage() {
           </div>
         ) : (
           <div className="card">
-            <ShoppingList meals={meals} onClear={handleClearList} />
+            <ShoppingList
+              items={items}
+              mealMetadata={mealMetadata}
+              onClear={handleClearList}
+              onRemoveMeal={handleRemoveMeal}
+              onViewMeal={handleViewMeal}
+            />
           </div>
         )}
       </main>
+
+      {selectedMealForDetail && (
+        <MealDetailModal
+          meal={selectedMealForDetail}
+          isOpen={true}
+          onClose={() => setSelectedMealForDetail(null)}
+          showShareButton={true}
+        />
+      )}
     </div>
   );
 }

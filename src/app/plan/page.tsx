@@ -4,16 +4,19 @@ import { Header } from "@/components/Header";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { MealFilters } from "@/components/meals/MealFilters";
 import { MealList } from "@/components/meals/MealList";
+import { CookingLoadingOverlay } from "@/components/CookingLoadingOverlay";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentSeason } from "@/lib/utils";
 import { BudgetLevel, Meal, MealType, Season } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { saveGeneratedMeals } from "@/app/actions/meals";
+import { getUserLocation, formatLocation, type LocationData } from "@/lib/geolocation";
 
 export default function PlanPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string>("");
+  const [location, setLocation] = useState<LocationData | null>(null);
 
   // Filters
   const [season, setSeason] = useState<Season>(getCurrentSeason());
@@ -46,6 +49,20 @@ export default function PlanPage() {
     getUser();
   }, []);
 
+  useEffect(() => {
+    async function detectLocation() {
+      try {
+        const locationData = await getUserLocation();
+        setLocation(locationData);
+      } catch (error) {
+        console.warn("Failed to get user location:", error);
+        // Fallback to null location (will use default regional config)
+        setLocation(null);
+      }
+    }
+    detectLocation();
+  }, []);
+
   async function generateMeals() {
     setLoading(true);
     setError(null);
@@ -61,6 +78,11 @@ export default function PlanPage() {
           mealTypes,
           budget,
           householdSize,
+          countryCode: location?.countryCode,
+          city: location?.city,
+          region: location?.region,
+          latitude: location?.latitude,
+          longitude: location?.longitude,
         }),
       });
 
@@ -120,7 +142,7 @@ export default function PlanPage() {
             Plan Your Meals
           </h1>
           <p className="text-peat-600">
-            Choose your preferences and we&apos;ll suggest seasonal meals for you
+            Choose your preferences and we&apos;ll suggest seasonal meals for {formatLocation(location)}
           </p>
         </div>
 
@@ -144,6 +166,8 @@ export default function PlanPage() {
                 onClick={generateMeals}
                 disabled={loading || mealTypes.length === 0}
                 className="btn-primary w-full mt-6"
+                aria-label="Generate 10 meal suggestions based on your preferences"
+                aria-busy={loading}
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -225,13 +249,15 @@ export default function PlanPage() {
                       <button
                         onClick={selectAll}
                         className="text-sm text-brine-600 hover:text-brine-700"
+                        aria-label="Select all meals for shopping list"
                       >
                         Select all
                       </button>
-                      <span className="text-peat-300">|</span>
+                      <span className="text-peat-300" aria-hidden="true">|</span>
                       <button
                         onClick={deselectAll}
                         className="text-sm text-peat-500 hover:text-peat-700"
+                        aria-label="Clear all meal selections"
                       >
                         Clear
                       </button>
@@ -239,7 +265,11 @@ export default function PlanPage() {
                   </div>
 
                 {selectedMeals.length > 0 && (
-                  <button onClick={goToShoppingList} className="btn-primary">
+                  <button
+                    onClick={goToShoppingList}
+                    className="btn-primary"
+                    aria-label={`Create shopping list with ${selectedMeals.length} selected meals`}
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -290,7 +320,7 @@ export default function PlanPage() {
                 </h2>
                 <p className="text-peat-600 max-w-md mx-auto mb-6">
                   Set your preferences on the left and hit Generate to get 10
-                  seasonal meal suggestions tailored to Scottish supermarkets.
+                  seasonal meal suggestions tailored to local supermarkets.
                 </p>
                 <button onClick={generateMeals} className="btn-primary">
                   <svg
@@ -321,6 +351,8 @@ export default function PlanPage() {
           onClose={() => setSelectedMealForDetail(null)}
         />
       )}
+
+      <CookingLoadingOverlay isLoading={loading} />
     </div>
   );
 }

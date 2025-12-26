@@ -49,6 +49,11 @@ export const generateMealsParamsSchema = z.object({
   householdSize: z.number().int().min(1).max(12),
   dietaryRequirements: z.array(z.string()).optional(),
   excludeIngredients: z.array(z.string()).optional(),
+  countryCode: z.string().optional(),
+  city: z.string().optional(),
+  region: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 
 export const signUpSchema = z.object({

@@ -44,7 +44,7 @@ export default async function HomePage() {
           </h2>
 
           <p className="text-xl text-peat-600 mb-10 max-w-2xl mx-auto">
-            Seasonal meal planning for Scotland. Pick your preferences, get 10
+            Seasonal meal planning for your area. Pick your preferences, get 10
             meal ideas, and generate your shopping list — all based on
             what&apos;s good right now.
           </p>
@@ -94,8 +94,8 @@ export default async function HomePage() {
               Seasonal First
             </h3>
             <p className="text-peat-600">
-              Meals designed around what&apos;s actually good right now in Scottish
-              supermarkets. Better taste, better value.
+              Meals designed around what&apos;s actually good right now in your
+              local supermarkets. Better taste, better value.
             </p>
           </div>
 
@@ -194,7 +194,7 @@ export default async function HomePage() {
       <footer className="border-t border-peat-200 bg-white/50">
         <div className="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-peat-500">
           <p>
-            Built for Scottish kitchens. Powered by seasonal ingredients and AI.
+            Powered by seasonal ingredients and AI.
           </p>
         </div>
       </footer>

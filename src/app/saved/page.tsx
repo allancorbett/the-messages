@@ -1,35 +1,39 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { MealCard } from "@/components/meals/MealCard";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
-import { Meal } from "@/types";
+import { Toast } from "@/components/Toast";
+import { Meal, MealType, BudgetLevel, Season } from "@/types";
 import { createClient } from "@/lib/supabase/client";
+import { addMealToShoppingList } from "@/app/actions/meals";
+import { transformSavedMealToMeal } from "@/lib/meal-utils";
 
-interface SavedMealRow {
-  id: string;
-  name: string;
-  description: string;
-  meal_type: string;
-  price_level: number;
-  prep_time: number;
-  servings: number;
-  season: string[];
-  ingredients: Meal["ingredients"];
-  instructions: string[];
-  created_at: string;
-}
+const ITEMS_PER_PAGE = 10;
 
 export default function SavedPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string>("");
-  const [meals, setMeals] = useState<Meal[]>([]);
+  const [allMeals, setAllMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMealForDetail, setSelectedMealForDetail] =
     useState<Meal | null>(null);
+
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  // Filter and search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSeasons, setSelectedSeasons] = useState<Season[]>([]);
+  const [selectedMealTypes, setSelectedMealTypes] = useState<MealType[]>([]);
+  const [selectedPriceLevels, setSelectedPriceLevels] = useState<BudgetLevel[]>([]);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     async function loadSavedMeals() {
@@ -58,19 +62,8 @@ export default function SavedPage() {
         setError(error.message);
       } else if (data) {
         // Transform database rows to Meal type
-        const transformedMeals: Meal[] = (data as SavedMealRow[]).map((row) => ({
-          id: row.id,
-          name: row.name,
-          description: row.description,
-          mealType: row.meal_type as Meal["mealType"],
-          priceLevel: row.price_level as Meal["priceLevel"],
-          prepTime: row.prep_time,
-          servings: row.servings,
-          seasons: row.season as Meal["seasons"],
-          ingredients: row.ingredients,
-          instructions: row.instructions,
-        }));
-        setMeals(transformedMeals);
+        const transformedMeals: Meal[] = data.map(transformSavedMealToMeal);
+        setAllMeals(transformedMeals);
       }
 
       setLoading(false);
@@ -78,6 +71,61 @@ export default function SavedPage() {
 
     loadSavedMeals();
   }, []);
+
+  // Filter meals based on search and filters
+  const filteredMeals = useMemo(() => {
+    return allMeals.filter((meal) => {
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesName = meal.name.toLowerCase().includes(query);
+        const matchesDescription = meal.description.toLowerCase().includes(query);
+        if (!matchesName && !matchesDescription) {
+          return false;
+        }
+      }
+
+      // Season filter
+      if (selectedSeasons.length > 0) {
+        const hasMatchingSeason = meal.seasons.some((season) =>
+          selectedSeasons.includes(season)
+        );
+        if (!hasMatchingSeason) {
+          return false;
+        }
+      }
+
+      // Meal type filter
+      if (selectedMealTypes.length > 0) {
+        if (!selectedMealTypes.includes(meal.mealType)) {
+          return false;
+        }
+      }
+
+      // Price level filter
+      if (selectedPriceLevels.length > 0) {
+        if (!selectedPriceLevels.includes(meal.priceLevel)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [allMeals, searchQuery, selectedSeasons, selectedMealTypes, selectedPriceLevels]);
+
+  // Paginate filtered meals
+  const paginatedMeals = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredMeals.slice(startIndex, endIndex);
+  }, [filteredMeals, currentPage]);
+
+  const totalPages = Math.ceil(filteredMeals.length / ITEMS_PER_PAGE);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedSeasons, selectedMealTypes, selectedPriceLevels]);
 
   async function deleteMeal(mealId: string) {
     if (!confirm("Are you sure you want to delete this saved meal?")) {
@@ -93,21 +141,70 @@ export default function SavedPage() {
     if (error) {
       alert("Failed to delete meal");
     } else {
-      setMeals((prev) => prev.filter((m) => m.id !== mealId));
+      setAllMeals((prev) => prev.filter((m) => m.id !== mealId));
     }
   }
 
-  function addToShoppingList(meal: Meal) {
-    // Store the meal in sessionStorage for the shopping list page
-    sessionStorage.setItem("selectedMeals", JSON.stringify([meal]));
-    router.push("/shopping-list");
+  function handleShareSuccess() {
+    setToastMessage("Recipe link copied to clipboard!");
+    setShowToast(true);
   }
+
+  async function addToShoppingList(meal: Meal) {
+    const result = await addMealToShoppingList(meal);
+    if (result.error) {
+      if (result.error === "Meal already in shopping list") {
+        alert("This meal is already in your shopping list");
+      } else {
+        alert("Failed to add meal to shopping list");
+      }
+    } else {
+      router.push("/shopping-list");
+    }
+  }
+
+  function toggleSeason(season: Season) {
+    setSelectedSeasons((prev) =>
+      prev.includes(season)
+        ? prev.filter((s) => s !== season)
+        : [...prev, season]
+    );
+  }
+
+  function toggleMealType(mealType: MealType) {
+    setSelectedMealTypes((prev) =>
+      prev.includes(mealType)
+        ? prev.filter((t) => t !== mealType)
+        : [...prev, mealType]
+    );
+  }
+
+  function togglePriceLevel(priceLevel: BudgetLevel) {
+    setSelectedPriceLevels((prev) =>
+      prev.includes(priceLevel)
+        ? prev.filter((p) => p !== priceLevel)
+        : [...prev, priceLevel]
+    );
+  }
+
+  function clearAllFilters() {
+    setSearchQuery("");
+    setSelectedSeasons([]);
+    setSelectedMealTypes([]);
+    setSelectedPriceLevels([]);
+  }
+
+  const hasActiveFilters =
+    searchQuery ||
+    selectedSeasons.length > 0 ||
+    selectedMealTypes.length > 0 ||
+    selectedPriceLevels.length > 0;
 
   return (
     <div className="min-h-screen bg-peat-50">
       <Header userEmail={userEmail} />
 
-      <main className="max-w-3xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="font-display text-3xl text-peat-900 mb-2">
             Saved Meals
@@ -131,7 +228,7 @@ export default function SavedPage() {
           <div className="card bg-red-50 border-red-200 text-red-700">
             {error}
           </div>
-        ) : meals.length === 0 ? (
+        ) : allMeals.length === 0 ? (
           <div className="card text-center py-16">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
               <svg
@@ -152,32 +249,122 @@ export default function SavedPage() {
               No saved meals yet
             </h2>
             <p className="text-peat-600 max-w-md mx-auto">
-              When you generate meals, click the bookmark icon to save your
-              favourites here for easy access later.
+              When you generate meals, they&apos;re automatically saved here for easy access later.
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {meals.map((meal, index) => (
-              <div
-                key={meal.id}
-                className={`opacity-0 animate-slide-up stagger-${Math.min(index + 1, 10)}`}
-                style={{ animationFillMode: "forwards" }}
-              >
-                <div className="relative group">
-                  <MealCard
-                    meal={meal}
-                    showCheckbox={false}
-                    showShareButton={true}
-                    onViewDetails={setSelectedMealForDetail}
+          <div className="grid lg:grid-cols-[280px,1fr] gap-8">
+            {/* Filters sidebar */}
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <div className="card">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-medium text-peat-900">Filter & Search</h2>
+                  {hasActiveFilters && (
+                    <button
+                      onClick={clearAllFilters}
+                      className="text-xs text-brine-600 hover:text-brine-700 underline"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
+
+                {/* Search */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Search
+                  </label>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search meals..."
+                    className="w-full px-3 py-2 rounded-lg border border-peat-200 focus:border-brine-500 focus:ring-2 focus:ring-brine-100 outline-none text-sm"
                   />
-                  <button
-                    onClick={() => deleteMeal(meal.id!)}
-                    className="absolute top-4 right-4 p-2 rounded-lg text-peat-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Delete meal"
-                  >
+                </div>
+
+                {/* Season filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Season
+                  </label>
+                  <div className="space-y-2">
+                    {(["spring", "summer", "autumn", "winter"] as Season[]).map((season) => (
+                      <label key={season} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedSeasons.includes(season)}
+                          onChange={() => toggleSeason(season)}
+                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                        />
+                        <span className="text-sm text-peat-700 capitalize">{season}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Meal type filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Meal Type
+                  </label>
+                  <div className="space-y-2">
+                    {(["breakfast", "lunch", "dinner"] as MealType[]).map((type) => (
+                      <label key={type} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedMealTypes.includes(type)}
+                          onChange={() => toggleMealType(type)}
+                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                        />
+                        <span className="text-sm text-peat-700 capitalize">{type}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price level filter */}
+                <div>
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Budget
+                  </label>
+                  <div className="space-y-2">
+                    {([1, 2, 3] as BudgetLevel[]).map((level) => (
+                      <label key={level} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedPriceLevels.includes(level)}
+                          onChange={() => togglePriceLevel(level)}
+                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                        />
+                        <span className="text-sm text-peat-700">
+                          {level === 1 ? "£ - Budget" : level === 2 ? "££ - Mid-range" : "£££ - Premium"}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Results */}
+            <div>
+              {/* Results count */}
+              <div className="mb-4 text-sm text-peat-600">
+                {filteredMeals.length === allMeals.length ? (
+                  <span>{allMeals.length} saved meal{allMeals.length !== 1 ? 's' : ''}</span>
+                ) : (
+                  <span>
+                    Showing {filteredMeals.length} of {allMeals.length} meal{allMeals.length !== 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+
+              {filteredMeals.length === 0 ? (
+                <div className="card text-center py-12">
+                  <div className="w-16 h-16 rounded-full bg-peat-100 flex items-center justify-center mx-auto mb-4">
                     <svg
-                      className="w-5 h-5"
+                      className="w-8 h-8 text-peat-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -185,14 +372,123 @@ export default function SavedPage() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        strokeWidth={1.5}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
                     </svg>
-                  </button>
+                  </div>
+                  <h3 className="text-lg font-medium text-peat-900 mb-1">
+                    No meals found
+                  </h3>
+                  <p className="text-peat-600">
+                    Try adjusting your filters or search query
+                  </p>
                 </div>
-              </div>
-            ))}
+              ) : (
+                <>
+                  {/* Meal list */}
+                  <div className="space-y-4 mb-6">
+                    {paginatedMeals.map((meal, index) => (
+                      <div
+                        key={meal.id}
+                        className={`opacity-0 animate-slide-up stagger-${Math.min(index + 1, 10)}`}
+                        style={{ animationFillMode: "forwards" }}
+                      >
+                        <div className="relative group">
+                          <MealCard
+                            meal={meal}
+                            showCheckbox={false}
+                            showShareButton={true}
+                            onViewDetails={setSelectedMealForDetail}
+                            onShareSuccess={handleShareSuccess}
+                          />
+                          <button
+                            onClick={() => deleteMeal(meal.id!)}
+                            className="absolute top-4 right-4 p-2 rounded-lg text-peat-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+                            title="Delete meal"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 rounded-lg border border-peat-200 text-peat-700 hover:bg-peat-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Previous
+                      </button>
+
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                          // Show first page, last page, current page, and pages around current
+                          const showPage =
+                            page === 1 ||
+                            page === totalPages ||
+                            Math.abs(page - currentPage) <= 1;
+
+                          const showEllipsis =
+                            (page === 2 && currentPage > 3) ||
+                            (page === totalPages - 1 && currentPage < totalPages - 2);
+
+                          if (showEllipsis) {
+                            return (
+                              <span key={page} className="px-2 text-peat-400">
+                                ...
+                              </span>
+                            );
+                          }
+
+                          if (!showPage) {
+                            return null;
+                          }
+
+                          return (
+                            <button
+                              key={page}
+                              onClick={() => setCurrentPage(page)}
+                              className={`w-10 h-10 rounded-lg transition-colors ${
+                                currentPage === page
+                                  ? "bg-brine-600 text-white"
+                                  : "border border-peat-200 text-peat-700 hover:bg-peat-50"
+                              }`}
+                            >
+                              {page}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 rounded-lg border border-peat-200 text-peat-700 hover:bg-peat-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         )}
       </main>
@@ -206,6 +502,12 @@ export default function SavedPage() {
           showShareButton={true}
         />
       )}
+
+      <Toast
+        message={toastMessage}
+        show={showToast}
+        onHide={() => setShowToast(false)}
+      />
     </div>
   );
 }

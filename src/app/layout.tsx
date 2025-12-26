@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://the-messages.vercel.app";
@@ -23,6 +25,15 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Allan Corbett", url: "https://superallan.com" }],
   creator: "Allan Corbett",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "The Messages",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     type: "website",
     locale: "en_GB",
@@ -63,7 +74,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#2c7462",
+  themeColor: "#2D3319",
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({
@@ -73,7 +86,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen font-body">{children}</body>
+      <body className="min-h-screen font-body flex flex-col">
+        <div className="flex-1">{children}</div>
+        <Footer />
+        <Analytics />
+      </body>
     </html>
   );
 }

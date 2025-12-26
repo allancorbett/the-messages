@@ -4,7 +4,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-The Messages is a seasonal meal planning app for Scotland that uses Claude AI to generate meal suggestions based on seasonal Scottish ingredients, budget levels, and dietary preferences. Users can save meals, generate shopping lists, and manage their preferences through Supabase authentication.
+The Messages is a location-aware seasonal meal planning app that uses Claude AI to generate meal suggestions based on seasonal local ingredients, budget levels, and dietary preferences. The app auto-detects the user's location via IP geolocation and provides regionally-appropriate seasonal ingredients. Users can save meals, generate shopping lists, and manage their preferences through Supabase authentication.
+
+## Content Guidelines
+
+**British English**: All user-facing text, UI copy, and AI-generated content must use British English spelling and conventions:
+- Use "personalised" not "personalized"
+- Use "flavour" not "flavor"
+- Use "colour" not "color"
+- Use "organised" not "organized"
+- Use "centre" not "center"
+- And so on for all British English variants
+
+This applies to:
+- All React component text and labels
+- AI prompts in `src/app/api/generate-meals/route.ts`
+- Loading messages, error messages, and user feedback
+- Documentation and help text
+
+**Tone**: Recipe content should be friendly and inviting, like trusted recipes passed between friends. Avoid using personal pronouns ("my", "me", "your") in AI-generated recipes to prevent implying user-submitted content.
 
 ## Development Commands
 
@@ -47,7 +65,7 @@ Always use the appropriate client based on execution context. The server client 
 6. Response validated against `generateMealsResponseSchema` before returning to client
 7. Each meal gets a unique ID: `meal-${Date.now()}-${index}`
 
-The prompt in `src/app/api/generate-meals/route.ts` includes seasonal ingredient mappings specific to Scotland and budget descriptions that guide Claude's output.
+The prompt in `src/app/api/generate-meals/route.ts` dynamically includes seasonal ingredient mappings based on the user's detected location (via `src/lib/geolocation.ts`) and budget descriptions that guide Claude's output. Regional configurations exist for UK, Ireland, US, Canada, France, Germany, Australia, New Zealand, with a fallback for other regions.
 
 ### Type System
 
@@ -100,24 +118,57 @@ All user input and AI output validated with Zod schemas in `src/lib/validation.t
 
 Required in `.env.local`:
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://eedyiwnbbljjglewdlpt.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-key>
-ANTHROPIC_API_KEY=<your-key>
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+ANTHROPIC_API_KEY=<your-anthropic-api-key>
 ```
 
-Optional for production:
+**REQUIRED for production:**
 ```
-NEXT_PUBLIC_SITE_URL=<production-url>  # Used for auth redirects
+NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 ```
+This is critical for authentication to work correctly. Without this, email confirmation links will redirect to localhost instead of your production domain, causing registration failures.
 
 ## Database Migrations
 
 Run migrations manually in Supabase SQL Editor:
-1. Go to https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/sql
+1. Go to https://supabase.com/dashboard/project/YOUR_PROJECT_ID/sql
 2. Copy contents of `supabase/migrations/001_initial_schema.sql`
 3. Execute the SQL
 
 Do not use Supabase CLI for migrations in this project.
+
+## Vercel Deployment
+
+### Setting Environment Variables in Vercel
+
+**Critical:** The app will fail authentication on production without proper environment variables.
+
+1. Go to your Vercel project dashboard: https://vercel.com/dashboard
+2. Navigate to **Settings** → **Environment Variables**
+3. Add the following variables for **Production**, **Preview**, and **Development** environments:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+ANTHROPIC_API_KEY=<your-anthropic-api-key>
+NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
+```
+
+4. After adding environment variables, **redeploy** the application for changes to take effect
+5. Verify authentication works by testing user registration
+
+### Supabase Authentication Configuration
+
+Ensure your Supabase project has the correct redirect URLs configured:
+
+1. Go to https://supabase.com/dashboard/project/YOUR_PROJECT_ID/auth/url-configuration
+2. Add the following to **Redirect URLs**:
+   - `https://your-domain.vercel.app/auth/callback`
+   - `http://localhost:3000/auth/callback` (for local development)
+3. Save changes
+
+Without these redirect URLs configured, email confirmation links will fail.
 
 ## Key Dependencies
 
