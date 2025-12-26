@@ -138,11 +138,11 @@ export function CookingLoadingOverlay({ isLoading }: CookingLoadingOverlayProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-peat-900/95 to-brine-900/95 backdrop-blur-sm">
-      <div className="text-center">
+      <div className="text-center px-4">
         {/* Spinner */}
-        <div className="relative mb-8">
+        <div className="relative w-24 h-24 mx-auto mb-8">
           {/* Outer ring */}
-          <div className="w-24 h-24 rounded-full border-4 border-oat-200/30"></div>
+          <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-oat-200/30"></div>
 
           {/* Spinning ring */}
           <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-t-oat-400 border-r-oat-400 animate-spin"></div>
