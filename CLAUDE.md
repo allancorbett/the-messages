@@ -152,6 +152,45 @@ Ensure your Supabase project has the correct redirect URLs configured:
 
 Without these redirect URLs configured, email confirmation links will fail.
 
+### Social Login Configuration (Google & Apple)
+
+The app supports Google and Apple OAuth sign-in. To enable these features:
+
+#### Google OAuth Setup
+
+1. Go to https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/auth/providers
+2. Find **Google** in the providers list and click **Enable**
+3. Create OAuth credentials in Google Cloud Console:
+   - Go to https://console.cloud.google.com/apis/credentials
+   - Create a new project or select an existing one
+   - Create **OAuth 2.0 Client ID** credentials
+   - Set authorized redirect URIs:
+     - `https://eedyiwnbbljjglewdlpt.supabase.co/auth/v1/callback`
+4. Copy the **Client ID** and **Client Secret** from Google Console
+5. Paste them into Supabase Google provider settings
+6. Save the configuration
+
+#### Apple OAuth Setup
+
+1. Go to https://supabase.com/dashboard/project/eedyiwnbbljjglewdlpt/auth/providers
+2. Find **Apple** in the providers list and click **Enable**
+3. Create an App ID in Apple Developer Console:
+   - Go to https://developer.apple.com/account/resources/identifiers/list
+   - Create a new App ID with "Sign in with Apple" capability
+   - Note your **Team ID** and **Services ID**
+4. Create a Services ID for web authentication
+5. Configure the Services ID with redirect URLs:
+   - `https://eedyiwnbbljjglewdlpt.supabase.co/auth/v1/callback`
+6. Create and download a private key (.p8 file) for Apple authentication
+7. In Supabase Apple provider settings, enter:
+   - **Services ID** (Client ID)
+   - **Team ID**
+   - **Key ID**
+   - **Private Key** (contents of .p8 file)
+8. Save the configuration
+
+**Note:** Social login is optional. Email/password authentication will continue to work without configuring OAuth providers.
+
 ## Key Dependencies
 
 - **Next.js 15**: App Router with React Server Components
