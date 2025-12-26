@@ -18,6 +18,7 @@ interface MealCardProps {
   showCheckbox?: boolean;
   showSaveButton?: boolean;
   showShareButton?: boolean;
+  onShareSuccess?: () => void;
   className?: string;
 }
 
@@ -30,6 +31,7 @@ export function MealCard({
   showCheckbox = true,
   showSaveButton = false,
   showShareButton = false,
+  onShareSuccess,
   className,
 }: MealCardProps) {
   const handleShare = async (e: React.MouseEvent) => {
@@ -39,7 +41,7 @@ export function MealCard({
     const url = `${window.location.origin}/recipe/${meal.id}`;
     try {
       await navigator.clipboard.writeText(url);
-      // Could add a toast notification here if desired
+      onShareSuccess?.();
     } catch (err) {
       console.error("Failed to copy URL:", err);
     }
@@ -159,15 +161,16 @@ export function MealCard({
           )}
         </div>
 
-        <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-col items-end gap-2 flex-shrink-0 ml-3">
           {showCheckbox && (
             <div
               className={cn(
-                "w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all",
+                "w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0",
                 selected
                   ? "bg-brine-500 border-brine-500"
                   : "border-peat-300 group-hover:border-peat-400"
               )}
+              aria-label={selected ? "Selected" : "Not selected"}
             >
               {selected && (
                 <svg
@@ -175,6 +178,7 @@ export function MealCard({
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -193,14 +197,15 @@ export function MealCard({
                 e.stopPropagation();
                 onSave(meal);
               }}
-              className="p-2 rounded-lg text-peat-400 hover:text-brine-600 hover:bg-brine-50 transition-colors"
-              title="Save meal"
+              className="p-1.5 rounded-lg text-peat-400 hover:text-brine-600 hover:bg-brine-50 transition-colors flex-shrink-0"
+              aria-label="Save meal"
             >
               <svg
                 className="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -215,14 +220,15 @@ export function MealCard({
           {showShareButton && meal.id && (
             <button
               onClick={handleShare}
-              className="p-2 rounded-lg text-peat-400 hover:text-brine-600 hover:bg-brine-50 transition-colors"
-              title="Share recipe"
+              className="p-1.5 rounded-lg text-peat-400 hover:text-brine-600 hover:bg-brine-50 transition-colors flex-shrink-0"
+              aria-label="Share recipe link"
             >
               <svg
                 className="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"

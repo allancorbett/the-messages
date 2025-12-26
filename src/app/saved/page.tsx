@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { MealCard } from "@/components/meals/MealCard";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
+import { Toast } from "@/components/Toast";
 import { Meal, MealType, BudgetLevel, Season } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { addMealToShoppingList } from "@/app/actions/meals";
@@ -20,6 +21,10 @@ export default function SavedPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedMealForDetail, setSelectedMealForDetail] =
     useState<Meal | null>(null);
+
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   // Filter and search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -138,6 +143,11 @@ export default function SavedPage() {
     } else {
       setAllMeals((prev) => prev.filter((m) => m.id !== mealId));
     }
+  }
+
+  function handleShareSuccess() {
+    setToastMessage("Recipe link copied to clipboard!");
+    setShowToast(true);
   }
 
   async function addToShoppingList(meal: Meal) {
@@ -390,6 +400,7 @@ export default function SavedPage() {
                             showCheckbox={false}
                             showShareButton={true}
                             onViewDetails={setSelectedMealForDetail}
+                            onShareSuccess={handleShareSuccess}
                           />
                           <button
                             onClick={() => deleteMeal(meal.id!)}
@@ -491,6 +502,12 @@ export default function SavedPage() {
           showShareButton={true}
         />
       )}
+
+      <Toast
+        message={toastMessage}
+        show={showToast}
+        onHide={() => setShowToast(false)}
+      />
     </div>
   );
 }
