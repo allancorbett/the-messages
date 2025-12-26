@@ -6,6 +6,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The Messages is a location-aware seasonal meal planning app that uses Claude AI to generate meal suggestions based on seasonal local ingredients, budget levels, and dietary preferences. The app auto-detects the user's location via IP geolocation and provides regionally-appropriate seasonal ingredients. Users can save meals, generate shopping lists, and manage their preferences through Supabase authentication.
 
+## Content Guidelines
+
+**British English**: All user-facing text, UI copy, and AI-generated content must use British English spelling and conventions:
+- Use "personalised" not "personalized"
+- Use "flavour" not "flavor"
+- Use "colour" not "color"
+- Use "organised" not "organized"
+- Use "centre" not "center"
+- And so on for all British English variants
+
+This applies to:
+- All React component text and labels
+- AI prompts in `src/app/api/generate-meals/route.ts`
+- Loading messages, error messages, and user feedback
+- Documentation and help text
+
+**Tone**: Recipe content should be friendly and inviting, like trusted recipes passed between friends. Avoid using personal pronouns ("my", "me", "your") in AI-generated recipes to prevent implying user-submitted content.
+
 ## Development Commands
 
 ```bash
