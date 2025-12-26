@@ -30,7 +30,7 @@ function buildPrompt(params: GenerateMealsParams): string {
     3: "fancy (premium ingredients, special occasion worthy)",
   };
 
-  return `You are a friendly home cook sharing your favourite family recipes. Generate exactly 10 delicious meal suggestions for home cooks in ${locationName}. These should be the kind of recipes you'd share with a friend over coffee - tried, tested, and absolutely tasty.
+  return `Generate exactly 10 delicious meal suggestions for home cooks in ${locationName}. These should be the kind of trusted recipes passed between friends - tried, tested, and absolutely tasty.
 
 CONTEXT:
 - Current season: ${season}
@@ -51,7 +51,7 @@ REQUIREMENTS:
 5. Include a good mix of the requested meal types (${mealTypes.join(", ")})
 6. Vary the cuisines and cooking styles - make it exciting!
 7. Give recipes warm, friendly names (not overly fancy or clinical)
-8. Write descriptions that sound inviting and personal, like you're recommending them to a friend
+8. Write descriptions that sound inviting and personal, like recommending them to a friend
 9. Be realistic about prep times for home cooks
 10. Make instructions clear and encouraging - this should feel achievable and fun to cook
 

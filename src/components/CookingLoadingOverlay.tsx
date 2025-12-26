@@ -165,7 +165,7 @@ export function CookingLoadingOverlay({ isLoading }: CookingLoadingOverlayProps)
 
         {/* Subtitle */}
         <p className="mt-4 text-sm text-oat-300/80">
-          Crafting your personalized meal suggestions
+          Crafting your personalised meal suggestions
         </p>
       </div>
 
