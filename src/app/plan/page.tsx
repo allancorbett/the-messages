@@ -72,7 +72,11 @@ export default function PlanPage() {
           mealTypes,
           budget,
           householdSize,
-          countryCode: location?.country,
+          countryCode: location?.countryCode,
+          city: location?.city,
+          region: location?.region,
+          latitude: location?.latitude,
+          longitude: location?.longitude,
         }),
       });
 

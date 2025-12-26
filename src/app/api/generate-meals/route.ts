@@ -18,11 +18,29 @@ function buildPrompt(params: GenerateMealsParams): string {
     dietaryRequirements = [],
     excludeIngredients = [],
     countryCode,
+    city,
+    region,
+    latitude,
+    longitude,
   } = params;
 
   // Get regional configuration based on country
   const regionalConfig = getRegionalConfig(countryCode);
-  const locationName = regionalConfig.displayName;
+
+  // Build precise location name
+  let locationName = regionalConfig.displayName;
+  if (city && region) {
+    locationName = `${city}, ${region}`;
+  } else if (city) {
+    locationName = city;
+  } else if (region) {
+    locationName = region;
+  }
+
+  // Add coordinate information for hyper-local context
+  const coordinateContext = latitude && longitude
+    ? `\n- User location coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} (use this for hyper-local ingredient availability)`
+    : "";
 
   const budgetDescriptions = {
     1: "economic (budget-friendly ingredients, keeping costs low)",
@@ -38,7 +56,7 @@ CONTEXT:
 - Budget level: ${budgetDescriptions[budget]}
 - Servings per meal: ${householdSize}
 - Dietary requirements: ${dietaryRequirements.length > 0 ? dietaryRequirements.join(", ") : "none"}
-- Ingredients to avoid: ${excludeIngredients.length > 0 ? excludeIngredients.join(", ") : "none"}
+- Ingredients to avoid: ${excludeIngredients.length > 0 ? excludeIngredients.join(", ") : "none"}${coordinateContext}
 
 SEASONAL INGREDIENTS TO PRIORITISE FOR ${season.toUpperCase()}:
 ${regionalConfig.seasonalIngredients[season]}
