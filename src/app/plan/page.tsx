@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { MealFilters } from "@/components/meals/MealFilters";
 import { MealList } from "@/components/meals/MealList";
+import { CookingLoadingOverlay } from "@/components/CookingLoadingOverlay";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentSeason } from "@/lib/utils";
 import { BudgetLevel, Meal, MealType, Season } from "@/types";
@@ -332,6 +333,8 @@ export default function PlanPage() {
           onClose={() => setSelectedMealForDetail(null)}
         />
       )}
+
+      <CookingLoadingOverlay isLoading={loading} />
     </div>
   );
 }
