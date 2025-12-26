@@ -13,12 +13,23 @@ export const metadata: Metadata = {
     "grocery list",
     "recipes",
   ],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "The Messages",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#2c7462",
+  themeColor: "#2D3319",
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({

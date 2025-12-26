@@ -2,9 +2,14 @@
 
 export interface LocationData {
   country: string;
+  countryCode: string;
   region: string;
   city?: string;
   continent?: string;
+  latitude?: number;
+  longitude?: number;
+  suburb?: string;
+  postcode?: string;
 }
 
 export interface RegionalConfig {
@@ -119,10 +124,91 @@ export const DEFAULT_CONFIG: RegionalConfig = {
 };
 
 /**
+ * Gets user's precise location using browser Geolocation API
+ * Falls back to IP-based geolocation if permission denied or unavailable
+ */
+export async function getUserLocation(): Promise<LocationData | null> {
+  // Try browser geolocation first (requires HTTPS and user permission)
+  if (typeof window !== "undefined" && "geolocation" in navigator) {
+    try {
+      const position = await new Promise<GeolocationPosition>(
+        (resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000, // Cache for 5 minutes
+          });
+        }
+      );
+
+      // Reverse geocode to get location details
+      const locationData = await reverseGeocode(
+        position.coords.latitude,
+        position.coords.longitude
+      );
+
+      if (locationData) {
+        return locationData;
+      }
+    } catch (error) {
+      console.warn("Browser geolocation failed, falling back to IP:", error);
+    }
+  }
+
+  // Fallback to IP-based geolocation
+  return getUserLocationFromIP();
+}
+
+/**
+ * Reverse geocodes coordinates to location data using Nominatim (OpenStreetMap)
+ */
+async function reverseGeocode(
+  lat: number,
+  lon: number
+): Promise<LocationData | null> {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`,
+      {
+        headers: {
+          "User-Agent": "TheMessages-MealPlanner/1.0",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Reverse geocoding failed:", response.status);
+      return null;
+    }
+
+    const data = await response.json();
+    const address = data.address || {};
+
+    return {
+      latitude: lat,
+      longitude: lon,
+      city:
+        address.city ||
+        address.town ||
+        address.village ||
+        address.municipality,
+      suburb: address.suburb || address.neighbourhood,
+      region: address.state || address.county || address.region,
+      country: address.country,
+      countryCode: address.country_code?.toUpperCase() || "US",
+      postcode: address.postcode,
+    };
+  } catch (error) {
+    console.error("Error reverse geocoding:", error);
+    return null;
+  }
+}
+
+/**
  * Fetches user location data from IP geolocation API
  * Uses ipapi.co free tier (no API key required)
  */
-export async function getUserLocation(): Promise<LocationData | null> {
+async function getUserLocationFromIP(): Promise<LocationData | null> {
   try {
     const response = await fetch("https://ipapi.co/json/", {
       cache: "no-store",
@@ -136,10 +222,13 @@ export async function getUserLocation(): Promise<LocationData | null> {
     const data = await response.json();
 
     return {
-      country: data.country_code || "US",
+      country: data.country_name || "Unknown",
+      countryCode: data.country_code || "US",
       region: data.region || "",
       city: data.city,
       continent: data.continent_code,
+      latitude: data.latitude,
+      longitude: data.longitude,
     };
   } catch (error) {
     console.error("Error fetching location:", error);
@@ -163,6 +252,19 @@ export function getRegionalConfig(countryCode?: string): RegionalConfig {
 export function formatLocation(location: LocationData | null): string {
   if (!location) return "your area";
 
-  const config = getRegionalConfig(location.country);
+  // Use precise location if available
+  if (location.city && location.region) {
+    return `${location.city}, ${location.region}`;
+  }
+
+  if (location.city) {
+    return location.city;
+  }
+
+  if (location.region) {
+    return location.region;
+  }
+
+  const config = getRegionalConfig(location.countryCode);
   return config.displayName;
 }

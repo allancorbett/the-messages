@@ -40,6 +40,10 @@ export interface GenerateMealsParams {
   dietaryRequirements?: string[];
   excludeIngredients?: string[];
   countryCode?: string;
+  city?: string;
+  region?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface ShoppingListItem extends Ingredient {
