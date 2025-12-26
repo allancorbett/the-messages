@@ -6,6 +6,7 @@ import {
 } from "@/lib/validation";
 import { GenerateMealsParams } from "@/types";
 import { getRegionalConfig } from "@/lib/geolocation";
+import { rateLimit } from "@/lib/rate-limit";
 
 const anthropic = new Anthropic();
 
@@ -136,6 +137,30 @@ export async function POST(request: Request) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Rate limiting: 10 requests per hour per user
+    const rateLimitResult = rateLimit(user.id, 10, 60 * 60 * 1000);
+    if (!rateLimitResult.success) {
+      const resetDate = new Date(rateLimitResult.reset);
+      return Response.json(
+        {
+          error: "Rate limit exceeded",
+          message: `You've reached the maximum of ${rateLimitResult.limit} meal generations per hour. Please try again after ${resetDate.toLocaleTimeString()}.`,
+          reset: rateLimitResult.reset,
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": rateLimitResult.reset.toString(),
+            "Retry-After": Math.ceil(
+              (rateLimitResult.reset - Date.now()) / 1000
+            ).toString(),
+          },
+        }
+      );
+    }
+
     // Validate request body
     const body = await request.json();
     const parseResult = generateMealsParamsSchema.safeParse(body);
@@ -197,7 +222,16 @@ export async function POST(request: Request) {
       id: `meal-${Date.now()}-${index}`,
     }));
 
-    return Response.json({ meals: mealsWithIds });
+    return Response.json(
+      { meals: mealsWithIds },
+      {
+        headers: {
+          "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+          "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+          "X-RateLimit-Reset": rateLimitResult.reset.toString(),
+        },
+      }
+    );
   } catch (error) {
     console.error("Error generating meals:", error);
     return Response.json(

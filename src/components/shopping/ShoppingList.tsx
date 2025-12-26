@@ -97,12 +97,17 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={copyToClipboard} className="btn-secondary text-sm">
+          <button
+            onClick={copyToClipboard}
+            className="btn-secondary text-sm"
+            aria-label="Copy shopping list to clipboard"
+          >
             <svg
               className="w-4 h-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -114,7 +119,11 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
             Copy
           </button>
           {onClear && (
-            <button onClick={onClear} className="btn-ghost text-sm text-red-600">
+            <button
+              onClick={onClear}
+              className="btn-ghost text-sm text-red-600"
+              aria-label="Clear entire shopping list"
+            >
               Clear
             </button>
           )}
@@ -135,7 +144,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
               <button
                 onClick={() => onViewMeal?.(meal.id)}
                 className="hover:underline cursor-pointer"
-                title="View recipe"
+                aria-label={`View recipe for ${meal.name}`}
               >
                 {meal.name}
               </button>
@@ -148,7 +157,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
                     }
                   }}
                   className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
-                  title="Remove from shopping list"
+                  aria-label={`Remove ${meal.name} from shopping list`}
                 >
                   <svg
                     className="w-3 h-3"
@@ -198,6 +207,16 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
                         ? "bg-peat-100 text-peat-500"
                         : "bg-white hover:bg-peat-50"
                     )}
+                    role="checkbox"
+                    aria-checked={item.checked}
+                    aria-label={`${item.name}, ${item.quantity}`}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleItem(itemIndex, item.checked);
+                      }
+                    }}
                   >
                     <div
                       className={cn(

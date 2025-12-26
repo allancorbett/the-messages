@@ -166,6 +166,8 @@ export default function PlanPage() {
                 onClick={generateMeals}
                 disabled={loading || mealTypes.length === 0}
                 className="btn-primary w-full mt-6"
+                aria-label="Generate 10 meal suggestions based on your preferences"
+                aria-busy={loading}
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -247,13 +249,15 @@ export default function PlanPage() {
                       <button
                         onClick={selectAll}
                         className="text-sm text-brine-600 hover:text-brine-700"
+                        aria-label="Select all meals for shopping list"
                       >
                         Select all
                       </button>
-                      <span className="text-peat-300">|</span>
+                      <span className="text-peat-300" aria-hidden="true">|</span>
                       <button
                         onClick={deselectAll}
                         className="text-sm text-peat-500 hover:text-peat-700"
+                        aria-label="Clear all meal selections"
                       >
                         Clear
                       </button>
@@ -261,7 +265,11 @@ export default function PlanPage() {
                   </div>
 
                 {selectedMeals.length > 0 && (
-                  <button onClick={goToShoppingList} className="btn-primary">
+                  <button
+                    onClick={goToShoppingList}
+                    className="btn-primary"
+                    aria-label={`Create shopping list with ${selectedMeals.length} selected meals`}
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
