@@ -12,6 +12,7 @@ import {
   capitalise,
 } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { Card, Badge, LoadingContainer, LoadingSkeleton } from "@/components/ui";
 import styles from "./page.module.css";
 
 export default function RecipePage() {
@@ -71,11 +72,13 @@ export default function RecipePage() {
       <div className={styles.page}>
         <Header userEmail={userEmail} />
         <main className={styles.main}>
-          <div className={`${styles.card} ${styles["loading-container"]}`}>
-            <div className={`${styles.skeleton} ${styles["skeleton-title"]}`} />
-            <div className={`${styles.skeleton} ${styles["skeleton-line-full"]}`} />
-            <div className={`${styles.skeleton} ${styles["skeleton-line-partial"]}`} />
-          </div>
+          <Card>
+            <LoadingContainer>
+              <LoadingSkeleton variant="title" />
+              <LoadingSkeleton variant="text-long" />
+              <LoadingSkeleton variant="text-medium" />
+            </LoadingContainer>
+          </Card>
         </main>
       </div>
     );
@@ -123,12 +126,12 @@ export default function RecipePage() {
     "frozen",
   ];
 
-  const badgeClass =
+  const badgeVariant =
     meal.priceLevel === 1
-      ? styles["badge-economic"]
+      ? "economic"
       : meal.priceLevel === 2
-        ? styles["badge-mid"]
-        : styles["badge-fancy"];
+        ? "mid"
+        : "fancy";
 
   return (
     <div className={styles.page}>
@@ -136,16 +139,16 @@ export default function RecipePage() {
 
       <main className={styles.main}>
         {/* Recipe Header */}
-        <div className={styles.card}>
+        <Card>
           <div className={styles["card-header"]}>
             <div className={styles["card-header-content"]}>
               <div className={styles["meal-meta-row"]}>
                 <span className={styles["meal-emoji"]} aria-hidden>
                   {getMealTypeEmoji(meal.mealType)}
                 </span>
-                <span className={`${styles.badge} ${badgeClass}`}>
+                <Badge variant={badgeVariant}>
                   {getBudgetSymbol(meal.priceLevel)}
-                </span>
+                </Badge>
                 <span className={styles["meal-type-text"]}>
                   {capitalise(meal.mealType)}
                 </span>
@@ -269,10 +272,10 @@ export default function RecipePage() {
               )}
             </button>
           </div>
-        </div>
+        </Card>
 
         {/* Ingredients */}
-        <div className={styles.card}>
+        <Card>
           <h2 className={styles["section-title"]}>
             Ingredients
           </h2>
@@ -306,10 +309,10 @@ export default function RecipePage() {
               );
             })}
           </div>
-        </div>
+        </Card>
 
         {/* Instructions */}
-        <div className={styles.card}>
+        <Card>
           <h2 className={styles["section-title"]}>
             Instructions
           </h2>
@@ -323,7 +326,7 @@ export default function RecipePage() {
               </li>
             ))}
           </ol>
-        </div>
+        </Card>
       </main>
     </div>
   );

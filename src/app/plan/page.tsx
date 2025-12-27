@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { saveGeneratedMeals } from "@/app/actions/meals";
 import { getUserLocation, formatLocation, type LocationData } from "@/lib/geolocation";
+import { Card, EmptyState } from "@/components/ui";
 import styles from "./page.module.css";
 
 export default function PlanPage() {
@@ -150,7 +151,7 @@ export default function PlanPage() {
         <div className={styles["grid-layout"]}>
           {/* Filters sidebar */}
           <div className={styles.sidebar}>
-            <div className={styles.card}>
+            <Card>
               <h2 className={styles["card-title"]}>Preferences</h2>
               <MealFilters
                 season={season}
@@ -212,7 +213,7 @@ export default function PlanPage() {
                   </>
                 )}
               </button>
-            </div>
+            </Card>
           </div>
 
           {/* Meals list */}
@@ -300,46 +301,30 @@ export default function PlanPage() {
             />
 
             {!loading && meals.length === 0 && (
-              <div className={`${styles.card} ${styles["empty-state"]}`}>
-                <div className={styles["empty-icon-container"]}>
-                  <svg
-                    className={styles["empty-icon"]}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
-                </div>
-                <h2 className={styles["empty-title"]}>
-                  Ready to plan?
-                </h2>
-                <p className={styles["empty-text"]}>
-                  Set your preferences on the left and hit Generate to get 10
-                  seasonal meal suggestions tailored to local supermarkets.
-                </p>
-                <button onClick={generateMeals} className={styles["button-primary"]}>
-                  <svg
-                    className={styles["button-icon"]}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                  Generate Meals
-                </button>
-              </div>
+              <Card>
+                <EmptyState
+                  icon={
+                    <svg
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      />
+                    </svg>
+                  }
+                  title="Ready to plan?"
+                  description="Set your preferences on the left and hit Generate to get 10 seasonal meal suggestions tailored to local supermarkets."
+                  action={{
+                    label: "Generate Meals",
+                    onClick: generateMeals,
+                  }}
+                />
+              </Card>
             )}
           </div>
         </div>

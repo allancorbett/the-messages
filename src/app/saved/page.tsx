@@ -10,6 +10,7 @@ import { Meal, MealType, BudgetLevel, Season } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { addMealToShoppingList } from "@/app/actions/meals";
 import { transformSavedMealToMeal } from "@/lib/meal-utils";
+import { Card, EmptyState, LoadingContainer, LoadingSkeleton } from "@/components/ui";
 import styles from "./page.module.css";
 
 const ITEMS_PER_PAGE = 10;
@@ -218,11 +219,13 @@ export default function SavedPage() {
         {loading ? (
           <div className={styles["loading-container"]}>
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className={styles.card}>
-                <div className={styles["skeleton-title"]} />
-                <div className={styles["skeleton-line-full"]} />
-                <div className={styles["skeleton-line-partial"]} />
-              </div>
+              <Card key={i}>
+                <LoadingContainer>
+                  <LoadingSkeleton variant="title" />
+                  <LoadingSkeleton variant="text-long" />
+                  <LoadingSkeleton variant="text-medium" />
+                </LoadingContainer>
+              </Card>
             ))}
           </div>
         ) : error ? (
@@ -230,34 +233,31 @@ export default function SavedPage() {
             {error}
           </div>
         ) : allMeals.length === 0 ? (
-          <div className={`${styles["filter-card"]} ${styles["empty-state"]}`}>
-            <div className={styles["empty-icon-container"]}>
-              <svg
-                className={styles["empty-icon"]}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                />
-              </svg>
-            </div>
-            <h2 className={styles["empty-title"]}>
-              No saved meals yet
-            </h2>
-            <p className={styles["empty-text"]}>
-              When you generate meals, they&apos;re automatically saved here for easy access later.
-            </p>
-          </div>
+          <Card>
+            <EmptyState
+              icon={
+                <svg
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                  />
+                </svg>
+              }
+              title="No saved meals yet"
+              description="When you generate meals, they're automatically saved here for easy access later."
+            />
+          </Card>
         ) : (
           <div className={styles["grid-layout"]}>
             {/* Filters sidebar */}
             <div className={styles.sidebar}>
-              <div className={styles["filter-card"]}>
+              <Card>
                 <div className={styles["filter-header"]}>
                   <h2 className={styles["filter-title"]}>Filter & Search</h2>
                   {hasActiveFilters && (
@@ -345,7 +345,7 @@ export default function SavedPage() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </Card>
             </div>
 
             {/* Results */}
@@ -362,29 +362,26 @@ export default function SavedPage() {
               </div>
 
               {filteredMeals.length === 0 ? (
-                <div className={`${styles["filter-card"]} ${styles["no-results"]}`}>
-                  <div className={styles["no-results-icon-container"]}>
-                    <svg
-                      className={styles["no-results-icon"]}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className={styles["no-results-title"]}>
-                    No meals found
-                  </h3>
-                  <p className={styles["no-results-text"]}>
-                    Try adjusting your filters or search query
-                  </p>
-                </div>
+                <Card>
+                  <EmptyState
+                    icon={
+                      <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    }
+                    title="No meals found"
+                    description="Try adjusting your filters or search query"
+                  />
+                </Card>
               ) : (
                 <>
                   {/* Meal list */}
