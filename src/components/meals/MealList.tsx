@@ -2,6 +2,7 @@
 
 import { Meal } from "@/types";
 import { MealCard } from "./MealCard";
+import styles from "./MealList.module.css";
 
 interface MealListProps {
   meals: Meal[];
@@ -22,24 +23,24 @@ export function MealList({
 }: MealListProps) {
   if (loading) {
     return (
-      <div className="space-y-4">
+      <div className={styles.list}>
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="card animate-pulse">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded bg-peat-200" />
-                  <div className="w-12 h-5 rounded bg-peat-200" />
+          <div key={i} className={styles["skeleton-card"]}>
+            <div className={styles["skeleton-content"]}>
+              <div className={styles["skeleton-main"]}>
+                <div className={styles["skeleton-header"]}>
+                  <div className={styles["skeleton-icon"]} />
+                  <div className={styles["skeleton-badge"]} />
                 </div>
-                <div className="h-5 w-3/4 rounded bg-peat-200 mb-2" />
-                <div className="h-4 w-full rounded bg-peat-200 mb-1" />
-                <div className="h-4 w-2/3 rounded bg-peat-200 mb-3" />
-                <div className="flex gap-4">
-                  <div className="h-4 w-16 rounded bg-peat-200" />
-                  <div className="h-4 w-20 rounded bg-peat-200" />
+                <div className={styles["skeleton-title"]} />
+                <div className={styles["skeleton-text"]} />
+                <div className={`${styles["skeleton-text"]} ${styles.short}`} />
+                <div className={styles["skeleton-meta"]}>
+                  <div className={styles["skeleton-meta-item"]} />
+                  <div className={`${styles["skeleton-meta-item"]} ${styles.wide}`} />
                 </div>
               </div>
-              <div className="w-6 h-6 rounded bg-peat-200" />
+              <div className={styles["skeleton-checkbox"]} />
             </div>
           </div>
         ))}
@@ -49,10 +50,10 @@ export function MealList({
 
   if (meals.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 rounded-full bg-peat-100 flex items-center justify-center mx-auto mb-4">
+      <div className={styles["empty-state"]}>
+        <div className={styles["empty-icon-container"]}>
           <svg
-            className="w-8 h-8 text-peat-400"
+            className={styles["empty-icon"]}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -65,8 +66,8 @@ export function MealList({
             />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-peat-900 mb-1">No meals yet</h3>
-        <p className="text-peat-600">
+        <h3 className={styles["empty-title"]}>No meals yet</h3>
+        <p className={styles["empty-text"]}>
           Set your preferences and generate some meal ideas
         </p>
       </div>
@@ -74,12 +75,11 @@ export function MealList({
   }
 
   return (
-    <div className="space-y-4">
+    <div className={styles.list}>
       {meals.map((meal, index) => (
         <div
           key={meal.id || index}
-          className={`opacity-0 animate-slide-up stagger-${Math.min(index + 1, 10)}`}
-          style={{ animationFillMode: "forwards" }}
+          className={styles["meal-item"]}
         >
           <MealCard
             meal={meal}

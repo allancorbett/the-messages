@@ -1,0 +1,185 @@
+/* =============================================================================
+   BUTTON COMPONENTS
+   ============================================================================= */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-lg);
+  background-color: rgb(var(--color-brine-600));
+  padding-block: var(--space-2);
+  padding-inline: var(--space-5);
+  font-weight: 500;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-primary:hover {
+  background-color: rgb(var(--color-brine-700));
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(var(--color-brine-500) / 0.5), 0 0 0 4px rgb(var(--color-brine-500) / 0.2);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgb(var(--color-peat-300));
+  background-color: white;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-5);
+  font-weight: 500;
+  color: rgb(var(--color-peat-700));
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-secondary:hover {
+  background-color: rgb(var(--color-peat-50));
+  border-color: rgb(var(--color-peat-400));
+}
+
+.btn-secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(var(--color-peat-300) / 0.5), 0 0 0 4px rgb(var(--color-peat-300) / 0.2);
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-lg);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  font-weight: 500;
+  color: rgb(var(--color-peat-600));
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-ghost:hover {
+  background-color: rgb(var(--color-peat-100));
+}
+
+.btn-ghost:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(var(--color-peat-300) / 0.5);
+}
+
+.btn-ghost:active {
+  transform: scale(0.98);
+}
+
+/* =============================================================================
+   CARD COMPONENT
+   ============================================================================= */
+
+.card {
+  border-radius: var(--radius-xl);
+  border: 1px solid rgb(var(--color-peat-200));
+  background-color: white;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+/* =============================================================================
+   FORM COMPONENTS
+   ============================================================================= */
+
+.input {
+  inline-size: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgb(var(--color-peat-300));
+  background-color: white;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  color: rgb(var(--color-peat-900));
+  transition: all var(--transition-base);
+}
+
+.input::placeholder {
+  color: rgb(var(--color-peat-400));
+}
+
+.input:focus {
+  border-color: rgb(var(--color-brine-500));
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(var(--color-brine-500) / 0.2);
+}
+
+.label {
+  display: block;
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: rgb(var(--color-peat-700));
+  margin-block-end: var(--space-1);
+}
+
+/* =============================================================================
+   BADGE COMPONENTS
+   ============================================================================= */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-full);
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+  font-size: var(--font-xs);
+  font-weight: 500;
+}
+
+.badge-economic {
+  background-color: rgb(var(--color-brine-100));
+  color: rgb(var(--color-brine-700));
+}
+
+.badge-mid {
+  background-color: rgb(var(--color-oat-100));
+  color: rgb(var(--color-oat-700));
+}
+
+.badge-fancy {
+  background-color: rgb(var(--color-heather-100));
+  color: rgb(var(--color-heather-700));
+}
+
+/* =============================================================================
+   LOADING STATES
+   ============================================================================= */
+
+.skeleton {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: var(--radius-md);
+  background-color: rgb(var(--color-peat-200));
+}

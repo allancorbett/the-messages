@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import styles from "./Footer.module.css";
 
 const COOKING_VERBS = [
   "Baked by",
@@ -43,17 +44,17 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="py-6 px-4 border-t border-peat-200 bg-peat-50">
-      <div className="max-w-7xl mx-auto text-center">
-        <p className="text-sm text-peat-600">
-          <span className="inline-block min-w-[120px] transition-opacity duration-300">
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        <p className={styles.text}>
+          <span className={styles.verb}>
             {verb}
           </span>{" "}
           <Link
             href="https://superallan.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-brine-600 hover:text-brine-700 font-medium hover:underline"
+            className={styles.link}
           >
             Allan Corbett
           </Link>

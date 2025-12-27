@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import styles from "./CookingLoadingOverlay.module.css";
 
 const COOKING_MESSAGES = [
   "Stirring…",
@@ -137,54 +138,34 @@ export function CookingLoadingOverlay({ isLoading }: CookingLoadingOverlayProps)
   if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-peat-900/95 to-brine-900/95 backdrop-blur-sm">
-      <div className="text-center px-4">
+    <div className={styles.overlay}>
+      <div className={styles.content}>
         {/* Spinner */}
-        <div className="relative w-24 h-24 mx-auto mb-8">
+        <div className={styles["spinner-container"]}>
           {/* Outer ring */}
-          <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-oat-200/30"></div>
+          <div className={styles["outer-ring"]}></div>
 
           {/* Spinning ring */}
-          <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-t-oat-400 border-r-oat-400 animate-spin"></div>
+          <div className={styles["spinning-ring"]}></div>
 
           {/* Inner glow */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-oat-400/20 to-brine-400/20 animate-pulse"></div>
+          <div className={styles["inner-glow-container"]}>
+            <div className={styles["inner-glow"]}></div>
           </div>
         </div>
 
         {/* Loading message */}
-        <div className="relative h-12 flex items-center justify-center">
-          <p
-            key={currentMessage}
-            className="text-2xl font-display text-oat-100 animate-fade-in"
-          >
+        <div className={styles["message-container"]}>
+          <p key={currentMessage} className={styles.message}>
             {currentMessage}
           </p>
         </div>
 
         {/* Subtitle */}
-        <p className="mt-4 text-sm text-oat-300/80">
+        <p className={styles.subtitle}>
           Crafting your personalised meal suggestions
         </p>
       </div>
-
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(4px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }

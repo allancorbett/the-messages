@@ -14,6 +14,8 @@ import {
   removeMealFromShoppingList,
   getMealById,
 } from "@/app/actions/meals";
+import { Card, EmptyState, LoadingContainer, LoadingSkeleton } from "@/components/ui";
+import styles from "./page.module.css";
 
 interface MealMetadata {
   id: string;
@@ -134,60 +136,54 @@ export default function ShoppingListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className={styles.page}>
       <Header userEmail={userEmail} />
 
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="font-display text-3xl text-peat-900 mb-2">
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>
             Shopping List
           </h1>
-          <p className="text-peat-600">
+          <p className={styles.subtitle}>
             Your aggregated ingredients, ready for the shop
           </p>
         </div>
 
         {loading ? (
-          <div className="card">
-            <div className="animate-pulse space-y-4">
-              <div className="h-6 w-1/3 bg-peat-200 rounded" />
-              <div className="h-4 w-2/3 bg-peat-200 rounded" />
-              <div className="h-4 w-1/2 bg-peat-200 rounded" />
-            </div>
-          </div>
+          <Card>
+            <LoadingContainer>
+              <LoadingSkeleton variant="title" />
+              <LoadingSkeleton variant="text-long" />
+              <LoadingSkeleton variant="text-medium" />
+            </LoadingContainer>
+          </Card>
         ) : items.length === 0 ? (
-          <div className="card text-center py-16">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
-              <svg
-                className="w-10 h-10 text-brine-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-            </div>
-            <h2 className="font-display text-2xl text-peat-900 mb-2">
-              No meals selected
-            </h2>
-            <p className="text-peat-600 max-w-md mx-auto mb-6">
-              Head to the Plan page to generate meals and select the ones you
-              want to cook this week.
-            </p>
-            <button
-              onClick={() => router.push("/plan")}
-              className="btn-primary"
-            >
-              Plan Meals
-            </button>
-          </div>
+          <Card>
+            <EmptyState
+              icon={
+                <svg
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+              }
+              title="No meals selected"
+              description="Head to the Plan page to generate meals and select the ones you want to cook this week."
+              action={{
+                label: "Plan Meals",
+                onClick: () => router.push("/plan"),
+              }}
+            />
+          </Card>
         ) : (
-          <div className="card">
+          <Card>
             <ShoppingList
               items={items}
               mealMetadata={mealMetadata}
@@ -195,7 +191,7 @@ export default function ShoppingListPage() {
               onRemoveMeal={handleRemoveMeal}
               onViewMeal={handleViewMeal}
             />
-          </div>
+          </Card>
         )}
       </main>
 

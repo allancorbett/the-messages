@@ -1,0 +1,397 @@
+.page {
+  min-block-size: 100vh;
+  background-color: rgb(var(--color-peat-50));
+}
+
+.main {
+  max-inline-size: 96rem;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+  padding-block: var(--space-8);
+}
+
+.header {
+  margin-block-end: var(--space-8);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--font-3xl);
+  color: rgb(var(--color-peat-900));
+  margin-block-end: var(--space-2);
+}
+
+.subtitle {
+  color: rgb(var(--color-peat-600));
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.card {
+  border-radius: var(--radius-xl);
+  border: 1px solid rgb(var(--color-peat-200));
+  background-color: white;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeleton-title {
+  block-size: 1.25rem;
+  inline-size: 75%;
+  border-radius: var(--radius-md);
+  background-color: rgb(var(--color-peat-200));
+  margin-block-end: var(--space-2);
+}
+
+.skeleton-line-full {
+  block-size: 1rem;
+  inline-size: 100%;
+  border-radius: var(--radius-md);
+  background-color: rgb(var(--color-peat-200));
+  margin-block-end: 0.25rem;
+}
+
+.skeleton-line-partial {
+  block-size: 1rem;
+  inline-size: 66%;
+  border-radius: var(--radius-md);
+  background-color: rgb(var(--color-peat-200));
+}
+
+.error-card {
+  border-radius: var(--radius-xl);
+  border: 1px solid rgb(var(--color-red-200));
+  background-color: rgb(var(--color-red-50));
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  color: rgb(var(--color-red-700));
+}
+
+.empty-state {
+  text-align: center;
+  padding-block: var(--space-16);
+}
+
+.empty-icon-container {
+  inline-size: 5rem;
+  block-size: 5rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to bottom right,
+    rgb(var(--color-brine-100)),
+    rgb(var(--color-oat-100))
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  margin-block-end: var(--space-6);
+}
+
+.empty-icon {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  color: rgb(var(--color-brine-600));
+}
+
+.empty-title {
+  font-family: var(--font-display);
+  font-size: var(--font-2xl);
+  color: rgb(var(--color-peat-900));
+  margin-block-end: var(--space-2);
+}
+
+.empty-text {
+  color: rgb(var(--color-peat-600));
+  max-inline-size: 28rem;
+  margin-inline: auto;
+}
+
+.grid-layout {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 1024px) {
+  .grid-layout {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+.sidebar {
+  position: static;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    position: sticky;
+    inset-block-start: 6rem;
+    align-self: start;
+  }
+}
+
+.filter-card {
+  border-radius: var(--radius-xl);
+  border: 1px solid rgb(var(--color-peat-200));
+  background-color: white;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--space-4);
+}
+
+.filter-title {
+  font-weight: 500;
+  color: rgb(var(--color-peat-900));
+}
+
+.clear-button {
+  font-size: var(--font-xs);
+  color: rgb(var(--color-brine-600));
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  transition: color var(--transition-base);
+}
+
+.clear-button:hover {
+  color: rgb(var(--color-brine-700));
+}
+
+.filter-section {
+  margin-block-end: var(--space-6);
+}
+
+.filter-label {
+  display: block;
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: rgb(var(--color-peat-700));
+  margin-block-end: var(--space-2);
+}
+
+.search-input {
+  inline-size: 100%;
+  padding-inline: var(--space-3);
+  padding-block: var(--space-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgb(var(--color-peat-200));
+  font-size: var(--font-sm);
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.search-input:focus {
+  border-color: rgb(var(--color-brine-500));
+  box-shadow: 0 0 0 2px rgb(var(--color-brine-100));
+}
+
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.checkbox {
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgb(var(--color-peat-300));
+  color: rgb(var(--color-brine-600));
+}
+
+.checkbox:focus {
+  box-shadow: 0 0 0 2px rgb(var(--color-brine-500));
+}
+
+.checkbox-label {
+  font-size: var(--font-sm);
+  color: rgb(var(--color-peat-700));
+  text-transform: capitalize;
+}
+
+.results-count {
+  margin-block-end: var(--space-4);
+  font-size: var(--font-sm);
+  color: rgb(var(--color-peat-600));
+}
+
+.no-results {
+  text-align: center;
+  padding-block: var(--space-12);
+}
+
+.no-results-icon-container {
+  inline-size: 4rem;
+  block-size: 4rem;
+  border-radius: var(--radius-full);
+  background-color: rgb(var(--color-peat-100));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  margin-block-end: var(--space-4);
+}
+
+.no-results-icon {
+  inline-size: 2rem;
+  block-size: 2rem;
+  color: rgb(var(--color-peat-400));
+}
+
+.no-results-title {
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: rgb(var(--color-peat-900));
+  margin-block-end: 0.25rem;
+}
+
+.no-results-text {
+  color: rgb(var(--color-peat-600));
+}
+
+.meals-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-block-end: var(--space-6);
+}
+
+.meal-card-wrapper {
+  opacity: 0;
+  animation-fill-mode: forwards;
+  position: relative;
+}
+
+.meal-card-group {
+  position: relative;
+}
+
+.delete-button {
+  position: absolute;
+  inset-block-start: var(--space-4);
+  inset-inline-end: var(--space-4);
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  color: rgb(var(--color-peat-400));
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: all var(--transition-base);
+}
+
+.meal-card-group:hover .delete-button {
+  opacity: 1;
+}
+
+.delete-button:hover {
+  color: rgb(var(--color-red-600));
+  background-color: rgb(var(--color-red-50));
+}
+
+.delete-icon {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.pagination-button {
+  padding-inline: var(--space-4);
+  padding-block: var(--space-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgb(var(--color-peat-200));
+  color: rgb(var(--color-peat-700));
+  background-color: white;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: rgb(var(--color-peat-50));
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pagination-ellipsis {
+  padding-inline: var(--space-2);
+  color: rgb(var(--color-peat-400));
+}
+
+.page-button {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgb(var(--color-peat-200));
+  color: rgb(var(--color-peat-700));
+  background-color: white;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.page-button:hover {
+  background-color: rgb(var(--color-peat-50));
+}
+
+.page-button-active {
+  background-color: rgb(var(--color-brine-600));
+  color: white;
+  border-color: rgb(var(--color-brine-600));
+}
+
+/* Animation for staggered meal cards */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-1 { animation: slide-up 0.4s ease-out 0.05s forwards; }
+.stagger-2 { animation: slide-up 0.4s ease-out 0.1s forwards; }
+.stagger-3 { animation: slide-up 0.4s ease-out 0.15s forwards; }
+.stagger-4 { animation: slide-up 0.4s ease-out 0.2s forwards; }
+.stagger-5 { animation: slide-up 0.4s ease-out 0.25s forwards; }
+.stagger-6 { animation: slide-up 0.4s ease-out 0.3s forwards; }
+.stagger-7 { animation: slide-up 0.4s ease-out 0.35s forwards; }
+.stagger-8 { animation: slide-up 0.4s ease-out 0.4s forwards; }
+.stagger-9 { animation: slide-up 0.4s ease-out 0.45s forwards; }
+.stagger-10 { animation: slide-up 0.4s ease-out 0.5s forwards; }

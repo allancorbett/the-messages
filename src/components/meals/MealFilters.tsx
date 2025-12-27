@@ -8,6 +8,7 @@ import {
   capitalise,
   cn,
 } from "@/lib/utils";
+import styles from "./MealFilters.module.css";
 
 interface MealFiltersProps {
   season: Season;
@@ -47,25 +48,23 @@ export function MealFilters({
   }
 
   return (
-    <div className="space-y-6">
+    <div className={styles.container}>
       {/* Season */}
-      <div>
-        <label className="label">Season</label>
-        <div className="flex flex-wrap gap-2">
+      <div className={styles["filter-section"]}>
+        <label className={styles.label}>Season</label>
+        <div className={styles["button-group"]}>
           {seasons.map((s) => (
             <button
               key={s}
               onClick={() => onSeasonChange(s)}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                season === s
-                  ? "bg-brine-600 text-white"
-                  : "bg-peat-100 text-peat-700 hover:bg-peat-200"
+                styles["filter-button"],
+                season === s && styles.active
               )}
             >
               {getSeasonEmoji(s)} {capitalise(s)}
               {s === currentSeason && (
-                <span className="ml-1 text-xs opacity-70">(now)</span>
+                <span className={styles["season-hint"]}>(now)</span>
               )}
             </button>
           ))}
@@ -73,18 +72,16 @@ export function MealFilters({
       </div>
 
       {/* Meal Types */}
-      <div>
-        <label className="label">Meal Types</label>
-        <div className="flex flex-wrap gap-2">
+      <div className={styles["filter-section"]}>
+        <label className={styles.label}>Meal Types</label>
+        <div className={styles["button-group"]}>
           {mealTypeOptions.map((type) => (
             <button
               key={type}
               onClick={() => toggleMealType(type)}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                mealTypes.includes(type)
-                  ? "bg-brine-600 text-white"
-                  : "bg-peat-100 text-peat-700 hover:bg-peat-200"
+                styles["filter-button"],
+                mealTypes.includes(type) && styles.active
               )}
             >
               {capitalise(type)}
@@ -94,18 +91,16 @@ export function MealFilters({
       </div>
 
       {/* Budget */}
-      <div>
-        <label className="label">Budget</label>
-        <div className="flex flex-wrap gap-2">
+      <div className={styles["filter-section"]}>
+        <label className={styles.label}>Budget</label>
+        <div className={styles["button-group"]}>
           {budgetLevels.map((level) => (
             <button
               key={level}
               onClick={() => onBudgetChange(level)}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                budget === level
-                  ? "bg-brine-600 text-white"
-                  : "bg-peat-100 text-peat-700 hover:bg-peat-200"
+                styles["filter-button"],
+                budget === level && styles.active
               )}
             >
               {"£".repeat(level)} {getBudgetLabel(level)}
@@ -115,17 +110,17 @@ export function MealFilters({
       </div>
 
       {/* Household Size */}
-      <div>
-        <label className="label">Servings per Meal</label>
-        <div className="flex items-center gap-3">
+      <div className={styles["filter-section"]}>
+        <label className={styles.label}>Servings per Meal</label>
+        <div className={styles["size-controls"]}>
           <button
             onClick={() => onHouseholdSizeChange(Math.max(1, householdSize - 1))}
             disabled={householdSize <= 1}
-            className="w-10 h-10 rounded-lg bg-peat-100 text-peat-700 font-medium hover:bg-peat-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className={styles["size-button"]}
           >
             −
           </button>
-          <span className="w-12 text-center font-medium text-peat-900">
+          <span className={styles["size-display"]}>
             {householdSize}
           </span>
           <button
@@ -133,7 +128,7 @@ export function MealFilters({
               onHouseholdSizeChange(Math.min(12, householdSize + 1))
             }
             disabled={householdSize >= 12}
-            className="w-10 h-10 rounded-lg bg-peat-100 text-peat-700 font-medium hover:bg-peat-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className={styles["size-button"]}
           >
             +
           </button>

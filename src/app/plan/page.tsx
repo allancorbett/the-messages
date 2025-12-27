@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { saveGeneratedMeals } from "@/app/actions/meals";
 import { getUserLocation, formatLocation, type LocationData } from "@/lib/geolocation";
+import { Card, EmptyState } from "@/components/ui";
+import styles from "./page.module.css";
 
 export default function PlanPage() {
   const router = useRouter();
@@ -133,24 +135,24 @@ export default function PlanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className={styles.page}>
       <Header userEmail={userEmail} />
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="font-display text-3xl text-peat-900 mb-2">
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>
             Plan Your Meals
           </h1>
-          <p className="text-peat-600">
+          <p className={styles.subtitle}>
             Choose your preferences and we&apos;ll suggest seasonal meals for {formatLocation(location)}
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-[300px,1fr] gap-8">
+        <div className={styles["grid-layout"]}>
           {/* Filters sidebar */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="card">
-              <h2 className="font-medium text-peat-900 mb-4">Preferences</h2>
+          <div className={styles.sidebar}>
+            <Card>
+              <h2 className={styles["card-title"]}>Preferences</h2>
               <MealFilters
                 season={season}
                 onSeasonChange={setSeason}
@@ -165,19 +167,19 @@ export default function PlanPage() {
               <button
                 onClick={generateMeals}
                 disabled={loading || mealTypes.length === 0}
-                className="btn-primary w-full mt-6"
+                className={styles["generate-button"]}
                 aria-label="Generate 10 meal suggestions based on your preferences"
                 aria-busy={loading}
               >
                 {loading ? (
-                  <span className="flex items-center gap-2">
+                  <span className={styles["selection-info"]}>
                     <svg
-                      className="animate-spin h-4 w-4"
+                      className={styles["spinner-icon"]}
                       viewBox="0 0 24 24"
                       fill="none"
                     >
                       <circle
-                        className="opacity-25"
+                        className={styles["spinner-opacity-25"]}
                         cx="12"
                         cy="12"
                         r="10"
@@ -185,7 +187,7 @@ export default function PlanPage() {
                         strokeWidth="4"
                       />
                       <path
-                        className="opacity-75"
+                        className={styles["spinner-opacity-75"]}
                         fill="currentColor"
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
@@ -195,7 +197,7 @@ export default function PlanPage() {
                 ) : (
                   <>
                     <svg
-                      className="w-5 h-5"
+                      className={styles["button-icon"]}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -211,22 +213,22 @@ export default function PlanPage() {
                   </>
                 )}
               </button>
-            </div>
+            </Card>
           </div>
 
           {/* Meals list */}
           <div>
             {error && (
-              <div className="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
+              <div className={styles["error-banner"]}>
                 {error}
               </div>
             )}
 
             {meals.length > 0 && (
               <>
-                <div className="mb-3 p-3 bg-brine-50 border border-brine-200 rounded-lg flex items-center gap-2 text-sm text-brine-700">
+                <div className={styles["info-banner"]}>
                   <svg
-                    className="w-4 h-4 flex-shrink-0"
+                    className={styles["info-icon"]}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -240,23 +242,23 @@ export default function PlanPage() {
                   </svg>
                   <span>All generated meals are automatically saved to your collection</span>
                 </div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-peat-600">
+                <div className={styles["selection-header"]}>
+                  <div className={styles["selection-info"]}>
+                    <span className={styles["selection-count"]}>
                       {selectedMeals.length} of {meals.length} selected
                     </span>
-                    <div className="flex gap-2">
+                    <div className={styles["selection-actions"]}>
                       <button
                         onClick={selectAll}
-                        className="text-sm text-brine-600 hover:text-brine-700"
+                        className={styles["link-button"]}
                         aria-label="Select all meals for shopping list"
                       >
                         Select all
                       </button>
-                      <span className="text-peat-300" aria-hidden="true">|</span>
+                      <span className={styles.separator} aria-hidden="true">|</span>
                       <button
                         onClick={deselectAll}
-                        className="text-sm text-peat-500 hover:text-peat-700"
+                        className={styles["link-button-secondary"]}
                         aria-label="Clear all meal selections"
                       >
                         Clear
@@ -267,11 +269,11 @@ export default function PlanPage() {
                 {selectedMeals.length > 0 && (
                   <button
                     onClick={goToShoppingList}
-                    className="btn-primary"
+                    className={styles["button-primary"]}
                     aria-label={`Create shopping list with ${selectedMeals.length} selected meals`}
                   >
                     <svg
-                      className="w-5 h-5"
+                      className={styles["button-icon"]}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -299,46 +301,30 @@ export default function PlanPage() {
             />
 
             {!loading && meals.length === 0 && (
-              <div className="card text-center py-16">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
-                  <svg
-                    className="w-10 h-10 text-brine-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
-                </div>
-                <h2 className="font-display text-2xl text-peat-900 mb-2">
-                  Ready to plan?
-                </h2>
-                <p className="text-peat-600 max-w-md mx-auto mb-6">
-                  Set your preferences on the left and hit Generate to get 10
-                  seasonal meal suggestions tailored to local supermarkets.
-                </p>
-                <button onClick={generateMeals} className="btn-primary">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                  Generate Meals
-                </button>
-              </div>
+              <Card>
+                <EmptyState
+                  icon={
+                    <svg
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      />
+                    </svg>
+                  }
+                  title="Ready to plan?"
+                  description="Set your preferences on the left and hit Generate to get 10 seasonal meal suggestions tailored to local supermarkets."
+                  action={{
+                    label: "Generate Meals",
+                    onClick: generateMeals,
+                  }}
+                />
+              </Card>
             )}
           </div>
         </div>

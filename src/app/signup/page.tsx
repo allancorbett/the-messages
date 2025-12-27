@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { signUp } from "@/app/actions/auth";
+import styles from "../auth.module.css";
 
 export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
@@ -30,23 +31,23 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-peat-50 to-peat-100">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <h1 className="font-display text-3xl text-peat-900">
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <Link href="/" className={styles.logo}>
+            <h1 className={styles.title}>
               The Messages
             </h1>
           </Link>
-          <p className="text-peat-600 mt-2">Create your account</p>
+          <p className={styles.subtitle}>Create your account</p>
         </div>
 
-        <div className="card">
+        <div className={styles.card}>
           {success ? (
-            <div className="text-center py-4">
-              <div className="w-12 h-12 rounded-full bg-brine-100 flex items-center justify-center mx-auto mb-4">
+            <div className={styles["success-container"]}>
+              <div className={styles["success-icon-container"]}>
                 <svg
-                  className="w-6 h-6 text-brine-600"
+                  className={styles["success-icon"]}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -59,24 +60,24 @@ export default function SignUpPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-lg font-medium text-peat-900 mb-2">
+              <h2 className={styles["success-title"]}>
                 Check your email
               </h2>
-              <p className="text-peat-600 text-sm mb-4">{success}</p>
-              <Link href="/login" className="btn-secondary">
+              <p className={styles["success-message"]}>{success}</p>
+              <Link href="/login" className={styles["secondary-button"]}>
                 Back to sign in
               </Link>
             </div>
           ) : (
-            <form action={handleSubmit} className="space-y-4">
+            <form action={handleSubmit} className={styles.form}>
               {error && (
-                <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                <div className={styles.error}>
                   {error}
                 </div>
               )}
 
-              <div>
-                <label htmlFor="email" className="label">
+              <div className={styles.field}>
+                <label htmlFor="email" className={styles.label}>
                   Email
                 </label>
                 <input
@@ -85,13 +86,13 @@ export default function SignUpPage() {
                   type="email"
                   autoComplete="email"
                   required
-                  className="input"
+                  className={styles.input}
                   placeholder="you@example.com"
                 />
               </div>
 
-              <div>
-                <label htmlFor="password" className="label">
+              <div className={styles.field}>
+                <label htmlFor="password" className={styles.label}>
                   Password
                 </label>
                 <input
@@ -100,10 +101,10 @@ export default function SignUpPage() {
                   type="password"
                   autoComplete="new-password"
                   required
-                  className="input"
+                  className={styles.input}
                   placeholder="••••••••"
                 />
-                <p className="text-xs text-peat-500 mt-1">
+                <p className={styles.hint}>
                   At least 8 characters with uppercase, lowercase, and a number
                 </p>
               </div>
@@ -111,17 +112,17 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary w-full"
+                className={styles["submit-button"]}
               >
                 {loading ? (
-                  <span className="flex items-center gap-2">
+                  <span className={styles["loading-content"]}>
                     <svg
-                      className="animate-spin h-4 w-4"
+                      className={styles.spinner}
                       viewBox="0 0 24 24"
                       fill="none"
                     >
                       <circle
-                        className="opacity-25"
+                        className={styles["spinner-circle"]}
                         cx="12"
                         cy="12"
                         r="10"
@@ -129,7 +130,7 @@ export default function SignUpPage() {
                         strokeWidth="4"
                       />
                       <path
-                        className="opacity-75"
+                        className={styles["spinner-path"]}
                         fill="currentColor"
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
@@ -144,11 +145,11 @@ export default function SignUpPage() {
           )}
 
           {!success && (
-            <p className="mt-6 text-center text-sm text-peat-600">
+            <p className={styles["footer-text"]}>
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="font-medium text-brine-600 hover:text-brine-700"
+                className={styles.link}
               >
                 Sign in
               </Link>

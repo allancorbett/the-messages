@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
+import styles from "./Toast.module.css";
 
 interface ToastProps {
   message: string;
@@ -24,13 +25,13 @@ export function Toast({ message, show, onHide, duration = 3000 }: ToastProps) {
   return (
     <div
       className={cn(
-        "fixed top-20 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out",
-        show ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0 pointer-events-none"
+        styles["toast-container"],
+        show ? styles.visible : styles.hidden
       )}
     >
-      <div className="px-4 py-3 rounded-lg bg-peat-900 text-white shadow-lg flex items-center gap-2 min-w-[280px]">
+      <div className={styles.toast}>
         <svg
-          className="w-5 h-5 text-brine-400 flex-shrink-0"
+          className={styles.icon}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -42,7 +43,7 @@ export function Toast({ message, show, onHide, duration = 3000 }: ToastProps) {
             d="M5 13l4 4L19 7"
           />
         </svg>
-        <span className="text-sm font-medium">{message}</span>
+        <span className={styles.message}>{message}</span>
       </div>
     </div>
   );
