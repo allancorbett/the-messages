@@ -12,6 +12,7 @@ import {
   capitalise,
 } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import styles from "./page.module.css";
 
 export default function RecipePage() {
   const params = useParams();
@@ -67,13 +68,13 @@ export default function RecipePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-peat-50">
+      <div className={styles.page}>
         <Header userEmail={userEmail} />
-        <main className="max-w-4xl mx-auto px-4 py-8">
-          <div className="card animate-pulse">
-            <div className="h-8 w-3/4 rounded bg-peat-200 mb-4" />
-            <div className="h-4 w-full rounded bg-peat-200 mb-2" />
-            <div className="h-4 w-2/3 rounded bg-peat-200" />
+        <main className={styles.main}>
+          <div className={`${styles.card} ${styles["loading-container"]}`}>
+            <div className={`${styles.skeleton} ${styles["skeleton-title"]}`} />
+            <div className={`${styles.skeleton} ${styles["skeleton-line-full"]}`} />
+            <div className={`${styles.skeleton} ${styles["skeleton-line-partial"]}`} />
           </div>
         </main>
       </div>
@@ -82,17 +83,17 @@ export default function RecipePage() {
 
   if (error || !meal) {
     return (
-      <div className="min-h-screen bg-peat-50">
+      <div className={styles.page}>
         <Header userEmail={userEmail} />
-        <main className="max-w-4xl mx-auto px-4 py-8">
-          <div className="card bg-red-50 border-red-200 text-center py-16">
-            <h2 className="font-display text-2xl text-red-900 mb-2">
+        <main className={styles.main}>
+          <div className={styles["error-card"]}>
+            <h2 className={styles["error-title"]}>
               Recipe Not Found
             </h2>
-            <p className="text-red-700 mb-6">
+            <p className={styles["error-message"]}>
               {error || "This recipe could not be found."}
             </p>
-            <button onClick={() => router.push("/saved")} className="btn-primary">
+            <button onClick={() => router.push("/saved")} className={styles["error-button"]}>
               View Saved Recipes
             </button>
           </div>
@@ -122,44 +123,43 @@ export default function RecipePage() {
     "frozen",
   ];
 
+  const badgeClass =
+    meal.priceLevel === 1
+      ? styles["badge-economic"]
+      : meal.priceLevel === 2
+        ? styles["badge-mid"]
+        : styles["badge-fancy"];
+
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className={styles.page}>
       <Header userEmail={userEmail} />
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className={styles.main}>
         {/* Recipe Header */}
-        <div className="card mb-6">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl" aria-hidden>
+        <div className={styles.card}>
+          <div className={styles["card-header"]}>
+            <div className={styles["card-header-content"]}>
+              <div className={styles["meal-meta-row"]}>
+                <span className={styles["meal-emoji"]} aria-hidden>
                   {getMealTypeEmoji(meal.mealType)}
                 </span>
-                <span
-                  className={`badge ${
-                    meal.priceLevel === 1
-                      ? "badge-economic"
-                      : meal.priceLevel === 2
-                        ? "badge-mid"
-                        : "badge-fancy"
-                  }`}
-                >
+                <span className={`${styles.badge} ${badgeClass}`}>
                   {getBudgetSymbol(meal.priceLevel)}
                 </span>
-                <span className="text-sm text-peat-500">
+                <span className={styles["meal-type-text"]}>
                   {capitalise(meal.mealType)}
                 </span>
               </div>
-              <h1 className="font-display text-3xl text-peat-900 mb-3">
+              <h1 className={styles["meal-title"]}>
                 {meal.name}
               </h1>
-              <p className="text-peat-700 mb-4">{meal.description}</p>
+              <p className={styles["meal-description"]}>{meal.description}</p>
 
               {/* Meta info */}
-              <div className="flex items-center gap-6 text-sm text-peat-600">
-                <span className="flex items-center gap-2">
+              <div className={styles["meta-info"]}>
+                <span className={styles["meta-item"]}>
                   <svg
-                    className="w-5 h-5"
+                    className={styles["meta-icon"]}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -173,9 +173,9 @@ export default function RecipePage() {
                   </svg>
                   {formatPrepTime(meal.prepTime)}
                 </span>
-                <span className="flex items-center gap-2">
+                <span className={styles["meta-item"]}>
                   <svg
-                    className="w-5 h-5"
+                    className={styles["meta-icon"]}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -189,9 +189,9 @@ export default function RecipePage() {
                   </svg>
                   Serves {meal.servings}
                 </span>
-                <span className="flex items-center gap-2">
+                <span className={styles["meta-item"]}>
                   <svg
-                    className="w-5 h-5"
+                    className={styles["meta-icon"]}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -210,10 +210,10 @@ export default function RecipePage() {
           </div>
 
           {/* Action buttons */}
-          <div className="flex gap-3">
-            <button onClick={addToShoppingList} className="btn-primary flex-1">
+          <div className={styles.actions}>
+            <button onClick={addToShoppingList} className={styles["button-primary"]}>
               <svg
-                className="w-5 h-5"
+                className={styles["button-icon"]}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -229,13 +229,13 @@ export default function RecipePage() {
             </button>
             <button
               onClick={handleShare}
-              className="btn-secondary"
+              className={styles["button-secondary"]}
               title="Copy recipe URL to clipboard"
             >
               {copySuccess ? (
                 <>
                   <svg
-                    className="w-5 h-5"
+                    className={styles["button-icon"]}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -252,7 +252,7 @@ export default function RecipePage() {
               ) : (
                 <>
                   <svg
-                    className="w-5 h-5"
+                    className={styles["button-icon"]}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -272,29 +272,29 @@ export default function RecipePage() {
         </div>
 
         {/* Ingredients */}
-        <div className="card mb-6">
-          <h2 className="font-display text-2xl text-peat-900 mb-4">
+        <div className={styles.card}>
+          <h2 className={styles["section-title"]}>
             Ingredients
           </h2>
-          <div className="space-y-4">
+          <div className={styles["ingredients-container"]}>
             {categoryOrder.map((category) => {
               const items = ingredientsByCategory[category];
               if (!items || items.length === 0) return null;
 
               return (
                 <div key={category}>
-                  <h3 className="text-sm font-medium text-peat-500 uppercase tracking-wide mb-2">
+                  <h3 className={styles["ingredient-category-title"]}>
                     {capitalise(category)}
                   </h3>
-                  <ul className="space-y-2">
+                  <ul className={styles["ingredient-list"]}>
                     {items.map((ingredient, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-3 text-peat-700"
+                        className={styles["ingredient-item"]}
                       >
-                        <span className="text-brine-500 mt-1.5">•</span>
+                        <span className={styles["ingredient-bullet"]}>•</span>
                         <span>
-                          <span className="font-medium">
+                          <span className={styles["ingredient-quantity"]}>
                             {ingredient.quantity}
                           </span>{" "}
                           {ingredient.name}
@@ -309,17 +309,17 @@ export default function RecipePage() {
         </div>
 
         {/* Instructions */}
-        <div className="card">
-          <h2 className="font-display text-2xl text-peat-900 mb-4">
+        <div className={styles.card}>
+          <h2 className={styles["section-title"]}>
             Instructions
           </h2>
-          <ol className="space-y-4">
+          <ol className={styles["instructions-list"]}>
             {meal.instructions.map((instruction, idx) => (
-              <li key={idx} className="flex gap-4">
-                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-brine-100 text-brine-700 font-medium flex items-center justify-center">
+              <li key={idx} className={styles["instruction-item"]}>
+                <span className={styles["instruction-number"]}>
                   {idx + 1}
                 </span>
-                <p className="text-peat-700 pt-1">{instruction}</p>
+                <p className={styles["instruction-text"]}>{instruction}</p>
               </li>
             ))}
           </ol>

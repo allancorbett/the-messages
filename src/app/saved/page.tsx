@@ -10,6 +10,7 @@ import { Meal, MealType, BudgetLevel, Season } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { addMealToShoppingList } from "@/app/actions/meals";
 import { transformSavedMealToMeal } from "@/lib/meal-utils";
+import styles from "./page.module.css";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -201,38 +202,38 @@ export default function SavedPage() {
     selectedPriceLevels.length > 0;
 
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className={styles.page}>
       <Header userEmail={userEmail} />
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="font-display text-3xl text-peat-900 mb-2">
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>
             Saved Meals
           </h1>
-          <p className="text-peat-600">
+          <p className={styles.subtitle}>
             Your collection of favourite meals to make again
           </p>
         </div>
 
         {loading ? (
-          <div className="space-y-4">
+          <div className={styles["loading-container"]}>
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="card animate-pulse">
-                <div className="h-5 w-3/4 rounded bg-peat-200 mb-2" />
-                <div className="h-4 w-full rounded bg-peat-200 mb-1" />
-                <div className="h-4 w-2/3 rounded bg-peat-200" />
+              <div key={i} className={styles.card}>
+                <div className={styles["skeleton-title"]} />
+                <div className={styles["skeleton-line-full"]} />
+                <div className={styles["skeleton-line-partial"]} />
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="card bg-red-50 border-red-200 text-red-700">
+          <div className={styles["error-card"]}>
             {error}
           </div>
         ) : allMeals.length === 0 ? (
-          <div className="card text-center py-16">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
+          <div className={`${styles["filter-card"]} ${styles["empty-state"]}`}>
+            <div className={styles["empty-icon-container"]}>
               <svg
-                className="w-10 h-10 text-brine-600"
+                className={styles["empty-icon"]}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -245,24 +246,24 @@ export default function SavedPage() {
                 />
               </svg>
             </div>
-            <h2 className="font-display text-2xl text-peat-900 mb-2">
+            <h2 className={styles["empty-title"]}>
               No saved meals yet
             </h2>
-            <p className="text-peat-600 max-w-md mx-auto">
+            <p className={styles["empty-text"]}>
               When you generate meals, they&apos;re automatically saved here for easy access later.
             </p>
           </div>
         ) : (
-          <div className="grid lg:grid-cols-[280px,1fr] gap-8">
+          <div className={styles["grid-layout"]}>
             {/* Filters sidebar */}
-            <div className="lg:sticky lg:top-24 lg:self-start">
-              <div className="card">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-medium text-peat-900">Filter & Search</h2>
+            <div className={styles.sidebar}>
+              <div className={styles["filter-card"]}>
+                <div className={styles["filter-header"]}>
+                  <h2 className={styles["filter-title"]}>Filter & Search</h2>
                   {hasActiveFilters && (
                     <button
                       onClick={clearAllFilters}
-                      className="text-xs text-brine-600 hover:text-brine-700 underline"
+                      className={styles["clear-button"]}
                     >
                       Clear all
                     </button>
@@ -270,8 +271,8 @@ export default function SavedPage() {
                 </div>
 
                 {/* Search */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                <div className={styles["filter-section"]}>
+                  <label className={styles["filter-label"]}>
                     Search
                   </label>
                   <input
@@ -279,45 +280,45 @@ export default function SavedPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search meals..."
-                    className="w-full px-3 py-2 rounded-lg border border-peat-200 focus:border-brine-500 focus:ring-2 focus:ring-brine-100 outline-none text-sm"
+                    className={styles["search-input"]}
                   />
                 </div>
 
                 {/* Season filter */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                <div className={styles["filter-section"]}>
+                  <label className={styles["filter-label"]}>
                     Season
                   </label>
-                  <div className="space-y-2">
+                  <div className={styles["checkbox-list"]}>
                     {(["spring", "summer", "autumn", "winter"] as Season[]).map((season) => (
-                      <label key={season} className="flex items-center gap-2 cursor-pointer">
+                      <label key={season} className={styles["checkbox-item"]}>
                         <input
                           type="checkbox"
                           checked={selectedSeasons.includes(season)}
                           onChange={() => toggleSeason(season)}
-                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                          className={styles.checkbox}
                         />
-                        <span className="text-sm text-peat-700 capitalize">{season}</span>
+                        <span className={styles["checkbox-label"]}>{season}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
                 {/* Meal type filter */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                <div className={styles["filter-section"]}>
+                  <label className={styles["filter-label"]}>
                     Meal Type
                   </label>
-                  <div className="space-y-2">
+                  <div className={styles["checkbox-list"]}>
                     {(["breakfast", "lunch", "dinner"] as MealType[]).map((type) => (
-                      <label key={type} className="flex items-center gap-2 cursor-pointer">
+                      <label key={type} className={styles["checkbox-item"]}>
                         <input
                           type="checkbox"
                           checked={selectedMealTypes.includes(type)}
                           onChange={() => toggleMealType(type)}
-                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                          className={styles.checkbox}
                         />
-                        <span className="text-sm text-peat-700 capitalize">{type}</span>
+                        <span className={styles["checkbox-label"]}>{type}</span>
                       </label>
                     ))}
                   </div>
@@ -325,19 +326,19 @@ export default function SavedPage() {
 
                 {/* Price level filter */}
                 <div>
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                  <label className={styles["filter-label"]}>
                     Budget
                   </label>
-                  <div className="space-y-2">
+                  <div className={styles["checkbox-list"]}>
                     {([1, 2, 3] as BudgetLevel[]).map((level) => (
-                      <label key={level} className="flex items-center gap-2 cursor-pointer">
+                      <label key={level} className={styles["checkbox-item"]}>
                         <input
                           type="checkbox"
                           checked={selectedPriceLevels.includes(level)}
                           onChange={() => togglePriceLevel(level)}
-                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                          className={styles.checkbox}
                         />
-                        <span className="text-sm text-peat-700">
+                        <span className={styles["checkbox-label"]}>
                           {level === 1 ? "£ - Budget" : level === 2 ? "££ - Mid-range" : "£££ - Premium"}
                         </span>
                       </label>
@@ -350,7 +351,7 @@ export default function SavedPage() {
             {/* Results */}
             <div>
               {/* Results count */}
-              <div className="mb-4 text-sm text-peat-600">
+              <div className={styles["results-count"]}>
                 {filteredMeals.length === allMeals.length ? (
                   <span>{allMeals.length} saved meal{allMeals.length !== 1 ? 's' : ''}</span>
                 ) : (
@@ -361,10 +362,10 @@ export default function SavedPage() {
               </div>
 
               {filteredMeals.length === 0 ? (
-                <div className="card text-center py-12">
-                  <div className="w-16 h-16 rounded-full bg-peat-100 flex items-center justify-center mx-auto mb-4">
+                <div className={`${styles["filter-card"]} ${styles["no-results"]}`}>
+                  <div className={styles["no-results-icon-container"]}>
                     <svg
-                      className="w-8 h-8 text-peat-400"
+                      className={styles["no-results-icon"]}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -377,24 +378,23 @@ export default function SavedPage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-medium text-peat-900 mb-1">
+                  <h3 className={styles["no-results-title"]}>
                     No meals found
                   </h3>
-                  <p className="text-peat-600">
+                  <p className={styles["no-results-text"]}>
                     Try adjusting your filters or search query
                   </p>
                 </div>
               ) : (
                 <>
                   {/* Meal list */}
-                  <div className="space-y-4 mb-6">
+                  <div className={styles["meals-list"]}>
                     {paginatedMeals.map((meal, index) => (
                       <div
                         key={meal.id}
-                        className={`opacity-0 animate-slide-up stagger-${Math.min(index + 1, 10)}`}
-                        style={{ animationFillMode: "forwards" }}
+                        className={`${styles["meal-card-wrapper"]} ${styles[`stagger-${Math.min(index + 1, 10)}`]}`}
                       >
-                        <div className="relative group">
+                        <div className={styles["meal-card-group"]}>
                           <MealCard
                             meal={meal}
                             showCheckbox={false}
@@ -404,11 +404,11 @@ export default function SavedPage() {
                           />
                           <button
                             onClick={() => deleteMeal(meal.id!)}
-                            className="absolute top-4 right-4 p-2 rounded-lg text-peat-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+                            className={styles["delete-button"]}
                             title="Delete meal"
                           >
                             <svg
-                              className="w-5 h-5"
+                              className={styles["delete-icon"]}
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -428,16 +428,16 @@ export default function SavedPage() {
 
                   {/* Pagination */}
                   {totalPages > 1 && (
-                    <div className="flex items-center justify-center gap-2">
+                    <div className={styles.pagination}>
                       <button
                         onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
-                        className="px-4 py-2 rounded-lg border border-peat-200 text-peat-700 hover:bg-peat-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className={styles["pagination-button"]}
                       >
                         Previous
                       </button>
 
-                      <div className="flex items-center gap-1">
+                      <div className={styles["pagination-pages"]}>
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
                           // Show first page, last page, current page, and pages around current
                           const showPage =
@@ -451,7 +451,7 @@ export default function SavedPage() {
 
                           if (showEllipsis) {
                             return (
-                              <span key={page} className="px-2 text-peat-400">
+                              <span key={page} className={styles["pagination-ellipsis"]}>
                                 ...
                               </span>
                             );
@@ -465,10 +465,8 @@ export default function SavedPage() {
                             <button
                               key={page}
                               onClick={() => setCurrentPage(page)}
-                              className={`w-10 h-10 rounded-lg transition-colors ${
-                                currentPage === page
-                                  ? "bg-brine-600 text-white"
-                                  : "border border-peat-200 text-peat-700 hover:bg-peat-50"
+                              className={`${styles["page-button"]} ${
+                                currentPage === page ? styles["page-button-active"] : ""
                               }`}
                             >
                               {page}
@@ -480,7 +478,7 @@ export default function SavedPage() {
                       <button
                         onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
-                        className="px-4 py-2 rounded-lg border border-peat-200 text-peat-700 hover:bg-peat-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className={styles["pagination-button"]}
                       >
                         Next
                       </button>
