@@ -5,6 +5,7 @@ import { updatePassword } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import styles from "../auth.module.css";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -84,10 +85,14 @@ export default function ResetPasswordPage() {
 
   if (checkingSession) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
-        <div className="card max-w-md w-full text-center">
-          <div className="animate-spin h-8 w-8 border-4 border-peat-200 border-t-brine-600 rounded-full mx-auto"></div>
-          <p className="mt-4 text-peat-600">Verifying reset link...</p>
+      <div className={styles.page}>
+        <div className={styles.container}>
+          <div className={styles.card}>
+            <div className={styles["loading-spinner-container"]}>
+              <div className={styles["loading-spinner"]}></div>
+              <p className={styles["loading-text"]}>Verifying reset link...</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -95,40 +100,42 @@ export default function ResetPasswordPage() {
 
   if (!isValidSession) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
-        <div className="card max-w-md w-full">
-          <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-red-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
+      <div className={styles.page}>
+        <div className={styles.container}>
+          <div className={styles.card}>
+            <div className={styles.header}>
+              <div className={styles["error-icon-container"]}>
+                <svg
+                  className={styles["error-icon"]}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h1 className={styles.title}>
+                Invalid or Expired Link
+              </h1>
+              <p className={styles.subtitle}>
+                This password reset link is invalid or has expired. Please request
+                a new one.
+              </p>
             </div>
-            <h1 className="font-display text-2xl text-peat-900 mb-2">
-              Invalid or Expired Link
-            </h1>
-            <p className="text-peat-600 mb-6">
-              This password reset link is invalid or has expired. Please request
-              a new one.
-            </p>
-          </div>
 
-          <Link
-            href="/forgot-password"
-            className="btn-primary w-full text-center block"
-          >
-            Request New Reset Link
-          </Link>
+            <Link
+              href="/forgot-password"
+              className={styles["submit-button"]}
+            >
+              Request New Reset Link
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -136,32 +143,34 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
-        <div className="card max-w-md w-full">
-          <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-brine-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-brine-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+      <div className={styles.page}>
+        <div className={styles.container}>
+          <div className={styles.card}>
+            <div className={styles.header}>
+              <div className={styles["success-icon-container"]}>
+                <svg
+                  className={styles["success-icon"]}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <h1 className={styles.title}>
+                Password Updated
+              </h1>
+              <p className={styles.subtitle}>
+                Your password has been successfully updated. Redirecting you to
+                plan meals...
+              </p>
             </div>
-            <h1 className="font-display text-2xl text-peat-900 mb-2">
-              Password Updated
-            </h1>
-            <p className="text-peat-600">
-              Your password has been successfully updated. Redirecting you to
-              plan meals...
-            </p>
           </div>
         </div>
       </div>
@@ -169,79 +178,81 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
-      <div className="card max-w-md w-full">
-        <div className="text-center mb-6">
-          <h1 className="font-display text-2xl text-peat-900 mb-2">
-            Reset Your Password
-          </h1>
-          <p className="text-peat-600">
-            Choose a new password for your account
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div
-              className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
-              role="alert"
-            >
-              {error}
-            </div>
-          )}
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-peat-700 mb-1"
-            >
-              New Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input"
-              aria-label="New password"
-            />
-            <p className="mt-1 text-xs text-peat-500">
-              At least 8 characters with uppercase, lowercase, and a number
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <div className={styles.header}>
+            <h1 className={styles.title}>
+              Reset Your Password
+            </h1>
+            <p className={styles.subtitle}>
+              Choose a new password for your account
             </p>
           </div>
 
-          <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-peat-700 mb-1"
-            >
-              Confirm New Password
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="input"
-              aria-label="Confirm new password"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            {error && (
+              <div
+                className={styles.error}
+                role="alert"
+              >
+                {error}
+              </div>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full"
-            aria-busy={loading}
-          >
-            {loading ? "Updating Password..." : "Update Password"}
-          </button>
-        </form>
+            <div className={styles.field}>
+              <label
+                htmlFor="password"
+                className={styles.label}
+              >
+                New Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={styles.input}
+                aria-label="New password"
+              />
+              <p className={styles.hint}>
+                At least 8 characters with uppercase, lowercase, and a number
+              </p>
+            </div>
+
+            <div className={styles.field}>
+              <label
+                htmlFor="confirmPassword"
+                className={styles.label}
+              >
+                Confirm New Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={styles.input}
+                aria-label="Confirm new password"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={styles["submit-button"]}
+              aria-busy={loading}
+            >
+              {loading ? "Updating Password..." : "Update Password"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

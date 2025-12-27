@@ -8,6 +8,7 @@ import {
   capitalise,
 } from "@/lib/utils";
 import React, { useEffect } from "react";
+import styles from "./MealDetailModal.module.css";
 
 interface MealDetailModalProps {
   meal: Meal;
@@ -79,46 +80,46 @@ export function MealDetailModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      className={styles.overlay}
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+        className={styles.modal}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-peat-200 px-6 py-4 flex items-start justify-between">
-          <div className="flex-1 pr-4">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl" aria-hidden>
+        <div className={styles.header}>
+          <div className={styles["header-content"]}>
+            <div className={styles["header-badges"]}>
+              <span className={styles.emoji} aria-hidden>
                 {getMealTypeEmoji(meal.mealType)}
               </span>
               <span
-                className={`badge ${
+                className={`${styles.badge} ${
                   meal.priceLevel === 1
-                    ? "badge-economic"
+                    ? styles.economic
                     : meal.priceLevel === 2
-                      ? "badge-mid"
-                      : "badge-fancy"
+                      ? styles.mid
+                      : styles.fancy
                 }`}
               >
                 {getBudgetSymbol(meal.priceLevel)}
               </span>
-              <span className="text-sm text-peat-500">
+              <span className={styles["meal-type"]}>
                 {capitalise(meal.mealType)}
               </span>
             </div>
-            <h2 className="font-display text-2xl text-peat-900">
+            <h2 className={styles.title}>
               {meal.name}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-peat-400 hover:text-peat-700 hover:bg-peat-100 transition-colors"
+            className={styles["close-button"]}
             aria-label="Close modal"
           >
             <svg
-              className="w-6 h-6"
+              className={styles["close-icon"]}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -134,17 +135,17 @@ export function MealDetailModal({
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6">
+        <div className={styles.content}>
           {/* Action buttons */}
           {(onAddToShoppingList || showShareButton) && (
-            <div className="mb-6 flex gap-3">
+            <div className={styles.actions}>
               {onAddToShoppingList && (
                 <button
                   onClick={onAddToShoppingList}
-                  className="btn-primary flex-1"
+                  className={styles["primary-button"]}
                 >
                   <svg
-                    className="w-5 h-5"
+                    className={styles["button-icon"]}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -162,13 +163,13 @@ export function MealDetailModal({
               {showShareButton && meal.id && (
                 <button
                   onClick={handleShare}
-                  className="btn-secondary"
+                  className={styles["secondary-button"]}
                   title="Copy recipe URL to clipboard"
                 >
                   {copySuccess ? (
                     <>
                       <svg
-                        className="w-5 h-5"
+                        className={styles["button-icon"]}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -185,7 +186,7 @@ export function MealDetailModal({
                   ) : (
                     <>
                       <svg
-                        className="w-5 h-5"
+                        className={styles["button-icon"]}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -206,13 +207,13 @@ export function MealDetailModal({
           )}
 
           {/* Description */}
-          <p className="text-peat-700 mb-6">{meal.description}</p>
+          <p className={styles.description}>{meal.description}</p>
 
           {/* Meta info */}
-          <div className="flex items-center gap-6 text-sm text-peat-600 mb-8 pb-6 border-b border-peat-200">
-            <span className="flex items-center gap-2">
+          <div className={styles.meta}>
+            <span className={styles["meta-item"]}>
               <svg
-                className="w-5 h-5"
+                className={styles["meta-icon"]}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -226,9 +227,9 @@ export function MealDetailModal({
               </svg>
               {formatPrepTime(meal.prepTime)}
             </span>
-            <span className="flex items-center gap-2">
+            <span className={styles["meta-item"]}>
               <svg
-                className="w-5 h-5"
+                className={styles["meta-icon"]}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -242,9 +243,9 @@ export function MealDetailModal({
               </svg>
               Serves {meal.servings}
             </span>
-            <span className="flex items-center gap-2">
+            <span className={styles["meta-item"]}>
               <svg
-                className="w-5 h-5"
+                className={styles["meta-icon"]}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -261,29 +262,29 @@ export function MealDetailModal({
           </div>
 
           {/* Ingredients */}
-          <div className="mb-8">
-            <h3 className="font-display text-xl text-peat-900 mb-4">
+          <div className={styles.section}>
+            <h3 className={styles["section-title"]}>
               Ingredients
             </h3>
-            <div className="space-y-4">
+            <div className={styles.categories}>
               {categoryOrder.map((category) => {
                 const items = ingredientsByCategory[category];
                 if (!items || items.length === 0) return null;
 
                 return (
                   <div key={category}>
-                    <h4 className="text-sm font-medium text-peat-500 uppercase tracking-wide mb-2">
+                    <h4 className={styles["category-title"]}>
                       {capitalise(category)}
                     </h4>
-                    <ul className="space-y-2">
+                    <ul className={styles["ingredient-list"]}>
                       {items.map((ingredient, idx) => (
                         <li
                           key={idx}
-                          className="flex items-start gap-3 text-peat-700"
+                          className={styles.ingredient}
                         >
-                          <span className="text-brine-500 mt-1.5">•</span>
+                          <span className={styles.bullet}>•</span>
                           <span>
-                            <span className="font-medium">
+                            <span className={styles["ingredient-quantity"]}>
                               {ingredient.quantity}
                             </span>{" "}
                             {ingredient.name}
@@ -298,17 +299,17 @@ export function MealDetailModal({
           </div>
 
           {/* Instructions */}
-          <div>
-            <h3 className="font-display text-xl text-peat-900 mb-4">
+          <div className={styles.section}>
+            <h3 className={styles["section-title"]}>
               Instructions
             </h3>
-            <ol className="space-y-4">
+            <ol className={styles.instructions}>
               {meal.instructions.map((instruction, idx) => (
-                <li key={idx} className="flex gap-4">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-brine-100 text-brine-700 font-medium flex items-center justify-center">
+                <li key={idx} className={styles.instruction}>
+                  <span className={styles["step-number"]}>
                     {idx + 1}
                   </span>
-                  <p className="text-peat-700 pt-1">{instruction}</p>
+                  <p className={styles["instruction-text"]}>{instruction}</p>
                 </li>
               ))}
             </ol>

@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "@/app/actions/auth";
+import styles from "../auth.module.css";
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -36,27 +37,27 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-peat-50 to-peat-100">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <h1 className="font-display text-3xl text-peat-900">
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <Link href="/" className={styles.logo}>
+            <h1 className={styles.title}>
               The Messages
             </h1>
           </Link>
-          <p className="text-peat-600 mt-2">Sign in to plan your meals</p>
+          <p className={styles.subtitle}>Sign in to plan your meals</p>
         </div>
 
-        <div className="card">
-          <form action={handleSubmit} className="space-y-4">
+        <div className={styles.card}>
+          <form action={handleSubmit} className={styles.form}>
             {error && (
-              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+              <div className={styles.error}>
                 {error}
               </div>
             )}
 
-            <div>
-              <label htmlFor="email" className="label">
+            <div className={styles.field}>
+              <label htmlFor="email" className={styles.label}>
                 Email
               </label>
               <input
@@ -65,19 +66,19 @@ function LoginForm() {
                 type="email"
                 autoComplete="email"
                 required
-                className="input"
+                className={styles.input}
                 placeholder="you@example.com"
               />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label htmlFor="password" className="label">
+            <div className={styles.field}>
+              <div className={styles["label-row"]}>
+                <label htmlFor="password" className={styles.label}>
                   Password
                 </label>
                 <Link
                   href="/forgot-password"
-                  className="text-sm text-brine-600 hover:text-brine-700"
+                  className={styles["forgot-link"]}
                 >
                   Forgot password?
                 </Link>
@@ -88,7 +89,7 @@ function LoginForm() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="input"
+                className={styles.input}
                 placeholder="••••••••"
               />
             </div>
@@ -96,17 +97,17 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full"
+              className={styles["submit-button"]}
             >
               {loading ? (
-                <span className="flex items-center gap-2">
+                <span className={styles["loading-content"]}>
                   <svg
-                    className="animate-spin h-4 w-4"
+                    className={styles.spinner}
                     viewBox="0 0 24 24"
                     fill="none"
                   >
                     <circle
-                      className="opacity-25"
+                      className={styles["spinner-circle"]}
                       cx="12"
                       cy="12"
                       r="10"
@@ -114,7 +115,7 @@ function LoginForm() {
                       strokeWidth="4"
                     />
                     <path
-                      className="opacity-75"
+                      className={styles["spinner-path"]}
                       fill="currentColor"
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
@@ -127,11 +128,11 @@ function LoginForm() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-peat-600">
+          <p className={styles["footer-text"]}>
             Don&apos;t have an account?{" "}
             <Link
               href="/signup"
-              className="font-medium text-brine-600 hover:text-brine-700"
+              className={styles.link}
             >
               Sign up
             </Link>
@@ -144,7 +145,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className={styles["loading-fallback"]}>Loading...</div>}>
       <LoginForm />
     </Suspense>
   );

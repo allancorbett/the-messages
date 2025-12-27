@@ -14,6 +14,7 @@ import {
   removeMealFromShoppingList,
   getMealById,
 } from "@/app/actions/meals";
+import styles from "./page.module.css";
 
 interface MealMetadata {
   id: string;
@@ -134,32 +135,32 @@ export default function ShoppingListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className={styles.page}>
       <Header userEmail={userEmail} />
 
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="font-display text-3xl text-peat-900 mb-2">
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>
             Shopping List
           </h1>
-          <p className="text-peat-600">
+          <p className={styles.subtitle}>
             Your aggregated ingredients, ready for the shop
           </p>
         </div>
 
         {loading ? (
-          <div className="card">
-            <div className="animate-pulse space-y-4">
-              <div className="h-6 w-1/3 bg-peat-200 rounded" />
-              <div className="h-4 w-2/3 bg-peat-200 rounded" />
-              <div className="h-4 w-1/2 bg-peat-200 rounded" />
+          <div className={styles.card}>
+            <div className={styles["loading-container"]}>
+              <div className={`${styles.skeleton} ${styles.title}`} />
+              <div className={`${styles.skeleton} ${styles["text-long"]}`} />
+              <div className={`${styles.skeleton} ${styles["text-medium"]}`} />
             </div>
           </div>
         ) : items.length === 0 ? (
-          <div className="card text-center py-16">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
+          <div className={`${styles.card} ${styles["empty-state"]}`}>
+            <div className={styles["empty-icon-container"]}>
               <svg
-                className="w-10 h-10 text-brine-600"
+                className={styles["empty-icon"]}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -172,22 +173,22 @@ export default function ShoppingListPage() {
                 />
               </svg>
             </div>
-            <h2 className="font-display text-2xl text-peat-900 mb-2">
+            <h2 className={styles["empty-title"]}>
               No meals selected
             </h2>
-            <p className="text-peat-600 max-w-md mx-auto mb-6">
+            <p className={styles["empty-text"]}>
               Head to the Plan page to generate meals and select the ones you
               want to cook this week.
             </p>
             <button
               onClick={() => router.push("/plan")}
-              className="btn-primary"
+              className={styles.button}
             >
               Plan Meals
             </button>
           </div>
         ) : (
-          <div className="card">
+          <div className={styles.card}>
             <ShoppingList
               items={items}
               mealMetadata={mealMetadata}
