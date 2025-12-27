@@ -1,0 +1,95 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    to bottom right,
+    rgb(var(--color-peat-900) / 0.95),
+    rgb(var(--color-brine-900) / 0.95)
+  );
+  backdrop-filter: blur(4px);
+}
+
+.content {
+  text-align: center;
+  padding-inline: var(--space-4);
+}
+
+.spinner-container {
+  position: relative;
+  inline-size: 6rem;
+  block-size: 6rem;
+  margin-inline: auto;
+  margin-block-end: var(--space-8);
+}
+
+.outer-ring {
+  position: absolute;
+  inset: 0;
+  inline-size: 6rem;
+  block-size: 6rem;
+  border-radius: var(--radius-full);
+  border: 4px solid rgb(var(--color-oat-200) / 0.3);
+}
+
+.spinning-ring {
+  position: absolute;
+  inset: 0;
+  inline-size: 6rem;
+  block-size: 6rem;
+  border-radius: var(--radius-full);
+  border: 4px solid transparent;
+  border-block-start-color: rgb(var(--color-oat-400));
+  border-inline-end-color: rgb(var(--color-oat-400));
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.inner-glow-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner-glow {
+  inline-size: 4rem;
+  block-size: 4rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to bottom right,
+    rgb(var(--color-oat-400) / 0.2),
+    rgb(var(--color-brine-400) / 0.2)
+  );
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.message-container {
+  position: relative;
+  block-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  font-size: var(--font-2xl);
+  font-family: var(--font-display);
+  color: rgb(var(--color-oat-100));
+  animation: fadeIn 0.3s ease-out;
+}
+
+.subtitle {
+  margin-block-start: var(--space-4);
+  font-size: var(--font-sm);
+  color: rgb(var(--color-oat-300) / 0.8);
+}
