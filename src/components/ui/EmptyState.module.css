@@ -1,0 +1,60 @@
+.container {
+  text-align: center;
+  padding-block: var(--space-16);
+}
+
+.icon-container {
+  inline-size: 5rem;
+  block-size: 5rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to bottom right,
+    rgb(var(--color-brine-100)),
+    rgb(var(--color-oat-100))
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  margin-block-end: var(--space-6);
+}
+
+.icon-container svg {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  color: rgb(var(--color-brine-600));
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--font-2xl);
+  color: rgb(var(--color-peat-900));
+  margin-block-end: var(--space-2);
+}
+
+.description {
+  color: rgb(var(--color-peat-600));
+  max-inline-size: 28rem;
+  margin-inline: auto;
+  margin-block-end: var(--space-6);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-lg);
+  background-color: rgb(var(--color-brine-600));
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  font-weight: 500;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.button:hover {
+  background-color: rgb(var(--color-brine-700));
+}

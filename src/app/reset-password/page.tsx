@@ -5,6 +5,7 @@ import { updatePassword } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import { Input, Button, Card } from "@/components/ui";
 import styles from "../auth.module.css";
 
 export default function ResetPasswordPage() {
@@ -87,12 +88,12 @@ export default function ResetPasswordPage() {
     return (
       <div className={styles.page}>
         <div className={styles.container}>
-          <div className={styles.card}>
+          <Card>
             <div className={styles["loading-spinner-container"]}>
               <div className={styles["loading-spinner"]}></div>
               <p className={styles["loading-text"]}>Verifying reset link...</p>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     );
@@ -102,7 +103,7 @@ export default function ResetPasswordPage() {
     return (
       <div className={styles.page}>
         <div className={styles.container}>
-          <div className={styles.card}>
+          <Card>
             <div className={styles.header}>
               <div className={styles["error-icon-container"]}>
                 <svg
@@ -135,7 +136,7 @@ export default function ResetPasswordPage() {
             >
               Request New Reset Link
             </Link>
-          </div>
+          </Card>
         </div>
       </div>
     );
@@ -145,7 +146,7 @@ export default function ResetPasswordPage() {
     return (
       <div className={styles.page}>
         <div className={styles.container}>
-          <div className={styles.card}>
+          <Card>
             <div className={styles.header}>
               <div className={styles["success-icon-container"]}>
                 <svg
@@ -171,7 +172,7 @@ export default function ResetPasswordPage() {
                 plan meals...
               </p>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     );
@@ -180,7 +181,7 @@ export default function ResetPasswordPage() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <div className={styles.card}>
+        <Card>
           <div className={styles.header}>
             <h1 className={styles.title}>
               Reset Your Password
@@ -200,59 +201,41 @@ export default function ResetPasswordPage() {
               </div>
             )}
 
-            <div className={styles.field}>
-              <label
-                htmlFor="password"
-                className={styles.label}
-              >
-                New Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={styles.input}
-                aria-label="New password"
-              />
-              <p className={styles.hint}>
-                At least 8 characters with uppercase, lowercase, and a number
-              </p>
-            </div>
+            <Input
+              id="password"
+              label="New Password"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              hint="At least 8 characters with uppercase, lowercase, and a number"
+              aria-label="New password"
+            />
 
-            <div className={styles.field}>
-              <label
-                htmlFor="confirmPassword"
-                className={styles.label}
-              >
-                Confirm New Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className={styles.input}
-                aria-label="Confirm new password"
-              />
-            </div>
+            <Input
+              id="confirmPassword"
+              label="Confirm New Password"
+              name="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              aria-label="Confirm new password"
+            />
 
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className={styles["submit-button"]}
+              fullWidth
               aria-busy={loading}
             >
               {loading ? "Updating Password..." : "Update Password"}
-            </button>
+            </Button>
           </form>
-        </div>
+        </Card>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import {
   capitalise,
 } from "@/lib/utils";
 import React, { useEffect } from "react";
+import { Badge } from "@/components/ui";
 import styles from "./MealDetailModal.module.css";
 
 interface MealDetailModalProps {
@@ -94,17 +95,17 @@ export function MealDetailModal({
               <span className={styles.emoji} aria-hidden>
                 {getMealTypeEmoji(meal.mealType)}
               </span>
-              <span
-                className={`${styles.badge} ${
+              <Badge
+                variant={
                   meal.priceLevel === 1
-                    ? styles.economic
+                    ? "economic"
                     : meal.priceLevel === 2
-                      ? styles.mid
-                      : styles.fancy
-                }`}
+                      ? "mid"
+                      : "fancy"
+                }
               >
                 {getBudgetSymbol(meal.priceLevel)}
-              </span>
+              </Badge>
               <span className={styles["meal-type"]}>
                 {capitalise(meal.mealType)}
               </span>

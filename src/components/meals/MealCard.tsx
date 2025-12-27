@@ -8,6 +8,7 @@ import {
   capitalise,
   cn,
 } from "@/lib/utils";
+import { Badge } from "@/components/ui";
 import styles from "./MealCard.module.css";
 
 interface MealCardProps {
@@ -48,10 +49,10 @@ export function MealCard({
     }
   };
 
-  const getBadgeClass = () => {
-    if (meal.priceLevel === 1) return styles.economic;
-    if (meal.priceLevel === 2) return styles.mid;
-    return styles.fancy;
+  const getBadgeVariant = () => {
+    if (meal.priceLevel === 1) return "economic";
+    if (meal.priceLevel === 2) return "mid";
+    return "fancy";
   };
 
   return (
@@ -69,9 +70,9 @@ export function MealCard({
             <span className={styles.emoji} aria-hidden>
               {getMealTypeEmoji(meal.mealType)}
             </span>
-            <span className={cn(styles.badge, getBadgeClass())}>
+            <Badge variant={getBadgeVariant()}>
               {getBudgetSymbol(meal.priceLevel)}
-            </span>
+            </Badge>
             <span className={styles["meal-type"]}>
               {capitalise(meal.mealType)}
             </span>

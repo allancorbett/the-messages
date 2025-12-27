@@ -1,0 +1,31 @@
+.container {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.skeleton {
+  background-color: rgb(var(--color-peat-200));
+  border-radius: var(--radius-md);
+}
+
+.title {
+  block-size: 1.5rem;
+  inline-size: 33%;
+}
+
+.text-long {
+  block-size: 1rem;
+  inline-size: 66%;
+}
+
+.text-medium {
+  block-size: 1rem;
+  inline-size: 50%;
+}
+
+.text-short {
+  block-size: 1rem;
+  inline-size: 33%;
+}

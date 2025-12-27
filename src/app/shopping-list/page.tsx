@@ -14,6 +14,7 @@ import {
   removeMealFromShoppingList,
   getMealById,
 } from "@/app/actions/meals";
+import { Card, EmptyState, LoadingContainer, LoadingSkeleton } from "@/components/ui";
 import styles from "./page.module.css";
 
 interface MealMetadata {
@@ -149,46 +150,40 @@ export default function ShoppingListPage() {
         </div>
 
         {loading ? (
-          <div className={styles.card}>
-            <div className={styles["loading-container"]}>
-              <div className={`${styles.skeleton} ${styles.title}`} />
-              <div className={`${styles.skeleton} ${styles["text-long"]}`} />
-              <div className={`${styles.skeleton} ${styles["text-medium"]}`} />
-            </div>
-          </div>
+          <Card>
+            <LoadingContainer>
+              <LoadingSkeleton variant="title" />
+              <LoadingSkeleton variant="text-long" />
+              <LoadingSkeleton variant="text-medium" />
+            </LoadingContainer>
+          </Card>
         ) : items.length === 0 ? (
-          <div className={`${styles.card} ${styles["empty-state"]}`}>
-            <div className={styles["empty-icon-container"]}>
-              <svg
-                className={styles["empty-icon"]}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-            </div>
-            <h2 className={styles["empty-title"]}>
-              No meals selected
-            </h2>
-            <p className={styles["empty-text"]}>
-              Head to the Plan page to generate meals and select the ones you
-              want to cook this week.
-            </p>
-            <button
-              onClick={() => router.push("/plan")}
-              className={styles.button}
-            >
-              Plan Meals
-            </button>
-          </div>
+          <Card>
+            <EmptyState
+              icon={
+                <svg
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+              }
+              title="No meals selected"
+              description="Head to the Plan page to generate meals and select the ones you want to cook this week."
+              action={{
+                label: "Plan Meals",
+                onClick: () => router.push("/plan"),
+              }}
+            />
+          </Card>
         ) : (
-          <div className={styles.card}>
+          <Card>
             <ShoppingList
               items={items}
               mealMetadata={mealMetadata}
@@ -196,7 +191,7 @@ export default function ShoppingListPage() {
               onRemoveMeal={handleRemoveMeal}
               onViewMeal={handleViewMeal}
             />
-          </div>
+          </Card>
         )}
       </main>
 

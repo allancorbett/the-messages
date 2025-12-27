@@ -1,0 +1,29 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-full);
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+  font-size: var(--font-xs);
+  font-weight: 500;
+}
+
+.default {
+  background-color: rgb(var(--color-brine-100));
+  color: rgb(var(--color-brine-700));
+}
+
+.economic {
+  background-color: rgb(var(--color-brine-100));
+  color: rgb(var(--color-brine-700));
+}
+
+.mid {
+  background-color: rgb(var(--color-oat-100));
+  color: rgb(var(--color-oat-700));
+}
+
+.fancy {
+  background-color: rgb(var(--color-heather-100));
+  color: rgb(var(--color-heather-700));
+}
