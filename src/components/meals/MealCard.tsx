@@ -8,6 +8,7 @@ import {
   capitalise,
   cn,
 } from "@/lib/utils";
+import styles from "./MealCard.module.css";
 
 interface MealCardProps {
   meal: Meal;
@@ -46,48 +47,44 @@ export function MealCard({
       console.error("Failed to copy URL:", err);
     }
   };
+
+  const getBadgeClass = () => {
+    if (meal.priceLevel === 1) return styles.economic;
+    if (meal.priceLevel === 2) return styles.mid;
+    return styles.fancy;
+  };
+
   return (
     <div
       className={cn(
-        "card group transition-all cursor-pointer hover:shadow-md",
-        selected && "ring-2 ring-brine-500 bg-brine-50/50",
+        styles["meal-card"],
+        selected && styles.selected,
         className
       )}
       onClick={() => onSelect?.(meal)}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-lg" aria-hidden>
+      <div className={styles["card-content"]}>
+        <div className={styles["main-info"]}>
+          <div className={styles.header}>
+            <span className={styles.emoji} aria-hidden>
               {getMealTypeEmoji(meal.mealType)}
             </span>
-            <span
-              className={cn(
-                "badge",
-                meal.priceLevel === 1 && "badge-economic",
-                meal.priceLevel === 2 && "badge-mid",
-                meal.priceLevel === 3 && "badge-fancy"
-              )}
-            >
+            <span className={cn(styles.badge, getBadgeClass())}>
               {getBudgetSymbol(meal.priceLevel)}
             </span>
-            <span className="text-xs text-peat-500">
+            <span className={styles["meal-type"]}>
               {capitalise(meal.mealType)}
             </span>
           </div>
 
-          <h3 className="font-medium text-peat-900 mb-1 group-hover:text-brine-700 transition-colors">
-            {meal.name}
-          </h3>
+          <h3 className={styles.title}>{meal.name}</h3>
 
-          <p className="text-sm text-peat-600 line-clamp-2 mb-3">
-            {meal.description}
-          </p>
+          <p className={styles.description}>{meal.description}</p>
 
-          <div className="flex items-center gap-4 text-xs text-peat-500 mb-3">
-            <span className="flex items-center gap-1">
+          <div className={styles.meta}>
+            <span className={styles["meta-item"]}>
               <svg
-                className="w-3.5 h-3.5"
+                className={styles.icon}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -101,9 +98,9 @@ export function MealCard({
               </svg>
               {formatPrepTime(meal.prepTime)}
             </span>
-            <span className="flex items-center gap-1">
+            <span className={styles["meta-item"]}>
               <svg
-                className="w-3.5 h-3.5"
+                className={styles.icon}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -117,9 +114,9 @@ export function MealCard({
               </svg>
               {meal.servings} servings
             </span>
-            <span className="flex items-center gap-1">
+            <span className={styles["meta-item"]}>
               <svg
-                className="w-3.5 h-3.5"
+                className={styles.icon}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -141,11 +138,11 @@ export function MealCard({
                 e.stopPropagation();
                 onViewDetails(meal);
               }}
-              className="text-xs text-brine-600 hover:text-brine-700 font-medium flex items-center gap-1"
+              className={styles["view-details"]}
             >
               View full recipe
               <svg
-                className="w-3.5 h-3.5"
+                className={styles.icon}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -161,20 +158,15 @@ export function MealCard({
           )}
         </div>
 
-        <div className="flex flex-col items-end gap-2 flex-shrink-0 ml-3">
+        <div className={styles.actions}>
           {showCheckbox && (
             <div
-              className={cn(
-                "w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0",
-                selected
-                  ? "bg-brine-500 border-brine-500"
-                  : "border-peat-300 group-hover:border-peat-400"
-              )}
+              className={cn(styles.checkbox, selected && styles.checked)}
               aria-label={selected ? "Selected" : "Not selected"}
             >
               {selected && (
                 <svg
-                  className="w-4 h-4 text-white"
+                  className={styles["checkbox-icon"]}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -197,11 +189,11 @@ export function MealCard({
                 e.stopPropagation();
                 onSave(meal);
               }}
-              className="p-1.5 rounded-lg text-peat-400 hover:text-brine-600 hover:bg-brine-50 transition-colors flex-shrink-0"
+              className={styles["action-button"]}
               aria-label="Save meal"
             >
               <svg
-                className="w-5 h-5"
+                className={styles["button-icon"]}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -220,11 +212,11 @@ export function MealCard({
           {showShareButton && meal.id && (
             <button
               onClick={handleShare}
-              className="p-1.5 rounded-lg text-peat-400 hover:text-brine-600 hover:bg-brine-50 transition-colors flex-shrink-0"
+              className={styles["action-button"]}
               aria-label="Share recipe link"
             >
               <svg
-                className="w-5 h-5"
+                className={styles["button-icon"]}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
