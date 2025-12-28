@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { ShoppingList } from "@/components/shopping/ShoppingList";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
+import { Toast } from "@/components/Toast";
 import { Meal, ShoppingListItem } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -28,6 +29,10 @@ export default function ShoppingListPage() {
   const [loading, setLoading] = useState(true);
   const [selectedMealForDetail, setSelectedMealForDetail] =
     useState<Meal | null>(null);
+
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const loadShoppingList = useCallback(async () => {
     const supabase = createClient();
@@ -107,20 +112,26 @@ export default function ShoppingListPage() {
 
     const result = await clearShoppingList();
     if (result.error) {
-      alert("Failed to clear shopping list");
+      setToastMessage("Failed to clear shopping list");
+      setShowToast(true);
     } else {
       setItems([]);
       setMealMetadata([]);
+      setToastMessage("Shopping list cleared");
+      setShowToast(true);
     }
   }
 
   async function handleRemoveMeal(mealId: string) {
     const result = await removeMealFromShoppingList(mealId);
     if (result.error) {
-      alert("Failed to remove meal from shopping list");
+      setToastMessage("Failed to remove meal from shopping list");
+      setShowToast(true);
     } else {
       // Reload shopping list from database
       await loadShoppingList();
+      setToastMessage("Meal removed from shopping list");
+      setShowToast(true);
     }
   }
 
@@ -129,8 +140,19 @@ export default function ShoppingListPage() {
     if (result.data) {
       setSelectedMealForDetail(result.data);
     } else {
-      alert("Failed to load meal details");
+      setToastMessage("Failed to load meal details");
+      setShowToast(true);
     }
+  }
+
+  function handleCopySuccess() {
+    setToastMessage("Shopping list copied to clipboard!");
+    setShowToast(true);
+  }
+
+  function handleShareSuccess() {
+    setToastMessage("Recipe link copied to clipboard!");
+    setShowToast(true);
   }
 
   return (
@@ -194,6 +216,7 @@ export default function ShoppingListPage() {
               onClear={handleClearList}
               onRemoveMeal={handleRemoveMeal}
               onViewMeal={handleViewMeal}
+              onCopySuccess={handleCopySuccess}
             />
           </div>
         )}
@@ -205,8 +228,15 @@ export default function ShoppingListPage() {
           isOpen={true}
           onClose={() => setSelectedMealForDetail(null)}
           showShareButton={true}
+          onShareSuccess={handleShareSuccess}
         />
       )}
+
+      <Toast
+        message={toastMessage}
+        show={showToast}
+        onHide={() => setShowToast(false)}
+      />
     </div>
   );
 }
