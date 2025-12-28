@@ -5,6 +5,7 @@ import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { MealFilters } from "@/components/meals/MealFilters";
 import { MealList } from "@/components/meals/MealList";
 import { CookingLoadingOverlay } from "@/components/CookingLoadingOverlay";
+import { Toast } from "@/components/Toast";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentSeason } from "@/lib/utils";
 import { BudgetLevel, ComplexityLevel, Meal, MealType, Season } from "@/types";
@@ -39,6 +40,10 @@ export default function PlanPage() {
   const [selectedMealForDetail, setSelectedMealForDetail] =
     useState<Meal | null>(null);
   const [hasGeneratedBefore, setHasGeneratedBefore] = useState(false);
+
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     async function getUser() {
@@ -170,6 +175,11 @@ export default function PlanPage() {
     // Store selected meals in sessionStorage for the shopping list page
     sessionStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
     router.push("/shopping-list");
+  }
+
+  function handleShareSuccess() {
+    setToastMessage("Recipe link copied to clipboard!");
+    setShowToast(true);
   }
 
   return (
@@ -338,6 +348,8 @@ export default function PlanPage() {
               onToggleSelect={toggleMealSelection}
               onViewDetails={setSelectedMealForDetail}
               loading={loading || initialLoading}
+              showShareButton={true}
+              onShareSuccess={handleShareSuccess}
             />
 
             {!loading && !initialLoading && meals.length === 0 && !hasGeneratedBefore && (
@@ -391,8 +403,16 @@ export default function PlanPage() {
           meal={selectedMealForDetail}
           isOpen={true}
           onClose={() => setSelectedMealForDetail(null)}
+          showShareButton={true}
+          onShareSuccess={handleShareSuccess}
         />
       )}
+
+      <Toast
+        message={toastMessage}
+        show={showToast}
+        onHide={() => setShowToast(false)}
+      />
 
       <CookingLoadingOverlay isLoading={loading} />
     </div>

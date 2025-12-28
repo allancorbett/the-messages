@@ -16,6 +16,7 @@ interface ShoppingListProps {
   onClear?: () => void;
   onRemoveMeal?: (mealId: string) => void;
   onViewMeal?: (mealId: string) => void;
+  onCopySuccess?: () => void;
 }
 
 const categoryOrder: IngredientCategory[] = [
@@ -38,7 +39,7 @@ const categoryEmojis: Record<IngredientCategory, string> = {
   storecupboard: "🫙",
 };
 
-export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onViewMeal }: ShoppingListProps) {
+export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onViewMeal, onCopySuccess }: ShoppingListProps) {
   const groupedItems = useMemo(() => {
     const grouped = groupBy(items, "category");
     // Sort by category order
@@ -67,7 +68,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
     await updateShoppingListItem(itemIndex, !currentChecked);
   }
 
-  function copyToClipboard() {
+  async function copyToClipboard() {
     const text = Object.entries(groupedItems)
       .map(([category, categoryItems]) => {
         const header = `${capitalise(category)}:`;
@@ -78,7 +79,12 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
       })
       .join("\n\n");
 
-    navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
+      onCopySuccess?.();
+    } catch (err) {
+      console.error("Failed to copy shopping list:", err);
+    }
   }
 
   const checkedCount = items.filter(item => item.checked).length;

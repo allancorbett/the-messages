@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
+import { Toast } from "@/components/Toast";
 import { Meal } from "@/types";
 import { getMealById } from "@/app/actions/meals";
 import {
@@ -21,6 +22,10 @@ export default function RecipePage() {
   const [error, setError] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
   const [copySuccess, setCopySuccess] = useState(false);
+
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     async function loadMeal() {
@@ -54,6 +59,8 @@ export default function RecipePage() {
       await navigator.clipboard.writeText(url);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
+      setToastMessage("Recipe link copied to clipboard!");
+      setShowToast(true);
     } catch (err) {
       console.error("Failed to copy URL:", err);
     }
@@ -62,7 +69,12 @@ export default function RecipePage() {
   function addToShoppingList() {
     if (!meal) return;
     sessionStorage.setItem("selectedMeals", JSON.stringify([meal]));
-    router.push("/shopping-list");
+    setToastMessage("Added to shopping list");
+    setShowToast(true);
+    // Navigate after a short delay so the user sees the toast
+    setTimeout(() => {
+      router.push("/shopping-list");
+    }, 800);
   }
 
   if (loading) {
@@ -341,6 +353,12 @@ export default function RecipePage() {
           </ol>
         </div>
       </main>
+
+      <Toast
+        message={toastMessage}
+        show={showToast}
+        onHide={() => setShowToast(false)}
+      />
     </div>
   );
 }
