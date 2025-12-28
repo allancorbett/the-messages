@@ -342,7 +342,7 @@ export default function SavedPage() {
                 </div>
 
                 {/* Price level filter */}
-                <div>
+                <div className="mb-6">
                   <label className="block text-sm font-medium text-peat-700 mb-2">
                     Budget
                   </label>
