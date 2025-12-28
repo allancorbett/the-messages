@@ -120,16 +120,18 @@ export function MealFilters({
       </div>
 
       {/* Complexity */}
-      <div className={styles["filter-section"]}>
-        <label className={styles.label}>Complexity</label>
-        <div className={styles["button-group"]}>
+      <div>
+        <label className="label">Complexity</label>
+        <div className="flex flex-wrap gap-2">
           {complexityLevels.map((level) => (
             <button
               key={level}
               onClick={() => onComplexityChange(level)}
               className={cn(
-                styles["filter-button"],
-                complexity === level && styles.active
+                "px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                complexity === level
+                  ? "bg-brine-600 text-white"
+                  : "bg-peat-100 text-peat-700 hover:bg-peat-200"
               )}
             >
               {capitalise(level)}
