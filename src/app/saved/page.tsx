@@ -147,9 +147,12 @@ export default function SavedPage() {
       .eq("id", mealId);
 
     if (error) {
-      alert("Failed to delete meal");
+      setToastMessage("Failed to delete meal");
+      setShowToast(true);
     } else {
       setAllMeals((prev) => prev.filter((m) => m.id !== mealId));
+      setToastMessage("Meal deleted successfully");
+      setShowToast(true);
     }
   }
 
@@ -162,12 +165,18 @@ export default function SavedPage() {
     const result = await addMealToShoppingList(meal);
     if (result.error) {
       if (result.error === "Meal already in shopping list") {
-        alert("This meal is already in your shopping list");
+        setToastMessage("This meal is already in your shopping list");
       } else {
-        alert("Failed to add meal to shopping list");
+        setToastMessage("Failed to add meal to shopping list");
       }
+      setShowToast(true);
     } else {
-      router.push("/shopping-list");
+      setToastMessage("Added to shopping list");
+      setShowToast(true);
+      // Navigate after a short delay so the user sees the toast
+      setTimeout(() => {
+        router.push("/shopping-list");
+      }, 800);
     }
   }
 
@@ -540,6 +549,7 @@ export default function SavedPage() {
           onClose={() => setSelectedMealForDetail(null)}
           onAddToShoppingList={() => addToShoppingList(selectedMealForDetail)}
           showShareButton={true}
+          onShareSuccess={handleShareSuccess}
         />
       )}
 

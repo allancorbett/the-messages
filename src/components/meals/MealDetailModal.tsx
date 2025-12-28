@@ -15,6 +15,7 @@ interface MealDetailModalProps {
   onClose: () => void;
   onAddToShoppingList?: () => void;
   showShareButton?: boolean;
+  onShareSuccess?: () => void;
 }
 
 export function MealDetailModal({
@@ -23,6 +24,7 @@ export function MealDetailModal({
   onClose,
   onAddToShoppingList,
   showShareButton = false,
+  onShareSuccess,
 }: MealDetailModalProps) {
   const [copySuccess, setCopySuccess] = React.useState(false);
 
@@ -34,6 +36,7 @@ export function MealDetailModal({
       await navigator.clipboard.writeText(url);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
+      onShareSuccess?.();
     } catch (err) {
       console.error("Failed to copy URL:", err);
     }

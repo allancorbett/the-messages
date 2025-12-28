@@ -10,6 +10,8 @@ interface MealListProps {
   onSave?: (meal: Meal) => void;
   onViewDetails?: (meal: Meal) => void;
   loading?: boolean;
+  showShareButton?: boolean;
+  onShareSuccess?: () => void;
 }
 
 export function MealList({
@@ -19,6 +21,8 @@ export function MealList({
   onSave,
   onViewDetails,
   loading = false,
+  showShareButton = false,
+  onShareSuccess,
 }: MealListProps) {
   if (loading) {
     return (
@@ -88,6 +92,8 @@ export function MealList({
             onSave={onSave}
             onViewDetails={onViewDetails}
             showSaveButton={!!onSave}
+            showShareButton={showShareButton}
+            onShareSuccess={onShareSuccess}
           />
         </div>
       ))}
