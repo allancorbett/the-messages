@@ -61,7 +61,7 @@ Always use the appropriate client based on execution context. The server client 
 2. Request sent to `/api/generate-meals` route handler
 3. Route handler authenticates user, validates input with Zod schemas
 4. Prompt constructed with seasonal ingredients, budget constraints, and dietary requirements
-5. Claude API (Sonnet 4) generates structured JSON with 10 meals
+5. Claude API (Sonnet 4) generates structured JSON with 3 meals
 6. Response validated against `generateMealsResponseSchema` before returning to client
 7. Each meal gets a unique ID: `meal-${Date.now()}-${index}`
 

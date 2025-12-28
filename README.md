@@ -128,8 +128,8 @@ src/
 ## API Costs
 
 Claude API (Sonnet):
-- ~$0.03 per meal generation (10 meals)
-- 100 generations/month ≈ $3
+- ~$0.01 per meal generation (3 meals)
+- 100 generations/month ≈ $1
 
 ## Licence
 
