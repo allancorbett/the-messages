@@ -85,7 +85,7 @@ function buildPrompt(params: GenerateMealsParams): string {
     sanitizeInput(ing, 50)
   );
 
-  return `Generate exactly 10 delicious meal suggestions for home cooks in ${locationName}. These should be the kind of trusted recipes passed between friends - tried, tested, and absolutely tasty.
+  return `Generate exactly 3 delicious meal suggestions for home cooks in ${locationName}. These should be the kind of trusted recipes passed between friends - tried, tested, and absolutely tasty.
 
 CONTEXT:
 - Current season: ${season}

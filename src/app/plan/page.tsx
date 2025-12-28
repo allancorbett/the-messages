@@ -170,7 +170,7 @@ export default function PlanPage() {
                 onClick={generateMeals}
                 disabled={loading || mealTypes.length === 0}
                 className="btn-primary w-full mt-6"
-                aria-label="Generate 10 meal suggestions based on your preferences"
+                aria-label="Generate 3 meal suggestions based on your preferences"
                 aria-busy={loading}
               >
                 {loading ? (
@@ -211,7 +211,7 @@ export default function PlanPage() {
                         d="M13 10V3L4 14h7v7l9-11h-7z"
                       />
                     </svg>
-                    Generate 10 Meals
+                    Generate 3 Meals
                   </>
                 )}
               </button>
@@ -323,7 +323,7 @@ export default function PlanPage() {
                   Ready to plan?
                 </h2>
                 <p className="text-peat-600 max-w-md mx-auto mb-6">
-                  Set your preferences on the left and hit Generate to get 10
+                  Set your preferences on the left and hit Generate to get 3
                   seasonal meal suggestions tailored to local supermarkets.
                 </p>
                 <button onClick={generateMeals} className="btn-primary">
