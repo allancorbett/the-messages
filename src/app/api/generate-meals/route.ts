@@ -27,6 +27,7 @@ function buildPrompt(params: GenerateMealsParams): string {
     season,
     mealTypes,
     budget,
+    complexity,
     householdSize,
     dietaryRequirements = [],
     excludeIngredients = [],
@@ -67,6 +68,15 @@ function buildPrompt(params: GenerateMealsParams): string {
     3: "fancy (premium ingredients, special occasion worthy)",
   };
 
+  const complexityDescriptions = {
+    simple:
+      "Simple (fewer ingredients, quick prep, may use convenient pre-made items like shop-bought sauces or ready-prepared ingredients. Perfect for busy weeknights)",
+    moderate:
+      "Moderate (home cook level, reasonable ingredient count, straightforward techniques that most people can handle. This is everyday cooking)",
+    complex:
+      "Complex (restaurant-level techniques adapted for home kitchens, more elaborate preparations, multiple components. These are impressive dishes that still work at home)",
+  };
+
   // Sanitize user-provided arrays
   const safeDietaryRequirements = dietaryRequirements.map((req) =>
     sanitizeInput(req, 50)
@@ -81,6 +91,7 @@ CONTEXT:
 - Current season: ${season}
 - Meal types needed: ${mealTypes.join(", ")}
 - Budget level: ${budgetDescriptions[budget]}
+- Complexity level: ${complexityDescriptions[complexity]}
 - Servings per meal: ${householdSize}
 - Dietary requirements: ${safeDietaryRequirements.length > 0 ? safeDietaryRequirements.join(", ") : "none"}
 - Ingredients to avoid: ${safeExcludeIngredients.length > 0 ? safeExcludeIngredients.join(", ") : "none"}${coordinateContext}
@@ -108,6 +119,7 @@ Return ONLY valid JSON matching this exact structure (no markdown, no explanatio
       "description": "string (1-2 sentences describing the dish)",
       "mealType": "breakfast" | "lunch" | "dinner",
       "priceLevel": 1 | 2 | 3,
+      "complexity": "${complexity}",
       "prepTime": number (total time in minutes including cooking),
       "servings": ${householdSize},
       "seasons": ["${season}"],

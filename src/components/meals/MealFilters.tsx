@@ -1,6 +1,6 @@
 "use client";
 
-import { MealType, BudgetLevel, Season } from "@/types";
+import { MealType, BudgetLevel, ComplexityLevel, Season } from "@/types";
 import {
   getCurrentSeason,
   getSeasonEmoji,
@@ -16,6 +16,8 @@ interface MealFiltersProps {
   onMealTypesChange: (types: MealType[]) => void;
   budget: BudgetLevel;
   onBudgetChange: (budget: BudgetLevel) => void;
+  complexity: ComplexityLevel;
+  onComplexityChange: (complexity: ComplexityLevel) => void;
   householdSize: number;
   onHouseholdSizeChange: (size: number) => void;
 }
@@ -23,6 +25,7 @@ interface MealFiltersProps {
 const seasons: Season[] = ["spring", "summer", "autumn", "winter"];
 const mealTypeOptions: MealType[] = ["breakfast", "lunch", "dinner"];
 const budgetLevels: BudgetLevel[] = [1, 2, 3];
+const complexityLevels: ComplexityLevel[] = ["simple", "moderate", "complex"];
 
 export function MealFilters({
   season,
@@ -31,6 +34,8 @@ export function MealFilters({
   onMealTypesChange,
   budget,
   onBudgetChange,
+  complexity,
+  onComplexityChange,
   householdSize,
   onHouseholdSizeChange,
 }: MealFiltersProps) {
@@ -109,6 +114,25 @@ export function MealFilters({
               )}
             >
               {"£".repeat(level)} {getBudgetLabel(level)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Complexity */}
+      <div className={styles["filter-section"]}>
+        <label className={styles.label}>Complexity</label>
+        <div className={styles["button-group"]}>
+          {complexityLevels.map((level) => (
+            <button
+              key={level}
+              onClick={() => onComplexityChange(level)}
+              className={cn(
+                styles["filter-button"],
+                complexity === level && styles.active
+              )}
+            >
+              {capitalise(level)}
             </button>
           ))}
         </div>

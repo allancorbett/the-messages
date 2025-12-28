@@ -7,7 +7,7 @@ import { MealList } from "@/components/meals/MealList";
 import { CookingLoadingOverlay } from "@/components/CookingLoadingOverlay";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentSeason } from "@/lib/utils";
-import { BudgetLevel, Meal, MealType, Season } from "@/types";
+import { BudgetLevel, ComplexityLevel, Meal, MealType, Season } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { saveGeneratedMeals } from "@/app/actions/meals";
@@ -26,6 +26,7 @@ export default function PlanPage() {
     "dinner",
   ]);
   const [budget, setBudget] = useState<BudgetLevel>(2);
+  const [complexity, setComplexity] = useState<ComplexityLevel>("moderate");
   const [householdSize, setHouseholdSize] = useState(2);
 
   // Meals state
@@ -77,6 +78,7 @@ export default function PlanPage() {
           season,
           mealTypes,
           budget,
+          complexity,
           householdSize,
           countryCode: location?.countryCode,
           city: location?.city,
@@ -158,6 +160,8 @@ export default function PlanPage() {
                 onMealTypesChange={setMealTypes}
                 budget={budget}
                 onBudgetChange={setBudget}
+                complexity={complexity}
+                onComplexityChange={setComplexity}
                 householdSize={householdSize}
                 onHouseholdSizeChange={setHouseholdSize}
               />
