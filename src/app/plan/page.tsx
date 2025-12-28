@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { saveGeneratedMeals } from "@/app/actions/meals";
 import { getUserLocation, formatLocation, type LocationData } from "@/lib/geolocation";
+import { transformSavedMealToMeal } from "@/lib/meal-utils";
 
 export default function PlanPage() {
   const router = useRouter();
@@ -33,9 +34,11 @@ export default function PlanPage() {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMealForDetail, setSelectedMealForDetail] =
     useState<Meal | null>(null);
+  const [hasGeneratedBefore, setHasGeneratedBefore] = useState(false);
 
   useEffect(() => {
     async function getUser() {
@@ -62,6 +65,40 @@ export default function PlanPage() {
       }
     }
     detectLocation();
+  }, []);
+
+  // Load last 3 saved meals on page load
+  useEffect(() => {
+    async function loadRecentMeals() {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setInitialLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("saved_meals")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (error) {
+        console.error("Failed to load recent meals:", error);
+      } else if (data && data.length > 0) {
+        const transformedMeals = data.map(transformSavedMealToMeal);
+        setMeals(transformedMeals);
+        setHasGeneratedBefore(true);
+      }
+
+      setInitialLoading(false);
+    }
+
+    loadRecentMeals();
   }, []);
 
   async function generateMeals() {
@@ -95,6 +132,7 @@ export default function PlanPage() {
 
       const data = await response.json();
       setMeals(data.meals);
+      setHasGeneratedBefore(true);
 
       // Auto-save all generated meals to database
       const saveResult = await saveGeneratedMeals(data.meals);
@@ -299,10 +337,10 @@ export default function PlanPage() {
               selectedMeals={selectedMeals}
               onToggleSelect={toggleMealSelection}
               onViewDetails={setSelectedMealForDetail}
-              loading={loading}
+              loading={loading || initialLoading}
             />
 
-            {!loading && meals.length === 0 && (
+            {!loading && !initialLoading && meals.length === 0 && !hasGeneratedBefore && (
               <div className="card text-center py-16">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
                   <svg
