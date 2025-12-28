@@ -27,6 +27,7 @@ function buildPrompt(params: GenerateMealsParams): string {
     season,
     mealTypes,
     budget,
+    complexity,
     householdSize,
     dietaryRequirements = [],
     excludeIngredients = [],
@@ -67,6 +68,15 @@ function buildPrompt(params: GenerateMealsParams): string {
     3: "fancy (premium ingredients, special occasion worthy)",
   };
 
+  const complexityDescriptions = {
+    simple:
+      "Simple (fewer ingredients, quick prep, may use convenient pre-made items like shop-bought sauces or ready-prepared ingredients. Perfect for busy weeknights)",
+    moderate:
+      "Moderate (home cook level, reasonable ingredient count, straightforward techniques that most people can handle. This is everyday cooking)",
+    complex:
+      "Complex (restaurant-level techniques adapted for home kitchens, more elaborate preparations, multiple components. These are impressive dishes that still work at home)",
+  };
+
   // Sanitize user-provided arrays
   const safeDietaryRequirements = dietaryRequirements.map((req) =>
     sanitizeInput(req, 50)
@@ -75,12 +85,13 @@ function buildPrompt(params: GenerateMealsParams): string {
     sanitizeInput(ing, 50)
   );
 
-  return `Generate exactly 10 delicious meal suggestions for home cooks in ${locationName}. These should be the kind of trusted recipes passed between friends - tried, tested, and absolutely tasty.
+  return `Generate exactly 3 delicious meal suggestions for home cooks in ${locationName}. These should be the kind of trusted recipes passed between friends - tried, tested, and absolutely tasty.
 
 CONTEXT:
 - Current season: ${season}
 - Meal types needed: ${mealTypes.join(", ")}
 - Budget level: ${budgetDescriptions[budget]}
+- Complexity level: ${complexityDescriptions[complexity]}
 - Servings per meal: ${householdSize}
 - Dietary requirements: ${safeDietaryRequirements.length > 0 ? safeDietaryRequirements.join(", ") : "none"}
 - Ingredients to avoid: ${safeExcludeIngredients.length > 0 ? safeExcludeIngredients.join(", ") : "none"}${coordinateContext}
@@ -89,16 +100,17 @@ SEASONAL INGREDIENTS TO PRIORITISE FOR ${season.toUpperCase()}:
 ${regionalConfig.seasonalIngredients[season]}
 
 REQUIREMENTS:
-1. Make these recipes TASTY - don't hold back on flavour! Use herbs, spices, garlic, ginger, and aromatics generously
-2. Use fresh, seasonal produce from ${locationName} as the base, but enhance with spices and flavourings from anywhere
-3. Base ingredients should be available in local supermarkets (${regionalConfig.supermarkets})
-4. Match the budget level exactly - be realistic about costs
-5. Include a good mix of the requested meal types (${mealTypes.join(", ")})
-6. Vary the cuisines and cooking styles - make it exciting!
-7. Give recipes warm, friendly names (not overly fancy or clinical)
-8. Write descriptions that sound inviting and personal, like recommending them to a friend
-9. Be realistic about prep times for home cooks
-10. Make instructions clear and encouraging - this should feel achievable and fun to cook
+1. CRITICAL: Every recipe MUST feature at least 2-3 ingredients from the seasonal list above as main components - this is non-negotiable
+2. Use fresh, seasonal produce from ${locationName} that's actually in season right now
+3. Base ingredients must be available in local supermarkets (${regionalConfig.supermarkets})
+4. Make these recipes TASTY - use herbs, spices, garlic, ginger, and aromatics generously to enhance the seasonal ingredients
+5. Match the budget level exactly - be realistic about costs
+6. Include a good mix of the requested meal types (${mealTypes.join(", ")})
+7. Vary the cuisines and cooking styles - make it exciting!
+8. Give recipes warm, friendly names - DO NOT use possessive names like "Mum's...", "Sarah's...", "Grandma's..." or any author attributions
+9. Write descriptions that sound inviting but avoid personal pronouns ("my", "your", "me")
+10. Be realistic about prep times for home cooks
+11. Make instructions clear and encouraging - this should feel achievable and fun to cook
 
 Return ONLY valid JSON matching this exact structure (no markdown, no explanation):
 {
@@ -108,6 +120,7 @@ Return ONLY valid JSON matching this exact structure (no markdown, no explanatio
       "description": "string (1-2 sentences describing the dish)",
       "mealType": "breakfast" | "lunch" | "dinner",
       "priceLevel": 1 | 2 | 3,
+      "complexity": "${complexity}",
       "prepTime": number (total time in minutes including cooking),
       "servings": ${householdSize},
       "seasons": ["${season}"],

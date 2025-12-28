@@ -2,6 +2,8 @@ export type MealType = "breakfast" | "lunch" | "dinner";
 
 export type BudgetLevel = 1 | 2 | 3;
 
+export type ComplexityLevel = "simple" | "moderate" | "complex";
+
 export type Season = "spring" | "summer" | "autumn" | "winter";
 
 export type IngredientCategory =
@@ -25,6 +27,7 @@ export interface Meal {
   description: string;
   mealType: MealType;
   priceLevel: BudgetLevel;
+  complexity: ComplexityLevel;
   prepTime: number;
   servings: number;
   seasons: Season[];
@@ -36,6 +39,7 @@ export interface GenerateMealsParams {
   season: Season;
   mealTypes: MealType[];
   budget: BudgetLevel;
+  complexity: ComplexityLevel;
   householdSize: number;
   dietaryRequirements?: string[];
   excludeIngredients?: string[];

@@ -8,6 +8,7 @@ interface SavedMealRow {
   description: string;
   meal_type: string;
   price_level: number;
+  complexity: string;
   prep_time: number;
   servings: number;
   season: string[];
@@ -27,6 +28,7 @@ export function transformSavedMealToMeal(row: SavedMealRow): Meal {
     description: row.description,
     mealType: row.meal_type as Meal["mealType"],
     priceLevel: row.price_level as Meal["priceLevel"],
+    complexity: row.complexity as Meal["complexity"],
     prepTime: row.prep_time,
     servings: row.servings,
     seasons: row.season as Meal["seasons"],

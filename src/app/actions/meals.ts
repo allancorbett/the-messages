@@ -168,6 +168,7 @@ export async function saveGeneratedMeals(meals: Meal[]) {
     description: meal.description,
     meal_type: meal.mealType,
     price_level: meal.priceLevel,
+    complexity: meal.complexity,
     prep_time: meal.prepTime,
     servings: meal.servings,
     season: meal.seasons,

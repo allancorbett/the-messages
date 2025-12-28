@@ -6,7 +6,7 @@ import { Header } from "@/components/Header";
 import { MealCard } from "@/components/meals/MealCard";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { Toast } from "@/components/Toast";
-import { Meal, MealType, BudgetLevel, Season } from "@/types";
+import { Meal, MealType, BudgetLevel, ComplexityLevel, Season } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { addMealToShoppingList } from "@/app/actions/meals";
 import { transformSavedMealToMeal } from "@/lib/meal-utils";
@@ -31,6 +31,7 @@ export default function SavedPage() {
   const [selectedSeasons, setSelectedSeasons] = useState<Season[]>([]);
   const [selectedMealTypes, setSelectedMealTypes] = useState<MealType[]>([]);
   const [selectedPriceLevels, setSelectedPriceLevels] = useState<BudgetLevel[]>([]);
+  const [selectedComplexityLevels, setSelectedComplexityLevels] = useState<ComplexityLevel[]>([]);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -109,9 +110,16 @@ export default function SavedPage() {
         }
       }
 
+      // Complexity level filter
+      if (selectedComplexityLevels.length > 0) {
+        if (!selectedComplexityLevels.includes(meal.complexity)) {
+          return false;
+        }
+      }
+
       return true;
     });
-  }, [allMeals, searchQuery, selectedSeasons, selectedMealTypes, selectedPriceLevels]);
+  }, [allMeals, searchQuery, selectedSeasons, selectedMealTypes, selectedPriceLevels, selectedComplexityLevels]);
 
   // Paginate filtered meals
   const paginatedMeals = useMemo(() => {
@@ -125,7 +133,7 @@ export default function SavedPage() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedSeasons, selectedMealTypes, selectedPriceLevels]);
+  }, [searchQuery, selectedSeasons, selectedMealTypes, selectedPriceLevels, selectedComplexityLevels]);
 
   async function deleteMeal(mealId: string) {
     if (!confirm("Are you sure you want to delete this saved meal?")) {
@@ -187,18 +195,28 @@ export default function SavedPage() {
     );
   }
 
+  function toggleComplexityLevel(complexityLevel: ComplexityLevel) {
+    setSelectedComplexityLevels((prev) =>
+      prev.includes(complexityLevel)
+        ? prev.filter((c) => c !== complexityLevel)
+        : [...prev, complexityLevel]
+    );
+  }
+
   function clearAllFilters() {
     setSearchQuery("");
     setSelectedSeasons([]);
     setSelectedMealTypes([]);
     setSelectedPriceLevels([]);
+    setSelectedComplexityLevels([]);
   }
 
   const hasActiveFilters =
     searchQuery ||
     selectedSeasons.length > 0 ||
     selectedMealTypes.length > 0 ||
-    selectedPriceLevels.length > 0;
+    selectedPriceLevels.length > 0 ||
+    selectedComplexityLevels.length > 0;
 
   return (
     <div className="min-h-screen bg-peat-50">
@@ -324,7 +342,7 @@ export default function SavedPage() {
                 </div>
 
                 {/* Price level filter */}
-                <div>
+                <div className="mb-6">
                   <label className="block text-sm font-medium text-peat-700 mb-2">
                     Budget
                   </label>
@@ -339,6 +357,28 @@ export default function SavedPage() {
                         />
                         <span className="text-sm text-peat-700">
                           {level === 1 ? "£ - Budget" : level === 2 ? "££ - Mid-range" : "£££ - Premium"}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Complexity level filter */}
+                <div>
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Complexity
+                  </label>
+                  <div className="space-y-2">
+                    {(["simple", "moderate", "complex"] as ComplexityLevel[]).map((level) => (
+                      <label key={level} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedComplexityLevels.includes(level)}
+                          onChange={() => toggleComplexityLevel(level)}
+                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                        />
+                        <span className="text-sm text-peat-700">
+                          {level.charAt(0).toUpperCase() + level.slice(1)}
                         </span>
                       </label>
                     ))}

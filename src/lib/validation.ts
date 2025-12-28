@@ -8,6 +8,8 @@ export const budgetLevelSchema = z.union([
   z.literal(3),
 ]);
 
+export const complexityLevelSchema = z.enum(["simple", "moderate", "complex"]);
+
 export const seasonSchema = z.enum(["spring", "summer", "autumn", "winter"]);
 
 export const ingredientCategorySchema = z.enum([
@@ -31,6 +33,7 @@ export const mealSchema = z.object({
   description: z.string().min(1),
   mealType: mealTypeSchema,
   priceLevel: budgetLevelSchema,
+  complexity: complexityLevelSchema,
   prepTime: z.number().positive(),
   servings: z.number().positive(),
   seasons: z.array(seasonSchema),
@@ -46,6 +49,7 @@ export const generateMealsParamsSchema = z.object({
   season: seasonSchema,
   mealTypes: z.array(mealTypeSchema).min(1),
   budget: budgetLevelSchema,
+  complexity: complexityLevelSchema,
   householdSize: z.number().int().min(1).max(12),
   dietaryRequirements: z.array(z.string()).optional(),
   excludeIngredients: z.array(z.string()).optional(),
