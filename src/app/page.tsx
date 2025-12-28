@@ -44,7 +44,7 @@ export default async function HomePage() {
           </h2>
 
           <p className="text-xl text-peat-600 mb-10 max-w-2xl mx-auto">
-            Seasonal meal planning for your area. Pick your preferences, get 10
+            Seasonal meal planning for your area. Pick your preferences, get 3
             meal ideas, and generate your shopping list — all based on
             what&apos;s good right now.
           </p>
@@ -165,7 +165,7 @@ export default async function HomePage() {
               {
                 step: "2",
                 title: "Generate meals",
-                desc: "Get 10 seasonal suggestions instantly",
+                desc: "Get 3 seasonal suggestions instantly",
               },
               {
                 step: "3",
