@@ -100,16 +100,17 @@ SEASONAL INGREDIENTS TO PRIORITISE FOR ${season.toUpperCase()}:
 ${regionalConfig.seasonalIngredients[season]}
 
 REQUIREMENTS:
-1. Make these recipes TASTY - don't hold back on flavour! Use herbs, spices, garlic, ginger, and aromatics generously
-2. Use fresh, seasonal produce from ${locationName} as the base, but enhance with spices and flavourings from anywhere
-3. Base ingredients should be available in local supermarkets (${regionalConfig.supermarkets})
-4. Match the budget level exactly - be realistic about costs
-5. Include a good mix of the requested meal types (${mealTypes.join(", ")})
-6. Vary the cuisines and cooking styles - make it exciting!
-7. Give recipes warm, friendly names - DO NOT use possessive names like "Mum's...", "Sarah's...", "Grandma's..." or any author attributions
-8. Write descriptions that sound inviting but avoid personal pronouns ("my", "your", "me")
-9. Be realistic about prep times for home cooks
-10. Make instructions clear and encouraging - this should feel achievable and fun to cook
+1. CRITICAL: Every recipe MUST feature at least 2-3 ingredients from the seasonal list above as main components - this is non-negotiable
+2. Use fresh, seasonal produce from ${locationName} that's actually in season right now
+3. Base ingredients must be available in local supermarkets (${regionalConfig.supermarkets})
+4. Make these recipes TASTY - use herbs, spices, garlic, ginger, and aromatics generously to enhance the seasonal ingredients
+5. Match the budget level exactly - be realistic about costs
+6. Include a good mix of the requested meal types (${mealTypes.join(", ")})
+7. Vary the cuisines and cooking styles - make it exciting!
+8. Give recipes warm, friendly names - DO NOT use possessive names like "Mum's...", "Sarah's...", "Grandma's..." or any author attributions
+9. Write descriptions that sound inviting but avoid personal pronouns ("my", "your", "me")
+10. Be realistic about prep times for home cooks
+11. Make instructions clear and encouraging - this should feel achievable and fun to cook
 
 Return ONLY valid JSON matching this exact structure (no markdown, no explanation):
 {
