@@ -106,8 +106,8 @@ REQUIREMENTS:
 4. Match the budget level exactly - be realistic about costs
 5. Include a good mix of the requested meal types (${mealTypes.join(", ")})
 6. Vary the cuisines and cooking styles - make it exciting!
-7. Give recipes warm, friendly names (not overly fancy or clinical)
-8. Write descriptions that sound inviting and personal, like recommending them to a friend
+7. Give recipes warm, friendly names - DO NOT use possessive names like "Mum's...", "Sarah's...", "Grandma's..." or any author attributions
+8. Write descriptions that sound inviting but avoid personal pronouns ("my", "your", "me")
 9. Be realistic about prep times for home cooks
 10. Make instructions clear and encouraging - this should feel achievable and fun to cook
 
