@@ -130,7 +130,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <div>
           <h2 className="font-display text-xl text-peat-900">
             Your Messages
@@ -139,7 +139,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
             {checkedCount} of {totalCount} items ticked
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {canShare && (
             <button
               onClick={shareList}

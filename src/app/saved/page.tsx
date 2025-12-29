@@ -460,36 +460,17 @@ export default function SavedPage() {
                         className={`opacity-0 animate-slide-up stagger-${Math.min(index + 1, 10)}`}
                         style={{ animationFillMode: "forwards" }}
                       >
-                        <div className="relative group">
-                          <MealCard
-                            meal={meal}
-                            showCheckbox={false}
-                            showShareButton={true}
-                            showFavouriteButton={true}
-                            onViewDetails={setSelectedMealForDetail}
-                            onShareSuccess={handleShareSuccess}
-                            onToggleFavourite={handleToggleFavourite}
-                          />
-                          <button
-                            onClick={() => deleteMeal(meal.id!)}
-                            className="absolute top-4 right-4 p-2 rounded-lg text-peat-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
-                            title="Delete meal"
-                          >
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                          </button>
-                        </div>
+                        <MealCard
+                          meal={meal}
+                          showCheckbox={false}
+                          showShareButton={true}
+                          showFavouriteButton={true}
+                          showDeleteButton={true}
+                          onViewDetails={setSelectedMealForDetail}
+                          onShareSuccess={handleShareSuccess}
+                          onToggleFavourite={handleToggleFavourite}
+                          onDelete={deleteMeal}
+                        />
                       </div>
                     ))}
                   </div>
