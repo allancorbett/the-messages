@@ -51,7 +51,7 @@ export async function signIn(formData: FormData) {
     return { error: { form: [error.message] } };
   }
 
-  redirect(redirectTo || "/plan");
+  redirect(redirectTo || "/new");
 }
 
 export async function signOut() {

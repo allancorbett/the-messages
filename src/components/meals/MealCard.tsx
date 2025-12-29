@@ -18,7 +18,9 @@ interface MealCardProps {
   showCheckbox?: boolean;
   showSaveButton?: boolean;
   showShareButton?: boolean;
+  showFavouriteButton?: boolean;
   onShareSuccess?: () => void;
+  onToggleFavourite?: (mealId: string) => void;
   className?: string;
 }
 
@@ -31,7 +33,9 @@ export function MealCard({
   showCheckbox = true,
   showSaveButton = false,
   showShareButton = false,
+  showFavouriteButton = false,
   onShareSuccess,
+  onToggleFavourite,
   className,
 }: MealCardProps) {
   const handleShare = async (e: React.MouseEvent) => {
@@ -46,6 +50,13 @@ export function MealCard({
       console.error("Failed to copy URL:", err);
     }
   };
+
+  const handleToggleFavourite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!meal.id) return;
+    onToggleFavourite?.(meal.id);
+  };
+
   return (
     <div
       className={cn(
@@ -228,6 +239,34 @@ export function MealCard({
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                />
+              </svg>
+            </button>
+          )}
+
+          {showFavouriteButton && meal.id && (
+            <button
+              onClick={handleToggleFavourite}
+              className={cn(
+                "p-1.5 rounded-lg transition-colors flex-shrink-0",
+                meal.isFavourite
+                  ? "text-red-500 hover:text-red-600 hover:bg-red-50"
+                  : "text-peat-400 hover:text-red-500 hover:bg-red-50"
+              )}
+              aria-label={meal.isFavourite ? "Remove from favourites" : "Add to favourites"}
+            >
+              <svg
+                className="w-5 h-5"
+                fill={meal.isFavourite ? "currentColor" : "none"}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                 />
               </svg>
             </button>

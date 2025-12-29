@@ -5,12 +5,13 @@ import { useParams, useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Toast } from "@/components/Toast";
 import { Meal } from "@/types";
-import { getMealById } from "@/app/actions/meals";
+import { getMealById, toggleFavourite } from "@/app/actions/meals";
 import {
   formatPrepTime,
   getBudgetSymbol,
   getMealTypeEmoji,
   capitalise,
+  cn,
 } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
@@ -69,12 +70,26 @@ export default function RecipePage() {
   function addToShoppingList() {
     if (!meal) return;
     sessionStorage.setItem("selectedMeals", JSON.stringify([meal]));
-    setToastMessage("Added to shopping list");
+    setToastMessage("Added to your messages");
     setShowToast(true);
     // Navigate after a short delay so the user sees the toast
     setTimeout(() => {
-      router.push("/shopping-list");
+      router.push("/messages");
     }, 800);
+  }
+
+  async function handleToggleFavourite() {
+    if (!meal?.id) return;
+    const result = await toggleFavourite(meal.id);
+    if (result.error) {
+      setToastMessage("Failed to update favourite status");
+      setShowToast(true);
+    } else {
+      // Update the local meal state
+      setMeal((prev) => prev ? { ...prev, isFavourite: result.isFavourite } : null);
+      setToastMessage(result.isFavourite ? "Added to favourites" : "Removed from favourites");
+      setShowToast(true);
+    }
   }
 
   if (loading) {
@@ -253,7 +268,30 @@ export default function RecipePage() {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              Add to Shopping List
+              Add to Messages
+            </button>
+            <button
+              onClick={handleToggleFavourite}
+              className={cn(
+                "btn-secondary flex-1 min-w-[140px]",
+                meal?.isFavourite && "!bg-red-50 !text-red-600 !border-red-200"
+              )}
+              title={meal?.isFavourite ? "Remove from favourites" : "Add to favourites"}
+            >
+              <svg
+                className="w-5 h-5"
+                fill={meal?.isFavourite ? "currentColor" : "none"}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+              {meal?.isFavourite ? "Unfavourite" : "Favourite"}
             </button>
             <button
               onClick={handleShare}

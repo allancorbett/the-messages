@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Protected routes
-  const protectedRoutes = ["/plan", "/saved", "/shopping-list", "/settings"];
+  const protectedRoutes = ["/new", "/saved", "/loved", "/messages", "/settings"];
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
@@ -64,7 +64,7 @@ export async function updateSession(request: NextRequest) {
 
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/plan";
+    url.pathname = "/new";
     return NextResponse.redirect(url);
   }
 

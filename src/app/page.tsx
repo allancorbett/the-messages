@@ -9,9 +9,9 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // If logged in, redirect to plan page
+  // If logged in, redirect to new page
   if (user) {
-    redirect("/plan");
+    redirect("/new");
   }
 
   const season = getCurrentSeason();

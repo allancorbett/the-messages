@@ -8,7 +8,7 @@ import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { Toast } from "@/components/Toast";
 import { Meal, MealType, BudgetLevel, ComplexityLevel, Season } from "@/types";
 import { createClient } from "@/lib/supabase/client";
-import { addMealToShoppingList } from "@/app/actions/meals";
+import { addMealToShoppingList, toggleFavourite } from "@/app/actions/meals";
 import { transformSavedMealToMeal } from "@/lib/meal-utils";
 
 const ITEMS_PER_PAGE = 10;
@@ -165,18 +165,35 @@ export default function SavedPage() {
     const result = await addMealToShoppingList(meal);
     if (result.error) {
       if (result.error === "Meal already in shopping list") {
-        setToastMessage("This meal is already in your shopping list");
+        setToastMessage("This meal is already in your messages");
       } else {
-        setToastMessage("Failed to add meal to shopping list");
+        setToastMessage("Failed to add meal to your messages");
       }
       setShowToast(true);
     } else {
-      setToastMessage("Added to shopping list");
+      setToastMessage("Added to your messages");
       setShowToast(true);
       // Navigate after a short delay so the user sees the toast
       setTimeout(() => {
-        router.push("/shopping-list");
+        router.push("/messages");
       }, 800);
+    }
+  }
+
+  async function handleToggleFavourite(mealId: string) {
+    const result = await toggleFavourite(mealId);
+    if (result.error) {
+      setToastMessage("Failed to update favourite status");
+      setShowToast(true);
+    } else {
+      // Update the meal in the list with the new favourite status
+      setAllMeals((prev) =>
+        prev.map((m) =>
+          m.id === mealId ? { ...m, isFavourite: result.isFavourite } : m
+        )
+      );
+      setToastMessage(result.isFavourite ? "Added to favourites" : "Removed from favourites");
+      setShowToast(true);
     }
   }
 
@@ -234,10 +251,10 @@ export default function SavedPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="font-display text-3xl text-peat-900 mb-2">
-            Saved Meals
+            Saved Recipes
           </h1>
           <p className="text-peat-600">
-            Your collection of favourite meals to make again
+            Your complete recipe collection
           </p>
         </div>
 
@@ -448,8 +465,10 @@ export default function SavedPage() {
                             meal={meal}
                             showCheckbox={false}
                             showShareButton={true}
+                            showFavouriteButton={true}
                             onViewDetails={setSelectedMealForDetail}
                             onShareSuccess={handleShareSuccess}
+                            onToggleFavourite={handleToggleFavourite}
                           />
                           <button
                             onClick={() => deleteMeal(meal.id!)}
@@ -549,7 +568,9 @@ export default function SavedPage() {
           onClose={() => setSelectedMealForDetail(null)}
           onAddToShoppingList={() => addToShoppingList(selectedMealForDetail)}
           showShareButton={true}
+          showFavouriteButton={true}
           onShareSuccess={handleShareSuccess}
+          onToggleFavourite={handleToggleFavourite}
         />
       )}
 

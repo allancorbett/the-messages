@@ -39,7 +39,7 @@ export async function saveShoppingList(meals: Meal[]) {
     return { error: error.message };
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/messages");
   return { success: true };
 }
 
@@ -122,7 +122,7 @@ export async function updateShoppingListItem(
     return { error: error.message };
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/messages");
   return { success: true };
 }
 
@@ -146,7 +146,7 @@ export async function clearShoppingList() {
     return { error: error.message };
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/messages");
   return { success: true };
 }
 
@@ -310,7 +310,7 @@ export async function addMealToShoppingList(meal: Meal) {
     }
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/messages");
   return { success: true };
 }
 
@@ -401,6 +401,50 @@ export async function removeMealFromShoppingList(mealId: string) {
     }
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/messages");
   return { success: true };
+}
+
+export async function toggleFavourite(
+  mealId: string
+): Promise<{ success?: boolean; error?: string; isFavourite?: boolean }> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  // Get current favourite status
+  const { data: meal, error: fetchError } = await supabase
+    .from("saved_meals")
+    .select("is_favourite")
+    .eq("id", mealId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (fetchError || !meal) {
+    return { error: "Meal not found" };
+  }
+
+  const newFavouriteStatus = !meal.is_favourite;
+
+  // Toggle favourite status
+  const { error: updateError } = await supabase
+    .from("saved_meals")
+    .update({ is_favourite: newFavouriteStatus })
+    .eq("id", mealId)
+    .eq("user_id", user.id);
+
+  if (updateError) {
+    return { error: updateError.message };
+  }
+
+  revalidatePath("/saved");
+  revalidatePath("/loved");
+  revalidatePath("/new");
+  return { success: true, isFavourite: newFavouriteStatus };
 }

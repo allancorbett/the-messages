@@ -106,18 +106,18 @@ export default function ShoppingListPage() {
   }, [loadShoppingList]);
 
   async function handleClearList() {
-    if (!confirm("Are you sure you want to clear your entire shopping list?")) {
+    if (!confirm("Are you sure you want to clear your messages?")) {
       return;
     }
 
     const result = await clearShoppingList();
     if (result.error) {
-      setToastMessage("Failed to clear shopping list");
+      setToastMessage("Failed to clear your messages");
       setShowToast(true);
     } else {
       setItems([]);
       setMealMetadata([]);
-      setToastMessage("Shopping list cleared");
+      setToastMessage("Messages cleared");
       setShowToast(true);
     }
   }
@@ -125,12 +125,12 @@ export default function ShoppingListPage() {
   async function handleRemoveMeal(mealId: string) {
     const result = await removeMealFromShoppingList(mealId);
     if (result.error) {
-      setToastMessage("Failed to remove meal from shopping list");
+      setToastMessage("Failed to remove meal from your messages");
       setShowToast(true);
     } else {
       // Reload shopping list from database
       await loadShoppingList();
-      setToastMessage("Meal removed from shopping list");
+      setToastMessage("Meal removed from your messages");
       setShowToast(true);
     }
   }
@@ -146,7 +146,7 @@ export default function ShoppingListPage() {
   }
 
   function handleCopySuccess() {
-    setToastMessage("Shopping list copied to clipboard!");
+    setToastMessage("Messages copied to clipboard!");
     setShowToast(true);
   }
 
@@ -162,10 +162,10 @@ export default function ShoppingListPage() {
       <main className="max-w-2xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="font-display text-3xl text-peat-900 mb-2">
-            Shopping List
+            Your Messages
           </h1>
           <p className="text-peat-600">
-            Your aggregated ingredients, ready for the shop
+            Your ingredients, ready for the shop
           </p>
         </div>
 
@@ -198,14 +198,14 @@ export default function ShoppingListPage() {
               No meals selected
             </h2>
             <p className="text-peat-600 max-w-md mx-auto mb-6">
-              Head to the Plan page to generate meals and select the ones you
+              Head to New Recipes to generate meals and select the ones you
               want to cook this week.
             </p>
             <button
-              onClick={() => router.push("/plan")}
+              onClick={() => router.push("/new")}
               className="btn-primary"
             >
-              Plan Meals
+              Browse New Recipes
             </button>
           </div>
         ) : (
