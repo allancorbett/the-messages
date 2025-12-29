@@ -175,7 +175,7 @@ export default function SavedPage() {
       setShowToast(true);
       // Navigate after a short delay so the user sees the toast
       setTimeout(() => {
-        router.push("/shopping-list");
+        router.push("/shopping");
       }, 800);
     }
   }
@@ -251,10 +251,10 @@ export default function SavedPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="font-display text-3xl text-peat-900 mb-2">
-            Saved Meals
+            Saved Recipes
           </h1>
           <p className="text-peat-600">
-            Your collection of favourite meals to make again
+            Your complete recipe collection
           </p>
         </div>
 

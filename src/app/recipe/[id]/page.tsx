@@ -74,7 +74,7 @@ export default function RecipePage() {
     setShowToast(true);
     // Navigate after a short delay so the user sees the toast
     setTimeout(() => {
-      router.push("/shopping-list");
+      router.push("/shopping");
     }, 800);
   }
 

@@ -39,7 +39,7 @@ export async function saveShoppingList(meals: Meal[]) {
     return { error: error.message };
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/shopping");
   return { success: true };
 }
 
@@ -122,7 +122,7 @@ export async function updateShoppingListItem(
     return { error: error.message };
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/shopping");
   return { success: true };
 }
 
@@ -146,7 +146,7 @@ export async function clearShoppingList() {
     return { error: error.message };
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/shopping");
   return { success: true };
 }
 
@@ -310,7 +310,7 @@ export async function addMealToShoppingList(meal: Meal) {
     }
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/shopping");
   return { success: true };
 }
 
@@ -401,7 +401,7 @@ export async function removeMealFromShoppingList(mealId: string) {
     }
   }
 
-  revalidatePath("/shopping-list");
+  revalidatePath("/shopping");
   return { success: true };
 }
 
@@ -444,7 +444,7 @@ export async function toggleFavourite(
   }
 
   revalidatePath("/saved");
-  revalidatePath("/favourites");
+  revalidatePath("/loved");
   revalidatePath("/plan");
   return { success: true, isFavourite: newFavouriteStatus };
 }

@@ -92,7 +92,7 @@ export default function FavouritesPage() {
       setToastMessage("Added to shopping list");
       setShowToast(true);
       setTimeout(() => {
-        router.push("/shopping-list");
+        router.push("/shopping");
       }, 800);
     }
   }
@@ -104,10 +104,10 @@ export default function FavouritesPage() {
       <main className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="font-display text-3xl text-peat-900 mb-2">
-            Favourite Meals
+            Loved Recipes
           </h1>
           <p className="text-peat-600">
-            Your collection of favourite recipes
+            Your favourite picks, always at hand
           </p>
         </div>
 

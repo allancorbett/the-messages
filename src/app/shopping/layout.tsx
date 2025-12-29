@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Organised shopping list with ingredients grouped by supermarket section. Get the messages sorted efficiently.",
   openGraph: {
     type: "website",
-    url: `${siteUrl}/shopping-list`,
+    url: `${siteUrl}/shopping`,
     title: "Shopping List | The Messages",
     description:
       "Organised shopping list with ingredients grouped by supermarket section. Get the messages sorted efficiently.",
