@@ -75,9 +75,9 @@ export default function ResetPasswordPage() {
       setLoading(false);
     } else {
       setSuccess(true);
-      // Redirect to plan page after 2 seconds
+      // Redirect to new page after 2 seconds
       setTimeout(() => {
-        router.push("/plan");
+        router.push("/new");
       }, 2000);
     }
   }

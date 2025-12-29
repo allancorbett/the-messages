@@ -174,7 +174,7 @@ export default function PlanPage() {
   function goToShoppingList() {
     // Store selected meals in sessionStorage for the shopping list page
     sessionStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
-    router.push("/shopping");
+    router.push("/messages");
   }
 
   function handleShareSuccess() {
@@ -189,7 +189,7 @@ export default function PlanPage() {
       <main className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="font-display text-3xl text-peat-900 mb-2">
-            Plan Your Meals
+            New Recipes
           </h1>
           <p className="text-peat-600">
             Generate seasonal meal ideas for {formatLocation(location)}

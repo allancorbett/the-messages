@@ -165,17 +165,17 @@ export default function SavedPage() {
     const result = await addMealToShoppingList(meal);
     if (result.error) {
       if (result.error === "Meal already in shopping list") {
-        setToastMessage("This meal is already in your shopping list");
+        setToastMessage("This meal is already in your messages");
       } else {
-        setToastMessage("Failed to add meal to shopping list");
+        setToastMessage("Failed to add meal to your messages");
       }
       setShowToast(true);
     } else {
-      setToastMessage("Added to shopping list");
+      setToastMessage("Added to your messages");
       setShowToast(true);
       // Navigate after a short delay so the user sees the toast
       setTimeout(() => {
-        router.push("/shopping");
+        router.push("/messages");
       }, 800);
     }
   }

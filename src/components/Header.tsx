@@ -13,17 +13,17 @@ export function Header({ userEmail }: HeaderProps) {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: "/plan", label: "Plan" },
+    { href: "/new", label: "New" },
     { href: "/saved", label: "Saved" },
     { href: "/loved", label: "Loved" },
-    { href: "/shopping", label: "Shopping" },
+    { href: "/messages", label: "Messages" },
   ];
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-peat-200">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/plan" className="font-display text-xl text-peat-900">
+          <Link href="/new" className="font-display text-xl text-peat-900">
             The Messages
           </Link>
 

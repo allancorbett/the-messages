@@ -70,11 +70,11 @@ export default function RecipePage() {
   function addToShoppingList() {
     if (!meal) return;
     sessionStorage.setItem("selectedMeals", JSON.stringify([meal]));
-    setToastMessage("Added to shopping list");
+    setToastMessage("Added to your messages");
     setShowToast(true);
     // Navigate after a short delay so the user sees the toast
     setTimeout(() => {
-      router.push("/shopping");
+      router.push("/messages");
     }, 800);
   }
 
@@ -268,7 +268,7 @@ export default function RecipePage() {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              Add to Shopping List
+              Add to Messages
             </button>
             <button
               onClick={handleToggleFavourite}
