@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { ShoppingListItem, IngredientCategory } from "@/types";
 import { groupBy, capitalise, cn } from "@/lib/utils";
 import { updateShoppingListItem } from "@/app/actions/meals";
@@ -17,6 +17,7 @@ interface ShoppingListProps {
   onRemoveMeal?: (mealId: string) => void;
   onViewMeal?: (mealId: string) => void;
   onCopySuccess?: () => void;
+  onShareSuccess?: () => void;
 }
 
 const categoryOrder: IngredientCategory[] = [
@@ -39,7 +40,9 @@ const categoryEmojis: Record<IngredientCategory, string> = {
   storecupboard: "🫙",
 };
 
-export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onViewMeal, onCopySuccess }: ShoppingListProps) {
+export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onViewMeal, onCopySuccess, onShareSuccess }: ShoppingListProps) {
+  const [canShare, setCanShare] = useState(false);
+
   const groupedItems = useMemo(() => {
     const grouped = groupBy(items, "category");
     // Sort by category order
@@ -63,13 +66,14 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
     return map;
   }, [mealMetadata]);
 
-  async function toggleItem(itemIndex: number, currentChecked: boolean) {
-    // Update database (server action handles revalidation)
-    await updateShoppingListItem(itemIndex, !currentChecked);
-  }
+  // Check if Web Share API is available (iOS Safari supports this)
+  useEffect(() => {
+    setCanShare(typeof navigator !== 'undefined' && !!navigator.share);
+  }, []);
 
-  async function copyToClipboard() {
-    const text = Object.entries(groupedItems)
+  // Format the shopping list as text
+  const formatShoppingList = () => {
+    return Object.entries(groupedItems)
       .map(([category, categoryItems]) => {
         const header = `${capitalise(category)}:`;
         const itemLines = categoryItems
@@ -78,12 +82,45 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
         return `${header}\n${itemLines}`;
       })
       .join("\n\n");
+  };
+
+  async function toggleItem(itemIndex: number, currentChecked: boolean) {
+    // Update database (server action handles revalidation)
+    await updateShoppingListItem(itemIndex, !currentChecked);
+  }
+
+  async function copyToClipboard() {
+    const text = formatShoppingList();
 
     try {
       await navigator.clipboard.writeText(text);
       onCopySuccess?.();
     } catch (err) {
       console.error("Failed to copy shopping list:", err);
+    }
+  }
+
+  async function shareList() {
+    // Simple format for better compatibility with Reminders app
+    const simpleText = Object.values(groupedItems)
+      .flatMap((categoryItems) =>
+        categoryItems.map((item) => `${item.name} (${item.quantity})`)
+      )
+      .join("\n");
+
+    const mealNames = mealMetadata.map(m => m.name).join(', ');
+
+    try {
+      await navigator.share({
+        title: 'Your Messages',
+        text: `Shopping for: ${mealNames}\n\n${simpleText}`,
+      });
+      onShareSuccess?.();
+    } catch (err) {
+      // User cancelled or share failed
+      if ((err as Error).name !== 'AbortError') {
+        console.error("Failed to share shopping list:", err);
+      }
     }
   }
 
@@ -103,10 +140,33 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {canShare && (
+            <button
+              onClick={shareList}
+              className="btn-primary text-sm"
+              aria-label="Share to Reminders, Notes, or other apps"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                />
+              </svg>
+              Share
+            </button>
+          )}
           <button
             onClick={copyToClipboard}
             className="btn-secondary text-sm"
-            aria-label="Copy shopping list to clipboard"
+            aria-label="Copy to clipboard"
           >
             <svg
               className="w-4 h-4"
@@ -128,7 +188,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
             <button
               onClick={onClear}
               className="btn-ghost text-sm text-red-600"
-              aria-label="Clear entire shopping list"
+              aria-label="Clear all"
             >
               Clear
             </button>
