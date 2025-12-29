@@ -101,13 +101,19 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
   }
 
   async function shareList() {
-    const text = formatShoppingList();
+    // Simple format for better compatibility with Reminders app
+    const simpleText = Object.values(groupedItems)
+      .flatMap((categoryItems) =>
+        categoryItems.map((item) => `${item.name} (${item.quantity})`)
+      )
+      .join("\n");
+
     const mealNames = mealMetadata.map(m => m.name).join(', ');
 
     try {
       await navigator.share({
         title: 'Your Messages',
-        text: `Shopping for ${mealMetadata.length} meal${mealMetadata.length !== 1 ? 's' : ''}: ${mealNames}\n\n${text}`,
+        text: `Shopping for: ${mealNames}\n\n${simpleText}`,
       });
       onShareSuccess?.();
     } catch (err) {
