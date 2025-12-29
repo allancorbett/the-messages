@@ -14,6 +14,7 @@ interface SavedMealRow {
   season: string[];
   ingredients: Meal["ingredients"];
   instructions: string[];
+  is_favourite?: boolean;
   created_at?: string;
 }
 
@@ -34,5 +35,6 @@ export function transformSavedMealToMeal(row: SavedMealRow): Meal {
     seasons: row.season as Meal["seasons"],
     ingredients: row.ingredients,
     instructions: row.instructions,
+    isFavourite: row.is_favourite ?? false,
   };
 }

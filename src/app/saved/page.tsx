@@ -8,7 +8,7 @@ import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { Toast } from "@/components/Toast";
 import { Meal, MealType, BudgetLevel, ComplexityLevel, Season } from "@/types";
 import { createClient } from "@/lib/supabase/client";
-import { addMealToShoppingList } from "@/app/actions/meals";
+import { addMealToShoppingList, toggleFavourite } from "@/app/actions/meals";
 import { transformSavedMealToMeal } from "@/lib/meal-utils";
 
 const ITEMS_PER_PAGE = 10;
@@ -177,6 +177,23 @@ export default function SavedPage() {
       setTimeout(() => {
         router.push("/shopping-list");
       }, 800);
+    }
+  }
+
+  async function handleToggleFavourite(mealId: string) {
+    const result = await toggleFavourite(mealId);
+    if (result.error) {
+      setToastMessage("Failed to update favourite status");
+      setShowToast(true);
+    } else {
+      // Update the meal in the list with the new favourite status
+      setAllMeals((prev) =>
+        prev.map((m) =>
+          m.id === mealId ? { ...m, isFavourite: result.isFavourite } : m
+        )
+      );
+      setToastMessage(result.isFavourite ? "Added to favourites" : "Removed from favourites");
+      setShowToast(true);
     }
   }
 
@@ -448,8 +465,10 @@ export default function SavedPage() {
                             meal={meal}
                             showCheckbox={false}
                             showShareButton={true}
+                            showFavouriteButton={true}
                             onViewDetails={setSelectedMealForDetail}
                             onShareSuccess={handleShareSuccess}
+                            onToggleFavourite={handleToggleFavourite}
                           />
                           <button
                             onClick={() => deleteMeal(meal.id!)}
@@ -549,7 +568,9 @@ export default function SavedPage() {
           onClose={() => setSelectedMealForDetail(null)}
           onAddToShoppingList={() => addToShoppingList(selectedMealForDetail)}
           showShareButton={true}
+          showFavouriteButton={true}
           onShareSuccess={handleShareSuccess}
+          onToggleFavourite={handleToggleFavourite}
         />
       )}
 

@@ -6,6 +6,7 @@ import {
   getBudgetSymbol,
   getMealTypeEmoji,
   capitalise,
+  cn,
 } from "@/lib/utils";
 import React, { useEffect } from "react";
 
@@ -15,7 +16,9 @@ interface MealDetailModalProps {
   onClose: () => void;
   onAddToShoppingList?: () => void;
   showShareButton?: boolean;
+  showFavouriteButton?: boolean;
   onShareSuccess?: () => void;
+  onToggleFavourite?: (mealId: string) => void;
 }
 
 export function MealDetailModal({
@@ -24,7 +27,9 @@ export function MealDetailModal({
   onClose,
   onAddToShoppingList,
   showShareButton = false,
+  showFavouriteButton = false,
   onShareSuccess,
+  onToggleFavourite,
 }: MealDetailModalProps) {
   const [copySuccess, setCopySuccess] = React.useState(false);
 
@@ -40,6 +45,11 @@ export function MealDetailModal({
     } catch (err) {
       console.error("Failed to copy URL:", err);
     }
+  };
+
+  const handleToggleFavourite = () => {
+    if (!meal.id) return;
+    onToggleFavourite?.(meal.id);
   };
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -139,7 +149,7 @@ export function MealDetailModal({
         {/* Content */}
         <div className="px-6 py-6">
           {/* Action buttons */}
-          {(onAddToShoppingList || showShareButton) && (
+          {(onAddToShoppingList || showShareButton || showFavouriteButton) && (
             <div className="mb-6 flex flex-wrap gap-3">
               {onAddToShoppingList && (
                 <button
@@ -160,6 +170,31 @@ export function MealDetailModal({
                     />
                   </svg>
                   Add to Shopping List
+                </button>
+              )}
+              {showFavouriteButton && meal.id && (
+                <button
+                  onClick={handleToggleFavourite}
+                  className={cn(
+                    "btn-secondary flex-1 min-w-[140px]",
+                    meal.isFavourite && "!bg-red-50 !text-red-600 !border-red-200"
+                  )}
+                  title={meal.isFavourite ? "Remove from favourites" : "Add to favourites"}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill={meal.isFavourite ? "currentColor" : "none"}
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                  {meal.isFavourite ? "Unfavourite" : "Favourite"}
                 </button>
               )}
               {showShareButton && meal.id && (

@@ -15,6 +15,7 @@ export function Header({ userEmail }: HeaderProps) {
   const navLinks = [
     { href: "/plan", label: "Plan" },
     { href: "/saved", label: "Saved" },
+    { href: "/favourites", label: "Favourites" },
     { href: "/shopping-list", label: "Shopping List" },
   ];
 

@@ -33,6 +33,7 @@ export interface Meal {
   seasons: Season[];
   ingredients: Ingredient[];
   instructions: string[];
+  isFavourite?: boolean;
 }
 
 export interface GenerateMealsParams {
