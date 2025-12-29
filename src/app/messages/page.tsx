@@ -150,6 +150,11 @@ export default function ShoppingListPage() {
     setShowToast(true);
   }
 
+  function handleListShareSuccess() {
+    setToastMessage("Messages shared!");
+    setShowToast(true);
+  }
+
   function handleShareSuccess() {
     setToastMessage("Recipe link copied to clipboard!");
     setShowToast(true);
@@ -217,6 +222,7 @@ export default function ShoppingListPage() {
               onRemoveMeal={handleRemoveMeal}
               onViewMeal={handleViewMeal}
               onCopySuccess={handleCopySuccess}
+              onShareSuccess={handleListShareSuccess}
             />
           </div>
         )}
