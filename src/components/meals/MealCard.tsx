@@ -95,7 +95,7 @@ export function MealCard({
             {meal.description}
           </p>
 
-          <div className="flex items-center gap-4 text-xs text-peat-500 mb-3">
+          <div className="flex items-center gap-4 text-xs text-peat-500 mb-3 flex-wrap">
             <span className="flex items-center gap-1">
               <svg
                 className="w-3.5 h-3.5"

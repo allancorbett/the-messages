@@ -472,7 +472,7 @@ export default function SavedPage() {
                           />
                           <button
                             onClick={() => deleteMeal(meal.id!)}
-                            className="absolute top-4 right-4 p-2 rounded-lg text-peat-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+                            className="absolute top-4 right-4 p-2 rounded-lg text-peat-400 hover:text-red-600 hover:bg-red-50 transition-all"
                             title="Delete meal"
                           >
                             <svg
