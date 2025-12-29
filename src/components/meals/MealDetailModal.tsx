@@ -140,11 +140,11 @@ export function MealDetailModal({
         <div className="px-6 py-6">
           {/* Action buttons */}
           {(onAddToShoppingList || showShareButton) && (
-            <div className="mb-6 flex gap-3">
+            <div className="mb-6 flex flex-wrap gap-3">
               {onAddToShoppingList && (
                 <button
                   onClick={onAddToShoppingList}
-                  className="btn-primary flex-1"
+                  className="btn-primary flex-1 min-w-[200px]"
                 >
                   <svg
                     className="w-5 h-5"
@@ -165,7 +165,7 @@ export function MealDetailModal({
               {showShareButton && meal.id && (
                 <button
                   onClick={handleShare}
-                  className="btn-secondary"
+                  className="btn-secondary flex-1 min-w-[160px]"
                   title="Copy recipe URL to clipboard"
                 >
                   {copySuccess ? (
@@ -212,7 +212,7 @@ export function MealDetailModal({
           <p className="text-peat-700 mb-6">{meal.description}</p>
 
           {/* Meta info */}
-          <div className="flex items-center gap-6 text-sm text-peat-600 mb-8 pb-6 border-b border-peat-200">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-peat-600 mb-8 pb-6 border-b border-peat-200">
             <span className="flex items-center gap-2">
               <svg
                 className="w-5 h-5"

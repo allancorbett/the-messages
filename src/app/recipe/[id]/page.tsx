@@ -168,7 +168,7 @@ export default function RecipePage() {
               <p className="text-peat-700 mb-4">{meal.description}</p>
 
               {/* Meta info */}
-              <div className="flex items-center gap-6 text-sm text-peat-600">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-peat-600">
                 <span className="flex items-center gap-2">
                   <svg
                     className="w-5 h-5"
@@ -238,8 +238,8 @@ export default function RecipePage() {
           </div>
 
           {/* Action buttons */}
-          <div className="flex gap-3">
-            <button onClick={addToShoppingList} className="btn-primary flex-1">
+          <div className="flex flex-wrap gap-3">
+            <button onClick={addToShoppingList} className="btn-primary flex-1 min-w-[200px]">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -257,7 +257,7 @@ export default function RecipePage() {
             </button>
             <button
               onClick={handleShare}
-              className="btn-secondary"
+              className="btn-secondary flex-1 min-w-[160px]"
               title="Copy recipe URL to clipboard"
             >
               {copySuccess ? (
