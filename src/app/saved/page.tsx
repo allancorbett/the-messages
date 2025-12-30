@@ -297,7 +297,7 @@ export default function SavedPage() {
             </p>
           </div>
         ) : (
-          <div className="grid lg:grid-cols-[280px,1fr] gap-8">
+          <div className="grid lg:grid-cols-[300px,1fr] gap-8">
             {/* Filters sidebar */}
             <div className="lg:sticky lg:top-24 lg:self-start">
               <div className="card">
