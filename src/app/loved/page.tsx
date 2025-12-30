@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { MealCard } from "@/components/meals/MealCard";
 import { MealDetailModal } from "@/components/meals/MealDetailModal";
 import { Toast } from "@/components/Toast";
-import { Meal } from "@/types";
+import { Meal, Season, MealType, ComplexityLevel } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { addMealToShoppingList, toggleFavourite } from "@/app/actions/meals";
 import { transformSavedMealToMeal } from "@/lib/meal-utils";
@@ -14,10 +14,19 @@ import { transformSavedMealToMeal } from "@/lib/meal-utils";
 export default function FavouritesPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string>("");
-  const [favouriteMeals, setFavouriteMeals] = useState<Meal[]>([]);
+  const [allMeals, setAllMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMealForDetail, setSelectedMealForDetail] =
     useState<Meal | null>(null);
+
+  // Filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSeasons, setSelectedSeasons] = useState<Season[]>([]);
+  const [selectedMealTypes, setSelectedMealTypes] = useState<MealType[]>([]);
+  const [selectedPriceLevels, setSelectedPriceLevels] = useState<number[]>([]);
+  const [selectedComplexityLevels, setSelectedComplexityLevels] = useState<ComplexityLevel[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   // Toast state
   const [showToast, setShowToast] = useState(false);
@@ -51,7 +60,7 @@ export default function FavouritesPage() {
       setShowToast(true);
     } else if (data) {
       const transformedMeals: Meal[] = data.map(transformSavedMealToMeal);
-      setFavouriteMeals(transformedMeals);
+      setAllMeals(transformedMeals);
     }
 
     setLoading(false);
@@ -60,6 +69,107 @@ export default function FavouritesPage() {
   useEffect(() => {
     loadFavouriteMeals();
   }, []);
+
+  // Filter and search logic
+  const filteredMeals = useMemo(() => {
+    return allMeals.filter((meal) => {
+      // Search filter
+      if (searchQuery) {
+        const searchLower = searchQuery.toLowerCase();
+        const matchesSearch =
+          meal.name.toLowerCase().includes(searchLower) ||
+          meal.description.toLowerCase().includes(searchLower) ||
+          meal.ingredients.some((ing) =>
+            ing.name.toLowerCase().includes(searchLower)
+          );
+        if (!matchesSearch) return false;
+      }
+
+      // Season filter
+      if (selectedSeasons.length > 0) {
+        const hasMatchingSeason = meal.seasons.some((season) =>
+          selectedSeasons.includes(season)
+        );
+        if (!hasMatchingSeason) return false;
+      }
+
+      // Meal type filter
+      if (selectedMealTypes.length > 0) {
+        if (!selectedMealTypes.includes(meal.mealType)) return false;
+      }
+
+      // Price level filter
+      if (selectedPriceLevels.length > 0) {
+        if (!selectedPriceLevels.includes(meal.priceLevel)) return false;
+      }
+
+      // Complexity filter
+      if (selectedComplexityLevels.length > 0) {
+        if (!selectedComplexityLevels.includes(meal.complexity)) return false;
+      }
+
+      return true;
+    });
+  }, [allMeals, searchQuery, selectedSeasons, selectedMealTypes, selectedPriceLevels, selectedComplexityLevels]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredMeals.length / itemsPerPage);
+  const paginatedMeals = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredMeals.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredMeals, currentPage]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedSeasons, selectedMealTypes, selectedPriceLevels, selectedComplexityLevels]);
+
+  function toggleSeasonFilter(season: Season) {
+    setSelectedSeasons((prev) =>
+      prev.includes(season)
+        ? prev.filter((s) => s !== season)
+        : [...prev, season]
+    );
+  }
+
+  function toggleMealTypeFilter(mealType: MealType) {
+    setSelectedMealTypes((prev) =>
+      prev.includes(mealType)
+        ? prev.filter((t) => t !== mealType)
+        : [...prev, mealType]
+    );
+  }
+
+  function togglePriceLevelFilter(level: number) {
+    setSelectedPriceLevels((prev) =>
+      prev.includes(level)
+        ? prev.filter((l) => l !== level)
+        : [...prev, level]
+    );
+  }
+
+  function toggleComplexityFilter(complexity: ComplexityLevel) {
+    setSelectedComplexityLevels((prev) =>
+      prev.includes(complexity)
+        ? prev.filter((c) => c !== complexity)
+        : [...prev, complexity]
+    );
+  }
+
+  function clearAllFilters() {
+    setSearchQuery("");
+    setSelectedSeasons([]);
+    setSelectedMealTypes([]);
+    setSelectedPriceLevels([]);
+    setSelectedComplexityLevels([]);
+  }
+
+  const hasActiveFilters =
+    searchQuery ||
+    selectedSeasons.length > 0 ||
+    selectedMealTypes.length > 0 ||
+    selectedPriceLevels.length > 0 ||
+    selectedComplexityLevels.length > 0;
 
   function handleShareSuccess() {
     setToastMessage("Recipe link copied to clipboard!");
@@ -101,7 +211,7 @@ export default function FavouritesPage() {
     <div className="min-h-screen bg-peat-50">
       <Header userEmail={userEmail} />
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="font-display text-3xl text-peat-900 mb-2">
             Loved Recipes
@@ -113,13 +223,15 @@ export default function FavouritesPage() {
 
         {loading ? (
           <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="card animate-pulse">
-                <div className="h-32 bg-peat-200 rounded" />
+                <div className="h-5 w-3/4 rounded bg-peat-200 mb-2" />
+                <div className="h-4 w-full rounded bg-peat-200 mb-1" />
+                <div className="h-4 w-2/3 rounded bg-peat-200" />
               </div>
             ))}
           </div>
-        ) : favouriteMeals.length === 0 ? (
+        ) : allMeals.length === 0 ? (
           <div className="card text-center py-16">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
               <svg
@@ -137,7 +249,7 @@ export default function FavouritesPage() {
               </svg>
             </div>
             <h2 className="font-display text-2xl text-peat-900 mb-2">
-              No favourite meals yet
+              No loved recipes yet
             </h2>
             <p className="text-peat-600 max-w-md mx-auto mb-6">
               Browse your saved meals and mark your favourites by clicking the heart icon
@@ -146,28 +258,248 @@ export default function FavouritesPage() {
               onClick={() => router.push("/saved")}
               className="btn-primary"
             >
-              Browse Saved Meals
+              Browse Saved Recipes
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            {favouriteMeals.map((meal, index) => (
-              <div
-                key={meal.id}
-                className={`opacity-0 animate-slide-up stagger-${Math.min(index + 1, 10)}`}
-                style={{ animationFillMode: "forwards" }}
-              >
-                <MealCard
-                  meal={meal}
-                  onViewDetails={setSelectedMealForDetail}
-                  showCheckbox={false}
-                  showFavouriteButton={true}
-                  showShareButton={true}
-                  onToggleFavourite={handleToggleFavourite}
-                  onShareSuccess={handleShareSuccess}
-                />
+          <div className="grid lg:grid-cols-[300px,1fr] gap-8">
+            {/* Filters sidebar */}
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <div className="card">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-medium text-peat-900">Filter & Search</h2>
+                  {hasActiveFilters && (
+                    <button
+                      onClick={clearAllFilters}
+                      className="text-xs text-brine-600 hover:text-brine-700 underline"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
+
+                {/* Search */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Search
+                  </label>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search meals..."
+                    className="w-full px-3 py-2 rounded-lg border border-peat-200 focus:border-brine-500 focus:ring-2 focus:ring-brine-100 outline-none text-sm"
+                  />
+                </div>
+
+                {/* Season filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Season
+                  </label>
+                  <div className="space-y-2">
+                    {(["spring", "summer", "autumn", "winter"] as Season[]).map((season) => (
+                      <label key={season} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedSeasons.includes(season)}
+                          onChange={() => toggleSeasonFilter(season)}
+                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                        />
+                        <span className="text-sm text-peat-700 capitalize">{season}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Meal type filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Meal Type
+                  </label>
+                  <div className="space-y-2">
+                    {(["breakfast", "lunch", "dinner"] as MealType[]).map((type) => (
+                      <label key={type} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedMealTypes.includes(type)}
+                          onChange={() => toggleMealTypeFilter(type)}
+                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                        />
+                        <span className="text-sm text-peat-700 capitalize">{type}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price level filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Budget
+                  </label>
+                  <div className="space-y-2">
+                    {[1, 2, 3].map((level) => (
+                      <label key={level} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedPriceLevels.includes(level)}
+                          onChange={() => togglePriceLevelFilter(level)}
+                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                        />
+                        <span className="text-sm text-peat-700">
+                          {level === 1 ? "£ - Budget" : level === 2 ? "££ - Mid-range" : "£££ - Premium"}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Complexity level filter */}
+                <div>
+                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                    Complexity
+                  </label>
+                  <div className="space-y-2">
+                    {(["simple", "moderate", "complex"] as ComplexityLevel[]).map((level) => (
+                      <label key={level} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedComplexityLevels.includes(level)}
+                          onChange={() => toggleComplexityFilter(level)}
+                          className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
+                        />
+                        <span className="text-sm text-peat-700">
+                          {level.charAt(0).toUpperCase() + level.slice(1)}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
-            ))}
+            </div>
+
+            {/* Results */}
+            <div>
+              {/* Results count */}
+              <div className="mb-4 text-sm text-peat-600">
+                {filteredMeals.length === allMeals.length ? (
+                  <span>{allMeals.length} loved recipe{allMeals.length !== 1 ? 's' : ''}</span>
+                ) : (
+                  <span>
+                    Showing {filteredMeals.length} of {allMeals.length} recipe{allMeals.length !== 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+
+              {filteredMeals.length === 0 ? (
+                <div className="card text-center py-12">
+                  <div className="w-16 h-16 rounded-full bg-peat-100 flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      className="w-8 h-8 text-peat-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-peat-900 mb-1">
+                    No recipes found
+                  </h3>
+                  <p className="text-peat-600">
+                    Try adjusting your filters or search query
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* Meal list */}
+                  <div className="space-y-4 mb-6">
+                    {paginatedMeals.map((meal, index) => (
+                      <div
+                        key={meal.id}
+                        className={`opacity-0 animate-slide-up stagger-${Math.min(index + 1, 10)}`}
+                        style={{ animationFillMode: "forwards" }}
+                      >
+                        <MealCard
+                          meal={meal}
+                          showCheckbox={false}
+                          showShareButton={true}
+                          showFavouriteButton={true}
+                          onViewDetails={setSelectedMealForDetail}
+                          onShareSuccess={handleShareSuccess}
+                          onToggleFavourite={handleToggleFavourite}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 rounded-lg border border-peat-200 text-peat-700 hover:bg-peat-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Previous
+                      </button>
+
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                          const showPage =
+                            page === 1 ||
+                            page === totalPages ||
+                            Math.abs(page - currentPage) <= 1;
+
+                          const showEllipsis =
+                            (page === 2 && currentPage > 3) ||
+                            (page === totalPages - 1 && currentPage < totalPages - 2);
+
+                          if (showEllipsis) {
+                            return (
+                              <span key={page} className="px-2 text-peat-400">
+                                ...
+                              </span>
+                            );
+                          }
+
+                          if (!showPage) {
+                            return null;
+                          }
+
+                          return (
+                            <button
+                              key={page}
+                              onClick={() => setCurrentPage(page)}
+                              className={`min-w-[40px] px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                currentPage === page
+                                  ? "bg-brine-500 text-white"
+                                  : "border border-peat-200 text-peat-700 hover:bg-peat-50"
+                              }`}
+                            >
+                              {page}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 rounded-lg border border-peat-200 text-peat-700 hover:bg-peat-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         )}
       </main>
