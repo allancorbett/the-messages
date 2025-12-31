@@ -140,18 +140,23 @@ export default function SavedPage() {
       return;
     }
 
+    // Optimistically remove from UI immediately
+    const previousMeals = allMeals;
+    setAllMeals((prev) => prev.filter((m) => m.id !== mealId));
+    setToastMessage("Meal deleted successfully");
+    setShowToast(true);
+
+    // Call server action in background
     const supabase = createClient();
     const { error } = await supabase
       .from("saved_meals")
       .delete()
       .eq("id", mealId);
 
+    // If it failed, revert
     if (error) {
+      setAllMeals(previousMeals);
       setToastMessage("Failed to delete meal");
-      setShowToast(true);
-    } else {
-      setAllMeals((prev) => prev.filter((m) => m.id !== mealId));
-      setToastMessage("Meal deleted successfully");
       setShowToast(true);
     }
   }
@@ -162,37 +167,46 @@ export default function SavedPage() {
   }
 
   async function addToShoppingList(meal: Meal) {
+    // Show toast immediately
+    setToastMessage("Added to your messages");
+    setShowToast(true);
+
+    // Navigate immediately
+    router.push("/messages");
+
+    // Call server action in background
     const result = await addMealToShoppingList(meal);
+
+    // If it failed, we can't revert since we've navigated
     if (result.error) {
-      if (result.error === "Meal already in shopping list") {
-        setToastMessage("This meal is already in your messages");
-      } else {
-        setToastMessage("Failed to add meal to your messages");
-      }
-      setShowToast(true);
-    } else {
-      setToastMessage("Added to your messages");
-      setShowToast(true);
-      // Navigate after a short delay so the user sees the toast
-      setTimeout(() => {
-        router.push("/messages");
-      }, 800);
+      console.error("Failed to add meal to shopping list:", result.error);
     }
   }
 
   async function handleToggleFavourite(mealId: string) {
+    // Optimistically update UI immediately
+    const meal = allMeals.find((m) => m.id === mealId);
+    const newFavouriteStatus = !meal?.isFavourite;
+
+    setAllMeals((prev) =>
+      prev.map((m) =>
+        m.id === mealId ? { ...m, isFavourite: newFavouriteStatus } : m
+      )
+    );
+    setToastMessage(newFavouriteStatus ? "Added to favourites" : "Removed from favourites");
+    setShowToast(true);
+
+    // Call server action in background
     const result = await toggleFavourite(mealId);
+
+    // If it failed, revert
     if (result.error) {
-      setToastMessage("Failed to update favourite status");
-      setShowToast(true);
-    } else {
-      // Update the meal in the list with the new favourite status
       setAllMeals((prev) =>
         prev.map((m) =>
-          m.id === mealId ? { ...m, isFavourite: result.isFavourite } : m
+          m.id === mealId ? { ...m, isFavourite: !newFavouriteStatus } : m
         )
       );
-      setToastMessage(result.isFavourite ? "Added to favourites" : "Removed from favourites");
+      setToastMessage("Failed to update favourite status");
       setShowToast(true);
     }
   }

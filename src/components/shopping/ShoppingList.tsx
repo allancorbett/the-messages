@@ -3,7 +3,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { ShoppingListItem, IngredientCategory } from "@/types";
 import { groupBy, capitalise, cn } from "@/lib/utils";
-import { updateShoppingListItem } from "@/app/actions/meals";
 
 interface MealMetadata {
   id: string;
@@ -13,6 +12,7 @@ interface MealMetadata {
 interface ShoppingListProps {
   items: ShoppingListItem[];
   mealMetadata: MealMetadata[];
+  onToggleItem?: (itemIndex: number, currentChecked: boolean) => void;
   onClear?: () => void;
   onRemoveMeal?: (mealId: string) => void;
   onViewMeal?: (mealId: string) => void;
@@ -40,7 +40,7 @@ const categoryEmojis: Record<IngredientCategory, string> = {
   storecupboard: "🫙",
 };
 
-export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onViewMeal, onCopySuccess, onShareSuccess }: ShoppingListProps) {
+export function ShoppingList({ items, mealMetadata, onToggleItem, onClear, onRemoveMeal, onViewMeal, onCopySuccess, onShareSuccess }: ShoppingListProps) {
   const [canShare, setCanShare] = useState(false);
 
   const groupedItems = useMemo(() => {
@@ -84,9 +84,9 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
       .join("\n\n");
   };
 
-  async function toggleItem(itemIndex: number, currentChecked: boolean) {
-    // Update database (server action handles revalidation)
-    await updateShoppingListItem(itemIndex, !currentChecked);
+  function toggleItem(itemIndex: number, currentChecked: boolean) {
+    // Call parent handler for optimistic update
+    onToggleItem?.(itemIndex, currentChecked);
   }
 
   async function copyToClipboard() {

@@ -72,22 +72,27 @@ export default function RecipePage() {
     sessionStorage.setItem("selectedMeals", JSON.stringify([meal]));
     setToastMessage("Added to your messages");
     setShowToast(true);
-    // Navigate after a short delay so the user sees the toast
-    setTimeout(() => {
-      router.push("/messages");
-    }, 800);
+
+    // Navigate immediately
+    router.push("/messages");
   }
 
   async function handleToggleFavourite() {
     if (!meal?.id) return;
+
+    // Optimistically update UI immediately
+    const newFavouriteStatus = !meal.isFavourite;
+    setMeal((prev) => prev ? { ...prev, isFavourite: newFavouriteStatus } : null);
+    setToastMessage(newFavouriteStatus ? "Added to favourites" : "Removed from favourites");
+    setShowToast(true);
+
+    // Call server action in background
     const result = await toggleFavourite(meal.id);
+
+    // If it failed, revert
     if (result.error) {
+      setMeal((prev) => prev ? { ...prev, isFavourite: !newFavouriteStatus } : null);
       setToastMessage("Failed to update favourite status");
-      setShowToast(true);
-    } else {
-      // Update the local meal state
-      setMeal((prev) => prev ? { ...prev, isFavourite: result.isFavourite } : null);
-      setToastMessage(result.isFavourite ? "Added to favourites" : "Removed from favourites");
       setShowToast(true);
     }
   }
