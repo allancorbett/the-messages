@@ -177,33 +177,37 @@ export default function FavouritesPage() {
   }
 
   async function handleToggleFavourite(mealId: string) {
+    // Optimistically remove from UI immediately (since this is Loved page, toggle means unfavourite)
+    const previousMeals = allMeals;
+    setAllMeals((prev) => prev.filter((m) => m.id !== mealId));
+    setToastMessage("Removed from favourites");
+    setShowToast(true);
+
+    // Call server action in background
     const result = await toggleFavourite(mealId);
+
+    // If it failed, revert
     if (result.error) {
+      setAllMeals(previousMeals);
       setToastMessage("Failed to update favourite status");
-      setShowToast(true);
-    } else {
-      // Reload the list since unfavouriting will remove it from this view
-      await loadFavouriteMeals();
-      setToastMessage(result.isFavourite ? "Added to favourites" : "Removed from favourites");
       setShowToast(true);
     }
   }
 
   async function addToShoppingList(meal: Meal) {
+    // Show toast immediately
+    setToastMessage("Added to your messages");
+    setShowToast(true);
+
+    // Navigate immediately
+    router.push("/messages");
+
+    // Call server action in background (this will be processed when the messages page loads)
     const result = await addMealToShoppingList(meal);
+
+    // If it failed, we can't really revert since we've navigated, but the error will be caught
     if (result.error) {
-      if (result.error === "Meal already in shopping list") {
-        setToastMessage("This meal is already in your messages");
-      } else {
-        setToastMessage("Failed to add meal to your messages");
-      }
-      setShowToast(true);
-    } else {
-      setToastMessage("Added to your messages");
-      setShowToast(true);
-      setTimeout(() => {
-        router.push("/messages");
-      }, 800);
+      console.error("Failed to add meal to shopping list:", result.error);
     }
   }
 

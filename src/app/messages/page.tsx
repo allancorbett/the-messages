@@ -14,6 +14,7 @@ import {
   clearShoppingList,
   removeMealFromShoppingList,
   getMealById,
+  updateShoppingListItem,
 } from "@/app/actions/meals";
 
 interface MealMetadata {
@@ -110,36 +111,86 @@ export default function ShoppingListPage() {
       return;
     }
 
+    // Optimistic update - clear UI immediately
+    const previousItems = items;
+    const previousMetadata = mealMetadata;
+
+    setItems([]);
+    setMealMetadata([]);
+    setToastMessage("Messages cleared");
+    setShowToast(true);
+
+    // Call server action in background
     const result = await clearShoppingList();
+
+    // If it failed, revert
     if (result.error) {
+      setItems(previousItems);
+      setMealMetadata(previousMetadata);
       setToastMessage("Failed to clear your messages");
       setShowToast(true);
-    } else {
-      setItems([]);
-      setMealMetadata([]);
-      setToastMessage("Messages cleared");
+    }
+  }
+
+  async function handleToggleItem(itemIndex: number, currentChecked: boolean) {
+    // Optimistic update - update UI immediately
+    const newChecked = !currentChecked;
+    setItems((prevItems) => {
+      const updated = [...prevItems];
+      updated[itemIndex] = { ...updated[itemIndex], checked: newChecked };
+      return updated;
+    });
+
+    // Call server action in background
+    const result = await updateShoppingListItem(itemIndex, newChecked);
+
+    // Only revert and show error if it failed
+    if (result.error) {
+      setItems((prevItems) => {
+        const reverted = [...prevItems];
+        reverted[itemIndex] = { ...reverted[itemIndex], checked: currentChecked };
+        return reverted;
+      });
+      setToastMessage("Failed to update item");
       setShowToast(true);
     }
   }
 
   async function handleRemoveMeal(mealId: string) {
+    // Optimistic update - remove items from UI immediately
+    const previousItems = items;
+    const previousMetadata = mealMetadata;
+
+    setItems((prevItems) => prevItems.filter((item) => !item.fromMeals.some((mealName) => {
+      const metadata = previousMetadata.find((m) => m.id === mealId);
+      return metadata && mealName === metadata.name;
+    })));
+    setMealMetadata((prevMetadata) => prevMetadata.filter((m) => m.id !== mealId));
+    setToastMessage("Meal removed from your messages");
+    setShowToast(true);
+
+    // Call server action in background
     const result = await removeMealFromShoppingList(mealId);
+
+    // If it failed, revert and show error
     if (result.error) {
+      setItems(previousItems);
+      setMealMetadata(previousMetadata);
       setToastMessage("Failed to remove meal from your messages");
-      setShowToast(true);
-    } else {
-      // Reload shopping list from database
-      await loadShoppingList();
-      setToastMessage("Meal removed from your messages");
       setShowToast(true);
     }
   }
 
   async function handleViewMeal(mealId: string) {
+    // Open modal immediately with loading state
+    setSelectedMealForDetail({} as Meal);
+
+    // Load meal data in background
     const result = await getMealById(mealId);
     if (result.data) {
       setSelectedMealForDetail(result.data);
     } else {
+      setSelectedMealForDetail(null);
       setToastMessage("Failed to load meal details");
       setShowToast(true);
     }
@@ -218,6 +269,7 @@ export default function ShoppingListPage() {
             <ShoppingList
               items={items}
               mealMetadata={mealMetadata}
+              onToggleItem={handleToggleItem}
               onClear={handleClearList}
               onRemoveMeal={handleRemoveMeal}
               onViewMeal={handleViewMeal}
