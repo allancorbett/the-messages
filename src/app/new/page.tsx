@@ -183,15 +183,15 @@ export default function PlanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className="min-h-screen bg-peat-50 dark:bg-peat-950">
       <Header userEmail={userEmail} />
 
       <main className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="font-display text-3xl text-peat-900 mb-2">
+          <h1 className="font-display text-3xl text-peat-900 dark:text-peat-50 mb-2">
             New Recipes
           </h1>
-          <p className="text-peat-600">
+          <p className="text-peat-600 dark:text-peat-400">
             Generate seasonal meal ideas for {formatLocation(location)}
           </p>
         </div>
@@ -200,7 +200,7 @@ export default function PlanPage() {
           {/* Filters sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="card">
-              <h2 className="font-medium text-peat-900 mb-4">Preferences</h2>
+              <h2 className="font-medium text-peat-900 dark:text-peat-100 mb-4">Preferences</h2>
               <MealFilters
                 season={season}
                 onSeasonChange={setSeason}
@@ -269,14 +269,14 @@ export default function PlanPage() {
           {/* Meals list */}
           <div>
             {error && (
-              <div className="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
+              <div className="mb-4 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400">
                 {error}
               </div>
             )}
 
             {meals.length > 0 && (
               <>
-                <div className="mb-3 p-3 bg-brine-50 border border-brine-200 rounded-lg flex items-center gap-2 text-sm text-brine-700">
+                <div className="mb-3 p-3 bg-brine-50 dark:bg-brine-900/20 border border-brine-200 dark:border-brine-800 rounded-lg flex items-center gap-2 text-sm text-brine-700 dark:text-brine-300">
                   <svg
                     className="w-4 h-4 flex-shrink-0"
                     fill="none"
@@ -294,21 +294,21 @@ export default function PlanPage() {
                 </div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-peat-600">
+                    <span className="text-sm text-peat-600 dark:text-peat-400">
                       {selectedMeals.length} of {meals.length} selected
                     </span>
                     <div className="flex gap-2">
                       <button
                         onClick={selectAll}
-                        className="text-sm text-brine-600 hover:text-brine-700"
+                        className="text-sm text-brine-600 dark:text-brine-400 hover:text-brine-700 dark:hover:text-brine-300"
                         aria-label="Select all meals for shopping list"
                       >
                         Select all
                       </button>
-                      <span className="text-peat-300" aria-hidden="true">|</span>
+                      <span className="text-peat-300 dark:text-peat-600" aria-hidden="true">|</span>
                       <button
                         onClick={deselectAll}
-                        className="text-sm text-peat-500 hover:text-peat-700"
+                        className="text-sm text-peat-500 dark:text-peat-400 hover:text-peat-700 dark:hover:text-peat-300"
                         aria-label="Clear all meal selections"
                       >
                         Clear
@@ -354,9 +354,9 @@ export default function PlanPage() {
 
             {!loading && !initialLoading && meals.length === 0 && !hasGeneratedBefore && (
               <div className="card text-center py-16">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 dark:from-brine-900/30 dark:to-oat-900/30 flex items-center justify-center mx-auto mb-6">
                   <svg
-                    className="w-10 h-10 text-brine-600"
+                    className="w-10 h-10 text-brine-600 dark:text-brine-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -369,10 +369,10 @@ export default function PlanPage() {
                     />
                   </svg>
                 </div>
-                <h2 className="font-display text-2xl text-peat-900 mb-2">
+                <h2 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-2">
                   Ready to plan?
                 </h2>
-                <p className="text-peat-600 max-w-md mx-auto mb-6">
+                <p className="text-peat-600 dark:text-peat-400 max-w-md mx-auto mb-6">
                   Set your preferences on the left and hit Generate to get 3
                   seasonal meal suggestions tailored to local supermarkets.
                 </p>

@@ -32,18 +32,18 @@ export function MealList({
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded bg-peat-200" />
-                  <div className="w-12 h-5 rounded bg-peat-200" />
+                  <div className="w-6 h-6 rounded bg-peat-200 dark:bg-peat-700" />
+                  <div className="w-12 h-5 rounded bg-peat-200 dark:bg-peat-700" />
                 </div>
-                <div className="h-5 w-3/4 rounded bg-peat-200 mb-2" />
-                <div className="h-4 w-full rounded bg-peat-200 mb-1" />
-                <div className="h-4 w-2/3 rounded bg-peat-200 mb-3" />
+                <div className="h-5 w-3/4 rounded bg-peat-200 dark:bg-peat-700 mb-2" />
+                <div className="h-4 w-full rounded bg-peat-200 dark:bg-peat-700 mb-1" />
+                <div className="h-4 w-2/3 rounded bg-peat-200 dark:bg-peat-700 mb-3" />
                 <div className="flex gap-4">
-                  <div className="h-4 w-16 rounded bg-peat-200" />
-                  <div className="h-4 w-20 rounded bg-peat-200" />
+                  <div className="h-4 w-16 rounded bg-peat-200 dark:bg-peat-700" />
+                  <div className="h-4 w-20 rounded bg-peat-200 dark:bg-peat-700" />
                 </div>
               </div>
-              <div className="w-6 h-6 rounded bg-peat-200" />
+              <div className="w-6 h-6 rounded bg-peat-200 dark:bg-peat-700" />
             </div>
           </div>
         ))}
@@ -54,9 +54,9 @@ export function MealList({
   if (meals.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 rounded-full bg-peat-100 flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 rounded-full bg-peat-100 dark:bg-peat-800 flex items-center justify-center mx-auto mb-4">
           <svg
-            className="w-8 h-8 text-peat-400"
+            className="w-8 h-8 text-peat-400 dark:text-peat-500"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -69,8 +69,8 @@ export function MealList({
             />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-peat-900 mb-1">No meals yet</h3>
-        <p className="text-peat-600">
+        <h3 className="text-lg font-medium text-peat-900 dark:text-peat-100 mb-1">No meals yet</h3>
+        <p className="text-peat-600 dark:text-peat-400">
           Set your preferences and generate some meal ideas
         </p>
       </div>

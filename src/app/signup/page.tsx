@@ -30,23 +30,23 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-peat-50 to-peat-100">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-peat-50 to-peat-100 dark:from-peat-950 dark:to-peat-900">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <h1 className="font-display text-3xl text-peat-900">
+            <h1 className="font-display text-3xl text-peat-900 dark:text-peat-50">
               The Messages
             </h1>
           </Link>
-          <p className="text-peat-600 mt-2">Create your account</p>
+          <p className="text-peat-600 dark:text-peat-300 mt-2">Create your account</p>
         </div>
 
         <div className="card">
           {success ? (
             <div className="text-center py-4">
-              <div className="w-12 h-12 rounded-full bg-brine-100 flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 rounded-full bg-brine-100 dark:bg-brine-900 flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-6 h-6 text-brine-600"
+                  className="w-6 h-6 text-brine-600 dark:text-brine-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -59,10 +59,10 @@ export default function SignUpPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-lg font-medium text-peat-900 mb-2">
+              <h2 className="text-lg font-medium text-peat-900 dark:text-peat-50 mb-2">
                 Check your email
               </h2>
-              <p className="text-peat-600 text-sm mb-4">{success}</p>
+              <p className="text-peat-600 dark:text-peat-300 text-sm mb-4">{success}</p>
               <Link href="/login" className="btn-secondary">
                 Back to sign in
               </Link>
@@ -70,7 +70,7 @@ export default function SignUpPage() {
           ) : (
             <form action={handleSubmit} className="space-y-4">
               {error && (
-                <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-300 text-sm">
                   {error}
                 </div>
               )}
@@ -103,7 +103,7 @@ export default function SignUpPage() {
                   className="input"
                   placeholder="••••••••"
                 />
-                <p className="text-xs text-peat-500 mt-1">
+                <p className="text-xs text-peat-500 dark:text-peat-400 mt-1">
                   At least 8 characters with uppercase, lowercase, and a number
                 </p>
               </div>
@@ -144,11 +144,11 @@ export default function SignUpPage() {
           )}
 
           {!success && (
-            <p className="mt-6 text-center text-sm text-peat-600">
+            <p className="mt-6 text-center text-sm text-peat-600 dark:text-peat-400">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="font-medium text-brine-600 hover:text-brine-700"
+                className="font-medium text-brine-600 hover:text-brine-700 dark:text-brine-400 dark:hover:text-brine-300"
               >
                 Sign in
               </Link>

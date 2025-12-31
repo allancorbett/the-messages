@@ -65,7 +65,7 @@ export function MealFilters({
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all",
                 season === s
                   ? "bg-brine-600 text-white"
-                  : "bg-peat-100 text-peat-700 hover:bg-peat-200"
+                  : "bg-peat-100 dark:bg-peat-800 text-peat-700 dark:text-peat-300 hover:bg-peat-200 dark:hover:bg-peat-700"
               )}
             >
               {getSeasonEmoji(s)} {capitalise(s)}
@@ -89,7 +89,7 @@ export function MealFilters({
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all",
                 mealTypes.includes(type)
                   ? "bg-brine-600 text-white"
-                  : "bg-peat-100 text-peat-700 hover:bg-peat-200"
+                  : "bg-peat-100 dark:bg-peat-800 text-peat-700 dark:text-peat-300 hover:bg-peat-200 dark:hover:bg-peat-700"
               )}
             >
               {capitalise(type)}
@@ -110,7 +110,7 @@ export function MealFilters({
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all",
                 budget === level
                   ? "bg-brine-600 text-white"
-                  : "bg-peat-100 text-peat-700 hover:bg-peat-200"
+                  : "bg-peat-100 dark:bg-peat-800 text-peat-700 dark:text-peat-300 hover:bg-peat-200 dark:hover:bg-peat-700"
               )}
             >
               {"£".repeat(level)} {getBudgetLabel(level)}
@@ -131,7 +131,7 @@ export function MealFilters({
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all",
                 complexity === level
                   ? "bg-brine-600 text-white"
-                  : "bg-peat-100 text-peat-700 hover:bg-peat-200"
+                  : "bg-peat-100 dark:bg-peat-800 text-peat-700 dark:text-peat-300 hover:bg-peat-200 dark:hover:bg-peat-700"
               )}
             >
               {capitalise(level)}
@@ -147,11 +147,11 @@ export function MealFilters({
           <button
             onClick={() => onHouseholdSizeChange(Math.max(1, householdSize - 1))}
             disabled={householdSize <= 1}
-            className="w-10 h-10 rounded-lg bg-peat-100 text-peat-700 font-medium hover:bg-peat-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-10 h-10 rounded-lg bg-peat-100 dark:bg-peat-800 text-peat-700 dark:text-peat-300 font-medium hover:bg-peat-200 dark:hover:bg-peat-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             −
           </button>
-          <span className="w-12 text-center font-medium text-peat-900">
+          <span className="w-12 text-center font-medium text-peat-900 dark:text-peat-100">
             {householdSize}
           </span>
           <button
@@ -159,7 +159,7 @@ export function MealFilters({
               onHouseholdSizeChange(Math.min(12, householdSize + 1))
             }
             disabled={householdSize >= 12}
-            className="w-10 h-10 rounded-lg bg-peat-100 text-peat-700 font-medium hover:bg-peat-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-10 h-10 rounded-lg bg-peat-100 dark:bg-peat-800 text-peat-700 dark:text-peat-300 font-medium hover:bg-peat-200 dark:hover:bg-peat-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             +
           </button>

@@ -137,19 +137,19 @@ export function CookingLoadingOverlay({ isLoading }: CookingLoadingOverlayProps)
   if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-peat-900/95 to-brine-900/95 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-peat-900/95 to-brine-900/95 dark:from-peat-950/98 dark:to-brine-950/98 backdrop-blur-sm">
       <div className="text-center px-4">
         {/* Spinner */}
         <div className="relative w-24 h-24 mx-auto mb-8">
           {/* Outer ring */}
-          <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-oat-200/30"></div>
+          <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-oat-200/30 dark:border-oat-300/20"></div>
 
           {/* Spinning ring */}
-          <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-t-oat-400 border-r-oat-400 animate-spin"></div>
+          <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-t-oat-400 dark:border-t-oat-300 border-r-oat-400 dark:border-r-oat-300 animate-spin"></div>
 
           {/* Inner glow */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-oat-400/20 to-brine-400/20 animate-pulse"></div>
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-oat-400/20 to-brine-400/20 dark:from-oat-300/15 dark:to-brine-300/15 animate-pulse"></div>
           </div>
         </div>
 
@@ -164,7 +164,7 @@ export function CookingLoadingOverlay({ isLoading }: CookingLoadingOverlayProps)
         </div>
 
         {/* Subtitle */}
-        <p className="mt-4 text-sm text-oat-300/80">
+        <p className="mt-4 text-sm text-oat-300/80 dark:text-oat-200/70">
           Crafting your personalised meal suggestions
         </p>
       </div>

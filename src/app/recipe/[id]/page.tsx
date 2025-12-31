@@ -94,13 +94,13 @@ export default function RecipePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-peat-50">
+      <div className="min-h-screen bg-peat-50 dark:bg-peat-950">
         <Header userEmail={userEmail} />
         <main className="max-w-4xl mx-auto px-4 py-8">
           <div className="card animate-pulse">
-            <div className="h-8 w-3/4 rounded bg-peat-200 mb-4" />
-            <div className="h-4 w-full rounded bg-peat-200 mb-2" />
-            <div className="h-4 w-2/3 rounded bg-peat-200" />
+            <div className="h-8 w-3/4 rounded bg-peat-200 dark:bg-peat-700 mb-4" />
+            <div className="h-4 w-full rounded bg-peat-200 dark:bg-peat-700 mb-2" />
+            <div className="h-4 w-2/3 rounded bg-peat-200 dark:bg-peat-700" />
           </div>
         </main>
       </div>
@@ -109,14 +109,14 @@ export default function RecipePage() {
 
   if (error || !meal) {
     return (
-      <div className="min-h-screen bg-peat-50">
+      <div className="min-h-screen bg-peat-50 dark:bg-peat-950">
         <Header userEmail={userEmail} />
         <main className="max-w-4xl mx-auto px-4 py-8">
-          <div className="card bg-red-50 border-red-200 text-center py-16">
-            <h2 className="font-display text-2xl text-red-900 mb-2">
+          <div className="card bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-center py-16">
+            <h2 className="font-display text-2xl text-red-900 dark:text-red-300 mb-2">
               Recipe Not Found
             </h2>
-            <p className="text-red-700 mb-6">
+            <p className="text-red-700 dark:text-red-400 mb-6">
               {error || "This recipe could not be found."}
             </p>
             <button onClick={() => router.push("/saved")} className="btn-primary">
@@ -150,7 +150,7 @@ export default function RecipePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className="min-h-screen bg-peat-50 dark:bg-peat-950">
       <Header userEmail={userEmail} />
 
       <main className="max-w-4xl mx-auto px-4 py-8">
@@ -173,17 +173,17 @@ export default function RecipePage() {
                 >
                   {getBudgetSymbol(meal.priceLevel)}
                 </span>
-                <span className="text-sm text-peat-500">
+                <span className="text-sm text-peat-500 dark:text-peat-400">
                   {capitalise(meal.mealType)}
                 </span>
               </div>
-              <h1 className="font-display text-3xl text-peat-900 mb-3">
+              <h1 className="font-display text-3xl text-peat-900 dark:text-peat-50 mb-3">
                 {meal.name}
               </h1>
-              <p className="text-peat-700 mb-4">{meal.description}</p>
+              <p className="text-peat-700 dark:text-peat-300 mb-4">{meal.description}</p>
 
               {/* Meta info */}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-peat-600">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-peat-600 dark:text-peat-400">
                 <span className="flex items-center gap-2">
                   <svg
                     className="w-5 h-5"
@@ -274,7 +274,7 @@ export default function RecipePage() {
               onClick={handleToggleFavourite}
               className={cn(
                 "btn-secondary flex-1 min-w-[140px]",
-                meal?.isFavourite && "!bg-red-50 !text-red-600 !border-red-200"
+                meal?.isFavourite && "!bg-red-50 dark:!bg-red-900/20 !text-red-600 dark:!text-red-400 !border-red-200 dark:!border-red-800"
               )}
               title={meal?.isFavourite ? "Remove from favourites" : "Add to favourites"}
             >
@@ -339,7 +339,7 @@ export default function RecipePage() {
 
         {/* Ingredients */}
         <div className="card mb-6">
-          <h2 className="font-display text-2xl text-peat-900 mb-4">
+          <h2 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-4">
             Ingredients
           </h2>
           <div className="space-y-4">
@@ -349,16 +349,16 @@ export default function RecipePage() {
 
               return (
                 <div key={category}>
-                  <h3 className="text-sm font-medium text-peat-500 uppercase tracking-wide mb-2">
+                  <h3 className="text-sm font-medium text-peat-500 dark:text-peat-400 uppercase tracking-wide mb-2">
                     {capitalise(category)}
                   </h3>
                   <ul className="space-y-2">
                     {items.map((ingredient, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-3 text-peat-700"
+                        className="flex items-start gap-3 text-peat-700 dark:text-peat-300"
                       >
-                        <span className="text-brine-500 mt-1.5">•</span>
+                        <span className="text-brine-500 dark:text-brine-400 mt-1.5">•</span>
                         <span>
                           <span className="font-medium">
                             {ingredient.quantity}
@@ -376,16 +376,16 @@ export default function RecipePage() {
 
         {/* Instructions */}
         <div className="card">
-          <h2 className="font-display text-2xl text-peat-900 mb-4">
+          <h2 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-4">
             Instructions
           </h2>
           <ol className="space-y-4">
             {meal.instructions.map((instruction, idx) => (
               <li key={idx} className="flex gap-4">
-                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-brine-100 text-brine-700 font-medium flex items-center justify-center">
+                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-brine-100 dark:bg-brine-900/30 text-brine-700 dark:text-brine-400 font-medium flex items-center justify-center">
                   {idx + 1}
                 </span>
-                <p className="text-peat-700 pt-1">{instruction}</p>
+                <p className="text-peat-700 dark:text-peat-300 pt-1">{instruction}</p>
               </li>
             ))}
           </ol>

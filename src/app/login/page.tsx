@@ -36,21 +36,21 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-peat-50 to-peat-100">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-b from-peat-50 to-peat-100 dark:from-peat-950 dark:to-peat-900">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <h1 className="font-display text-3xl text-peat-900">
+            <h1 className="font-display text-3xl text-peat-900 dark:text-peat-50">
               The Messages
             </h1>
           </Link>
-          <p className="text-peat-600 mt-2">Sign in to plan your meals</p>
+          <p className="text-peat-600 dark:text-peat-300 mt-2">Sign in to plan your meals</p>
         </div>
 
         <div className="card">
           <form action={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-300 text-sm">
                 {error}
               </div>
             )}
@@ -77,7 +77,7 @@ function LoginForm() {
                 </label>
                 <Link
                   href="/forgot-password"
-                  className="text-sm text-brine-600 hover:text-brine-700"
+                  className="text-sm text-brine-600 hover:text-brine-700 dark:text-brine-400 dark:hover:text-brine-300"
                 >
                   Forgot password?
                 </Link>
@@ -127,11 +127,11 @@ function LoginForm() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-peat-600">
+          <p className="mt-6 text-center text-sm text-peat-600 dark:text-peat-400">
             Don&apos;t have an account?{" "}
             <Link
               href="/signup"
-              className="font-medium text-brine-600 hover:text-brine-700"
+              className="font-medium text-brine-600 hover:text-brine-700 dark:text-brine-400 dark:hover:text-brine-300"
             >
               Sign up
             </Link>

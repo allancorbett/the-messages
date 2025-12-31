@@ -92,15 +92,15 @@ export function MealDetailModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-peat-900 rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-peat-200 px-6 py-4 flex items-start justify-between">
+        <div className="sticky top-0 bg-white dark:bg-peat-900 border-b border-peat-200 dark:border-peat-700 px-6 py-4 flex items-start justify-between">
           <div className="flex-1 pr-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl" aria-hidden>
@@ -117,17 +117,17 @@ export function MealDetailModal({
               >
                 {getBudgetSymbol(meal.priceLevel)}
               </span>
-              <span className="text-sm text-peat-500">
+              <span className="text-sm text-peat-500 dark:text-peat-400">
                 {capitalise(meal.mealType)}
               </span>
             </div>
-            <h2 className="font-display text-2xl text-peat-900">
+            <h2 className="font-display text-2xl text-peat-900 dark:text-peat-50">
               {meal.name}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-peat-400 hover:text-peat-700 hover:bg-peat-100 transition-colors"
+            className="p-2 rounded-lg text-peat-400 dark:text-peat-500 hover:text-peat-700 dark:hover:text-peat-300 hover:bg-peat-100 dark:hover:bg-peat-800 transition-colors"
             aria-label="Close modal"
           >
             <svg
@@ -177,7 +177,7 @@ export function MealDetailModal({
                   onClick={handleToggleFavourite}
                   className={cn(
                     "btn-secondary flex-1 min-w-[140px]",
-                    meal.isFavourite && "!bg-red-50 !text-red-600 !border-red-200"
+                    meal.isFavourite && "!bg-red-50 dark:!bg-red-900/20 !text-red-600 dark:!text-red-400 !border-red-200 dark:!border-red-800"
                   )}
                   title={meal.isFavourite ? "Remove from favourites" : "Add to favourites"}
                 >
@@ -244,10 +244,10 @@ export function MealDetailModal({
           )}
 
           {/* Description */}
-          <p className="text-peat-700 mb-6">{meal.description}</p>
+          <p className="text-peat-700 dark:text-peat-300 mb-6">{meal.description}</p>
 
           {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-peat-600 mb-8 pb-6 border-b border-peat-200">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-peat-600 dark:text-peat-400 mb-8 pb-6 border-b border-peat-200 dark:border-peat-700">
             <span className="flex items-center gap-2">
               <svg
                 className="w-5 h-5"
@@ -316,7 +316,7 @@ export function MealDetailModal({
 
           {/* Ingredients */}
           <div className="mb-8">
-            <h3 className="font-display text-xl text-peat-900 mb-4">
+            <h3 className="font-display text-xl text-peat-900 dark:text-peat-50 mb-4">
               Ingredients
             </h3>
             <div className="space-y-4">
@@ -326,16 +326,16 @@ export function MealDetailModal({
 
                 return (
                   <div key={category}>
-                    <h4 className="text-sm font-medium text-peat-500 uppercase tracking-wide mb-2">
+                    <h4 className="text-sm font-medium text-peat-500 dark:text-peat-400 uppercase tracking-wide mb-2">
                       {capitalise(category)}
                     </h4>
                     <ul className="space-y-2">
                       {items.map((ingredient, idx) => (
                         <li
                           key={idx}
-                          className="flex items-start gap-3 text-peat-700"
+                          className="flex items-start gap-3 text-peat-700 dark:text-peat-300"
                         >
-                          <span className="text-brine-500 mt-1.5">•</span>
+                          <span className="text-brine-500 dark:text-brine-400 mt-1.5">•</span>
                           <span>
                             <span className="font-medium">
                               {ingredient.quantity}
@@ -353,16 +353,16 @@ export function MealDetailModal({
 
           {/* Instructions */}
           <div>
-            <h3 className="font-display text-xl text-peat-900 mb-4">
+            <h3 className="font-display text-xl text-peat-900 dark:text-peat-50 mb-4">
               Instructions
             </h3>
             <ol className="space-y-4">
               {meal.instructions.map((instruction, idx) => (
                 <li key={idx} className="flex gap-4">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-brine-100 text-brine-700 font-medium flex items-center justify-center">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-brine-100 dark:bg-brine-900/30 text-brine-700 dark:text-brine-400 font-medium flex items-center justify-center">
                     {idx + 1}
                   </span>
-                  <p className="text-peat-700 pt-1">{instruction}</p>
+                  <p className="text-peat-700 dark:text-peat-300 pt-1">{instruction}</p>
                 </li>
               ))}
             </ol>

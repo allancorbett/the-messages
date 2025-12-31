@@ -17,10 +17,10 @@ export default async function HomePage() {
   const season = getCurrentSeason();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-peat-50 via-peat-50 to-brine-50">
+    <div className="min-h-screen bg-gradient-to-b from-peat-50 via-peat-50 to-brine-50 dark:from-peat-950 dark:via-peat-950 dark:to-peat-900">
       {/* Header */}
       <header className="max-w-5xl mx-auto px-4 py-6 flex items-center justify-between">
-        <h1 className="font-display text-2xl text-peat-900">The Messages</h1>
+        <h1 className="font-display text-2xl text-peat-900 dark:text-peat-50">The Messages</h1>
         <div className="flex items-center gap-4">
           <Link href="/login" className="btn-ghost">
             Sign in
@@ -34,16 +34,16 @@ export default async function HomePage() {
       {/* Hero */}
       <main className="max-w-5xl mx-auto px-4 pt-16 pb-24">
         <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brine-100 text-brine-700 text-sm font-medium mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brine-100 text-brine-700 dark:bg-brine-900 dark:text-brine-300 text-sm font-medium mb-8">
             {getSeasonEmoji(season)} {capitalise(season)} ingredients in season
           </div>
 
-          <h2 className="font-display text-5xl sm:text-6xl text-peat-900 mb-6 leading-tight">
+          <h2 className="font-display text-5xl sm:text-6xl text-peat-900 dark:text-peat-50 mb-6 leading-tight">
             Get the messages
-            <span className="text-brine-600"> sorted</span>
+            <span className="text-brine-600 dark:text-brine-400"> sorted</span>
           </h2>
 
-          <p className="text-xl text-peat-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-peat-600 dark:text-peat-300 mb-10 max-w-2xl mx-auto">
             Seasonal meal planning for your area. Pick your preferences, get 3
             meal ideas, and generate your shopping list — all based on
             what&apos;s good right now.
@@ -75,9 +75,9 @@ export default async function HomePage() {
         {/* Features */}
         <div className="grid md:grid-cols-3 gap-8 mt-24">
           <div className="card text-center">
-            <div className="w-14 h-14 rounded-xl bg-brine-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-xl bg-brine-100 dark:bg-brine-900 flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-7 h-7 text-brine-600"
+                className="w-7 h-7 text-brine-600 dark:text-brine-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -90,19 +90,19 @@ export default async function HomePage() {
                 />
               </svg>
             </div>
-            <h3 className="font-display text-xl text-peat-900 mb-2">
+            <h3 className="font-display text-xl text-peat-900 dark:text-peat-50 mb-2">
               Seasonal First
             </h3>
-            <p className="text-peat-600">
+            <p className="text-peat-600 dark:text-peat-300">
               Meals designed around what&apos;s actually good right now in your
               local supermarkets. Better taste, better value.
             </p>
           </div>
 
           <div className="card text-center">
-            <div className="w-14 h-14 rounded-xl bg-oat-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-xl bg-oat-100 dark:bg-oat-900 flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-7 h-7 text-oat-600"
+                className="w-7 h-7 text-oat-600 dark:text-oat-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -115,19 +115,19 @@ export default async function HomePage() {
                 />
               </svg>
             </div>
-            <h3 className="font-display text-xl text-peat-900 mb-2">
+            <h3 className="font-display text-xl text-peat-900 dark:text-peat-50 mb-2">
               Budget Friendly
             </h3>
-            <p className="text-peat-600">
+            <p className="text-peat-600 dark:text-peat-300">
               Choose economic, mid-range, or fancy. Get meals that match your
               budget without compromising on flavour.
             </p>
           </div>
 
           <div className="card text-center">
-            <div className="w-14 h-14 rounded-xl bg-heather-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-xl bg-heather-100 dark:bg-heather-900 flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-7 h-7 text-heather-600"
+                className="w-7 h-7 text-heather-600 dark:text-heather-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -140,10 +140,10 @@ export default async function HomePage() {
                 />
               </svg>
             </div>
-            <h3 className="font-display text-xl text-peat-900 mb-2">
+            <h3 className="font-display text-xl text-peat-900 dark:text-peat-50 mb-2">
               One-Tap Shopping List
             </h3>
-            <p className="text-peat-600">
+            <p className="text-peat-600 dark:text-peat-300">
               Select your meals, get an aggregated shopping list grouped by
               aisle. Copy it or tick items off as you go.
             </p>
@@ -152,7 +152,7 @@ export default async function HomePage() {
 
         {/* How it works */}
         <div className="mt-24">
-          <h3 className="font-display text-3xl text-peat-900 text-center mb-12">
+          <h3 className="font-display text-3xl text-peat-900 dark:text-peat-50 text-center mb-12">
             How it works
           </h3>
           <div className="grid md:grid-cols-4 gap-6">
@@ -179,11 +179,11 @@ export default async function HomePage() {
               },
             ].map((item) => (
               <div key={item.step} className="text-center">
-                <div className="w-10 h-10 rounded-full bg-brine-600 text-white font-bold flex items-center justify-center mx-auto mb-3">
+                <div className="w-10 h-10 rounded-full bg-brine-600 dark:bg-brine-500 text-white font-bold flex items-center justify-center mx-auto mb-3">
                   {item.step}
                 </div>
-                <h4 className="font-medium text-peat-900 mb-1">{item.title}</h4>
-                <p className="text-sm text-peat-600">{item.desc}</p>
+                <h4 className="font-medium text-peat-900 dark:text-peat-100 mb-1">{item.title}</h4>
+                <p className="text-sm text-peat-600 dark:text-peat-400">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -191,8 +191,8 @@ export default async function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-peat-200 bg-white/50">
-        <div className="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-peat-500">
+      <footer className="border-t border-peat-200 dark:border-peat-800 bg-white/50 dark:bg-peat-900/50">
+        <div className="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-peat-500 dark:text-peat-400">
           <p>
             Powered by seasonal ingredients and AI.
           </p>

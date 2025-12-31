@@ -161,15 +161,15 @@ export default function ShoppingListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className="min-h-screen bg-peat-50 dark:bg-peat-950">
       <Header userEmail={userEmail} />
 
       <main className="max-w-2xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="font-display text-3xl text-peat-900 mb-2">
+          <h1 className="font-display text-3xl text-peat-900 dark:text-peat-50 mb-2">
             Your Messages
           </h1>
-          <p className="text-peat-600">
+          <p className="text-peat-600 dark:text-peat-400">
             Your ingredients, ready for the shop
           </p>
         </div>
@@ -177,16 +177,16 @@ export default function ShoppingListPage() {
         {loading ? (
           <div className="card">
             <div className="animate-pulse space-y-4">
-              <div className="h-6 w-1/3 bg-peat-200 rounded" />
-              <div className="h-4 w-2/3 bg-peat-200 rounded" />
-              <div className="h-4 w-1/2 bg-peat-200 rounded" />
+              <div className="h-6 w-1/3 bg-peat-200 dark:bg-peat-700 rounded" />
+              <div className="h-4 w-2/3 bg-peat-200 dark:bg-peat-700 rounded" />
+              <div className="h-4 w-1/2 bg-peat-200 dark:bg-peat-700 rounded" />
             </div>
           </div>
         ) : items.length === 0 ? (
           <div className="card text-center py-16">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 dark:from-brine-900/30 dark:to-oat-900/30 flex items-center justify-center mx-auto mb-6">
               <svg
-                className="w-10 h-10 text-brine-600"
+                className="w-10 h-10 text-brine-600 dark:text-brine-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -199,10 +199,10 @@ export default function ShoppingListPage() {
                 />
               </svg>
             </div>
-            <h2 className="font-display text-2xl text-peat-900 mb-2">
+            <h2 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-2">
               No meals selected
             </h2>
-            <p className="text-peat-600 max-w-md mx-auto mb-6">
+            <p className="text-peat-600 dark:text-peat-400 max-w-md mx-auto mb-6">
               Head to New Recipes to generate meals and select the ones you
               want to cook this week.
             </p>

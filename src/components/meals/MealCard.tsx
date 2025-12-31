@@ -71,7 +71,7 @@ export function MealCard({
     <div
       className={cn(
         "card group transition-all cursor-pointer hover:shadow-md",
-        selected && "ring-2 ring-brine-500 bg-brine-50/50",
+        selected && "ring-2 ring-brine-500 bg-brine-50/50 dark:bg-brine-900/20",
         className
       )}
       onClick={() => onSelect?.(meal)}
@@ -92,20 +92,20 @@ export function MealCard({
             >
               {getBudgetSymbol(meal.priceLevel)}
             </span>
-            <span className="text-xs text-peat-500">
+            <span className="text-xs text-peat-500 dark:text-peat-400">
               {capitalise(meal.mealType)}
             </span>
           </div>
 
-          <h3 className="font-medium text-peat-900 mb-1 group-hover:text-brine-700 transition-colors">
+          <h3 className="font-medium text-peat-900 dark:text-peat-50 mb-1 group-hover:text-brine-700 dark:group-hover:text-brine-400 transition-colors">
             {meal.name}
           </h3>
 
-          <p className="text-sm text-peat-600 line-clamp-2 mb-3">
+          <p className="text-sm text-peat-600 dark:text-peat-300 line-clamp-2 mb-3">
             {meal.description}
           </p>
 
-          <div className="flex items-center gap-4 text-xs text-peat-500 mb-3 flex-wrap">
+          <div className="flex items-center gap-4 text-xs text-peat-500 dark:text-peat-400 mb-3 flex-wrap">
             <span className="flex items-center gap-1">
               <svg
                 className="w-3.5 h-3.5"
@@ -178,7 +178,7 @@ export function MealCard({
                 e.stopPropagation();
                 onViewDetails(meal);
               }}
-              className="text-xs text-brine-600 hover:text-brine-700 font-medium flex items-center gap-1"
+              className="text-xs text-brine-600 dark:text-brine-400 hover:text-brine-700 dark:hover:text-brine-300 font-medium flex items-center gap-1"
             >
               View full recipe
               <svg
@@ -205,7 +205,7 @@ export function MealCard({
                 "w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0",
                 selected
                   ? "bg-brine-500 border-brine-500"
-                  : "border-peat-300 group-hover:border-peat-400"
+                  : "border-peat-300 dark:border-peat-600 group-hover:border-peat-400 dark:group-hover:border-peat-500"
               )}
               aria-label={selected ? "Selected" : "Not selected"}
             >
@@ -234,7 +234,7 @@ export function MealCard({
                 e.stopPropagation();
                 onSave(meal);
               }}
-              className="p-1.5 rounded-lg text-peat-400 hover:text-brine-600 hover:bg-brine-50 transition-colors flex-shrink-0"
+              className="p-1.5 rounded-lg text-peat-400 dark:text-peat-500 hover:text-brine-600 dark:hover:text-brine-400 hover:bg-brine-50 dark:hover:bg-brine-900/20 transition-colors flex-shrink-0"
               aria-label="Save meal"
             >
               <svg
@@ -260,8 +260,8 @@ export function MealCard({
               className={cn(
                 "p-1.5 rounded-lg transition-colors flex-shrink-0",
                 meal.isFavourite
-                  ? "text-red-500 hover:text-red-600 hover:bg-red-50"
-                  : "text-peat-400 hover:text-red-500 hover:bg-red-50"
+                  ? "text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  : "text-peat-400 dark:text-peat-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
               )}
               aria-label={meal.isFavourite ? "Remove from favourites" : "Add to favourites"}
             >
@@ -285,7 +285,7 @@ export function MealCard({
           {showShareButton && meal.id && (
             <button
               onClick={handleShare}
-              className="p-1.5 rounded-lg text-peat-400 hover:text-brine-600 hover:bg-brine-50 transition-colors flex-shrink-0"
+              className="p-1.5 rounded-lg text-peat-400 dark:text-peat-500 hover:text-brine-600 dark:hover:text-brine-400 hover:bg-brine-50 dark:hover:bg-brine-900/20 transition-colors flex-shrink-0"
               aria-label="Share recipe link"
             >
               <svg
@@ -308,7 +308,7 @@ export function MealCard({
           {showDeleteButton && meal.id && (
             <button
               onClick={handleDelete}
-              className="p-1.5 rounded-lg text-peat-400 hover:text-red-600 hover:bg-red-50 transition-colors flex-shrink-0"
+              className="p-1.5 rounded-lg text-peat-400 dark:text-peat-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex-shrink-0"
               aria-label="Delete meal"
             >
               <svg

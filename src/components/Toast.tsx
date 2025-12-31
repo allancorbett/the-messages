@@ -28,9 +28,9 @@ export function Toast({ message, show, onHide, duration = 3000 }: ToastProps) {
         show ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0 pointer-events-none"
       )}
     >
-      <div className="px-4 py-3 rounded-lg bg-peat-900 text-white shadow-lg flex items-center gap-2 min-w-[280px]">
+      <div className="px-4 py-3 rounded-lg bg-peat-900 dark:bg-peat-800 text-white shadow-lg flex items-center gap-2 min-w-[280px]">
         <svg
-          className="w-5 h-5 text-brine-400 flex-shrink-0"
+          className="w-5 h-5 text-brine-400 dark:text-brine-300 flex-shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

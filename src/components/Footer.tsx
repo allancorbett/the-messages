@@ -43,9 +43,9 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="py-6 px-4 border-t border-peat-200 bg-peat-50">
+    <footer className="py-6 px-4 border-t border-peat-200 bg-peat-50 dark:border-peat-800 dark:bg-peat-950">
       <div className="max-w-7xl mx-auto text-center">
-        <p className="text-sm text-peat-600">
+        <p className="text-sm text-peat-600 dark:text-peat-400">
           <span className="inline-block min-w-[120px] transition-opacity duration-300">
             {verb}
           </span>{" "}
@@ -53,7 +53,7 @@ export function Footer() {
             href="https://superallan.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-brine-600 hover:text-brine-700 font-medium hover:underline"
+            className="text-brine-600 hover:text-brine-700 dark:text-brine-400 dark:hover:text-brine-300 font-medium hover:underline"
           >
             Allan Corbett
           </Link>

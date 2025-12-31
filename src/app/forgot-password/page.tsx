@@ -28,12 +28,12 @@ export default function ForgotPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 dark:from-peat-950 dark:to-peat-900 flex items-center justify-center p-4">
         <div className="card max-w-md w-full">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-brine-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-brine-100 dark:bg-brine-900 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-8 h-8 text-brine-600"
+                className="w-8 h-8 text-brine-600 dark:text-brine-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -47,17 +47,17 @@ export default function ForgotPasswordPage() {
                 />
               </svg>
             </div>
-            <h1 className="font-display text-2xl text-peat-900 mb-2">
+            <h1 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-2">
               Check Your Email
             </h1>
-            <p className="text-peat-600">
+            <p className="text-peat-600 dark:text-peat-300">
               If an account exists with <strong>{email}</strong>, you will
               receive a password reset link shortly.
             </p>
           </div>
 
           <div className="space-y-4">
-            <p className="text-sm text-peat-600">
+            <p className="text-sm text-peat-600 dark:text-peat-400">
               The email may take a few minutes to arrive. Check your spam folder
               if you don&apos;t see it.
             </p>
@@ -72,13 +72,13 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 dark:from-peat-950 dark:to-peat-900 flex items-center justify-center p-4">
       <div className="card max-w-md w-full">
         <div className="text-center mb-6">
-          <h1 className="font-display text-2xl text-peat-900 mb-2">
+          <h1 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-2">
             Forgot Password?
           </h1>
-          <p className="text-peat-600">
+          <p className="text-peat-600 dark:text-peat-300">
             Enter your email address and we&apos;ll send you a link to reset
             your password.
           </p>
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+            <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-300 text-sm">
               {error}
             </div>
           )}
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-peat-700 mb-1"
+              className="block text-sm font-medium text-peat-700 dark:text-peat-300 mb-1"
             >
               Email Address
             </label>
@@ -124,7 +124,7 @@ export default function ForgotPasswordPage() {
           <div className="text-center">
             <Link
               href="/login"
-              className="text-sm text-brine-600 hover:text-brine-700"
+              className="text-sm text-brine-600 hover:text-brine-700 dark:text-brine-400 dark:hover:text-brine-300"
             >
               Back to Login
             </Link>

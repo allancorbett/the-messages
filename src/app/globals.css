@@ -14,37 +14,45 @@
 
   body {
     @apply bg-peat-50 text-peat-950 antialiased;
+    @apply dark:bg-peat-950 dark:text-peat-50;
     font-feature-settings: "kern" 1, "liga" 1;
   }
 
   ::selection {
     @apply bg-brine-200 text-brine-900;
+    @apply dark:bg-brine-800 dark:text-brine-100;
   }
 }
 
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brine-600 px-5 py-2.5 font-medium text-white transition-all hover:bg-brine-700 focus:outline-none focus:ring-2 focus:ring-brine-500 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply dark:bg-brine-500 dark:hover:bg-brine-600 dark:focus:ring-offset-peat-950;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg border border-peat-300 bg-white px-5 py-2.5 font-medium text-peat-700 transition-all hover:bg-peat-50 hover:border-peat-400 focus:outline-none focus:ring-2 focus:ring-peat-300 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply dark:bg-peat-800 dark:border-peat-600 dark:text-peat-200 dark:hover:bg-peat-700 dark:hover:border-peat-500 dark:focus:ring-offset-peat-950;
   }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium text-peat-600 transition-all hover:bg-peat-100 focus:outline-none focus:ring-2 focus:ring-peat-300 active:scale-[0.98];
+    @apply dark:text-peat-300 dark:hover:bg-peat-800 dark:focus:ring-peat-600;
   }
 
   .card {
     @apply rounded-xl border border-peat-200 bg-white p-6 shadow-sm;
+    @apply dark:bg-peat-900 dark:border-peat-700 dark:shadow-none;
   }
 
   .input {
     @apply w-full rounded-lg border border-peat-300 bg-white px-4 py-2.5 text-peat-900 placeholder:text-peat-400 transition-colors focus:border-brine-500 focus:outline-none focus:ring-2 focus:ring-brine-500/20;
+    @apply dark:bg-peat-800 dark:border-peat-600 dark:text-peat-100 dark:placeholder:text-peat-500 dark:focus:border-brine-400 dark:focus:ring-brine-400/20;
   }
 
   .label {
     @apply block text-sm font-medium text-peat-700 mb-1.5;
+    @apply dark:text-peat-300;
   }
 
   .badge {
@@ -53,18 +61,22 @@
 
   .badge-economic {
     @apply bg-brine-100 text-brine-700;
+    @apply dark:bg-brine-900 dark:text-brine-300;
   }
 
   .badge-mid {
     @apply bg-oat-100 text-oat-700;
+    @apply dark:bg-oat-900 dark:text-oat-300;
   }
 
   .badge-fancy {
     @apply bg-heather-100 text-heather-700;
+    @apply dark:bg-heather-900 dark:text-heather-300;
   }
 
   .skeleton {
     @apply animate-pulse rounded bg-peat-200;
+    @apply dark:bg-peat-800;
   }
 
   .shimmer {
@@ -91,6 +103,12 @@
     scrollbar-color: theme("colors.peat.300") transparent;
   }
 
+  @media (prefers-color-scheme: dark) {
+    .scrollbar-thin {
+      scrollbar-color: theme("colors.peat.700") transparent;
+    }
+  }
+
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -105,8 +123,20 @@
     border-radius: 3px;
   }
 
+  @media (prefers-color-scheme: dark) {
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: theme("colors.peat.700");
+    }
+  }
+
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background-color: theme("colors.peat.400");
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+      background-color: theme("colors.peat.600");
+    }
   }
 }
 

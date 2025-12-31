@@ -132,10 +132,10 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
       {/* Header */}
       <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <div>
-          <h2 className="font-display text-xl text-peat-900">
+          <h2 className="font-display text-xl text-peat-900 dark:text-peat-50">
             Your Messages
           </h2>
-          <p className="text-sm text-peat-600">
+          <p className="text-sm text-peat-600 dark:text-peat-400">
             {checkedCount} of {totalCount} items ticked
           </p>
         </div>
@@ -197,15 +197,15 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
       </div>
 
       {/* Meals included */}
-      <div className="mb-6 p-4 rounded-lg bg-brine-50 border border-brine-200">
-        <p className="text-sm font-medium text-brine-800 mb-2">
+      <div className="mb-6 p-4 rounded-lg bg-brine-50 dark:bg-brine-900/20 border border-brine-200 dark:border-brine-800">
+        <p className="text-sm font-medium text-brine-800 dark:text-brine-300 mb-2">
           Shopping for {mealMetadata.length} meal{mealMetadata.length !== 1 ? 's' : ''}:
         </p>
         <div className="flex flex-wrap gap-2">
           {mealMetadata.map((meal) => (
             <div
               key={meal.id}
-              className="group text-xs px-2 py-1 rounded bg-white text-brine-700 border border-brine-200 flex items-center gap-1"
+              className="group text-xs px-2 py-1 rounded bg-white dark:bg-peat-800 text-brine-700 dark:text-brine-400 border border-brine-200 dark:border-brine-700 flex items-center gap-1"
             >
               <button
                 onClick={() => onViewMeal?.(meal.id)}
@@ -222,7 +222,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
                       onRemoveMeal(meal.id);
                     }
                   }}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600 dark:hover:text-red-400"
                   aria-label={`Remove ${meal.name} from shopping list`}
                 >
                   <svg
@@ -249,10 +249,10 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
       <div className="space-y-6">
         {Object.entries(groupedItems).map(([category, categoryItems]) => (
           <div key={category}>
-            <h3 className="flex items-center gap-2 font-medium text-peat-800 mb-3">
+            <h3 className="flex items-center gap-2 font-medium text-peat-800 dark:text-peat-200 mb-3">
               <span>{categoryEmojis[category as IngredientCategory]}</span>
               {capitalise(category)}
-              <span className="text-sm font-normal text-peat-500">
+              <span className="text-sm font-normal text-peat-500 dark:text-peat-400">
                 ({categoryItems.length})
               </span>
             </h3>
@@ -270,8 +270,8 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
                     className={cn(
                       "flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-all",
                       item.checked
-                        ? "bg-peat-100 text-peat-500"
-                        : "bg-white hover:bg-peat-50"
+                        ? "bg-peat-100 dark:bg-peat-800 text-peat-500 dark:text-peat-400"
+                        : "bg-white dark:bg-peat-900 hover:bg-peat-50 dark:hover:bg-peat-800"
                     )}
                     role="checkbox"
                     aria-checked={item.checked}
@@ -289,7 +289,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
                         "w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors",
                         item.checked
                           ? "bg-brine-500 border-brine-500"
-                          : "border-peat-300"
+                          : "border-peat-300 dark:border-peat-600"
                       )}
                     >
                       {item.checked && (
@@ -317,11 +317,11 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
                       >
                         {item.name}
                       </span>
-                      <span className="text-peat-500 ml-2">
+                      <span className="text-peat-500 dark:text-peat-400 ml-2">
                         ({item.quantity})
                       </span>
                       {item.fromMeals.length > 1 && (
-                        <p className="text-xs text-peat-400 mt-0.5">
+                        <p className="text-xs text-peat-400 dark:text-peat-500 mt-0.5">
                           For:{" "}
                           {item.fromMeals.map((mealName, idx) => (
                             <span key={mealName}>
@@ -334,7 +334,7 @@ export function ShoppingList({ items, mealMetadata, onClear, onRemoveMeal, onVie
                                     onViewMeal(mealId);
                                   }
                                 }}
-                                className="hover:underline cursor-pointer hover:text-peat-600"
+                                className="hover:underline cursor-pointer hover:text-peat-600 dark:hover:text-peat-300"
                                 title="View recipe"
                               >
                                 {mealName}

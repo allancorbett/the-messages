@@ -84,10 +84,10 @@ export default function ResetPasswordPage() {
 
   if (checkingSession) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 dark:from-peat-950 dark:to-peat-900 flex items-center justify-center p-4">
         <div className="card max-w-md w-full text-center">
-          <div className="animate-spin h-8 w-8 border-4 border-peat-200 border-t-brine-600 rounded-full mx-auto"></div>
-          <p className="mt-4 text-peat-600">Verifying reset link...</p>
+          <div className="animate-spin h-8 w-8 border-4 border-peat-200 dark:border-peat-700 border-t-brine-600 dark:border-t-brine-400 rounded-full mx-auto"></div>
+          <p className="mt-4 text-peat-600 dark:text-peat-300">Verifying reset link...</p>
         </div>
       </div>
     );
@@ -95,12 +95,12 @@ export default function ResetPasswordPage() {
 
   if (!isValidSession) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 dark:from-peat-950 dark:to-peat-900 flex items-center justify-center p-4">
         <div className="card max-w-md w-full">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-8 h-8 text-red-600"
+                className="w-8 h-8 text-red-600 dark:text-red-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -114,10 +114,10 @@ export default function ResetPasswordPage() {
                 />
               </svg>
             </div>
-            <h1 className="font-display text-2xl text-peat-900 mb-2">
+            <h1 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-2">
               Invalid or Expired Link
             </h1>
-            <p className="text-peat-600 mb-6">
+            <p className="text-peat-600 dark:text-peat-300 mb-6">
               This password reset link is invalid or has expired. Please request
               a new one.
             </p>
@@ -136,12 +136,12 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 dark:from-peat-950 dark:to-peat-900 flex items-center justify-center p-4">
         <div className="card max-w-md w-full">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-brine-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-brine-100 dark:bg-brine-900 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-8 h-8 text-brine-600"
+                className="w-8 h-8 text-brine-600 dark:text-brine-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -155,10 +155,10 @@ export default function ResetPasswordPage() {
                 />
               </svg>
             </div>
-            <h1 className="font-display text-2xl text-peat-900 mb-2">
+            <h1 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-2">
               Password Updated
             </h1>
-            <p className="text-peat-600">
+            <p className="text-peat-600 dark:text-peat-300">
               Your password has been successfully updated. Redirecting you to
               plan meals...
             </p>
@@ -169,13 +169,13 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-peat-50 to-brine-50 dark:from-peat-950 dark:to-peat-900 flex items-center justify-center p-4">
       <div className="card max-w-md w-full">
         <div className="text-center mb-6">
-          <h1 className="font-display text-2xl text-peat-900 mb-2">
+          <h1 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-2">
             Reset Your Password
           </h1>
-          <p className="text-peat-600">
+          <p className="text-peat-600 dark:text-peat-300">
             Choose a new password for your account
           </p>
         </div>
@@ -183,7 +183,7 @@ export default function ResetPasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div
-              className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
+              className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-300 text-sm"
               role="alert"
             >
               {error}
@@ -193,7 +193,7 @@ export default function ResetPasswordPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-peat-700 mb-1"
+              className="block text-sm font-medium text-peat-700 dark:text-peat-300 mb-1"
             >
               New Password
             </label>
@@ -208,7 +208,7 @@ export default function ResetPasswordPage() {
               className="input"
               aria-label="New password"
             />
-            <p className="mt-1 text-xs text-peat-500">
+            <p className="mt-1 text-xs text-peat-500 dark:text-peat-400">
               At least 8 characters with uppercase, lowercase, and a number
             </p>
           </div>
@@ -216,7 +216,7 @@ export default function ResetPasswordPage() {
           <div>
             <label
               htmlFor="confirmPassword"
-              className="block text-sm font-medium text-peat-700 mb-1"
+              className="block text-sm font-medium text-peat-700 dark:text-peat-300 mb-1"
             >
               Confirm New Password
             </label>

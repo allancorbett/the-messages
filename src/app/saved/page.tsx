@@ -245,15 +245,15 @@ export default function SavedPage() {
     selectedComplexityLevels.length > 0;
 
   return (
-    <div className="min-h-screen bg-peat-50">
+    <div className="min-h-screen bg-peat-50 dark:bg-peat-950">
       <Header userEmail={userEmail} />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="font-display text-3xl text-peat-900 mb-2">
+          <h1 className="font-display text-3xl text-peat-900 dark:text-peat-50 mb-2">
             Saved Recipes
           </h1>
-          <p className="text-peat-600">
+          <p className="text-peat-600 dark:text-peat-400">
             Your complete recipe collection
           </p>
         </div>
@@ -262,21 +262,21 @@ export default function SavedPage() {
           <div className="space-y-4">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="card animate-pulse">
-                <div className="h-5 w-3/4 rounded bg-peat-200 mb-2" />
-                <div className="h-4 w-full rounded bg-peat-200 mb-1" />
-                <div className="h-4 w-2/3 rounded bg-peat-200" />
+                <div className="h-5 w-3/4 rounded bg-peat-200 dark:bg-peat-700 mb-2" />
+                <div className="h-4 w-full rounded bg-peat-200 dark:bg-peat-700 mb-1" />
+                <div className="h-4 w-2/3 rounded bg-peat-200 dark:bg-peat-700" />
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="card bg-red-50 border-red-200 text-red-700">
+          <div className="card bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400">
             {error}
           </div>
         ) : allMeals.length === 0 ? (
           <div className="card text-center py-16">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brine-100 to-oat-100 dark:from-brine-900/30 dark:to-oat-900/30 flex items-center justify-center mx-auto mb-6">
               <svg
-                className="w-10 h-10 text-brine-600"
+                className="w-10 h-10 text-brine-600 dark:text-brine-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -289,10 +289,10 @@ export default function SavedPage() {
                 />
               </svg>
             </div>
-            <h2 className="font-display text-2xl text-peat-900 mb-2">
+            <h2 className="font-display text-2xl text-peat-900 dark:text-peat-50 mb-2">
               No saved meals yet
             </h2>
-            <p className="text-peat-600 max-w-md mx-auto">
+            <p className="text-peat-600 dark:text-peat-400 max-w-md mx-auto">
               When you generate meals, they&apos;re automatically saved here for easy access later.
             </p>
           </div>
@@ -302,11 +302,11 @@ export default function SavedPage() {
             <div className="lg:sticky lg:top-24 lg:self-start">
               <div className="card">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-medium text-peat-900">Filter & Search</h2>
+                  <h2 className="font-medium text-peat-900 dark:text-peat-100">Filter & Search</h2>
                   {hasActiveFilters && (
                     <button
                       onClick={clearAllFilters}
-                      className="text-xs text-brine-600 hover:text-brine-700 underline"
+                      className="text-xs text-brine-600 dark:text-brine-400 hover:text-brine-700 dark:hover:text-brine-300 underline"
                     >
                       Clear all
                     </button>
@@ -315,7 +315,7 @@ export default function SavedPage() {
 
                 {/* Search */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                  <label className="block text-sm font-medium text-peat-700 dark:text-peat-300 mb-2">
                     Search
                   </label>
                   <input
@@ -323,13 +323,13 @@ export default function SavedPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search meals..."
-                    className="w-full px-3 py-2 rounded-lg border border-peat-200 focus:border-brine-500 focus:ring-2 focus:ring-brine-100 outline-none text-sm"
+                    className="w-full px-3 py-2 rounded-lg border border-peat-200 dark:border-peat-700 dark:bg-peat-800 dark:text-peat-100 focus:border-brine-500 focus:ring-2 focus:ring-brine-100 dark:focus:ring-brine-900/50 outline-none text-sm"
                   />
                 </div>
 
                 {/* Season filter */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                  <label className="block text-sm font-medium text-peat-700 dark:text-peat-300 mb-2">
                     Season
                   </label>
                   <div className="space-y-2">
@@ -341,7 +341,7 @@ export default function SavedPage() {
                           onChange={() => toggleSeason(season)}
                           className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
                         />
-                        <span className="text-sm text-peat-700 capitalize">{season}</span>
+                        <span className="text-sm text-peat-700 dark:text-peat-300 capitalize">{season}</span>
                       </label>
                     ))}
                   </div>
@@ -349,7 +349,7 @@ export default function SavedPage() {
 
                 {/* Meal type filter */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                  <label className="block text-sm font-medium text-peat-700 dark:text-peat-300 mb-2">
                     Meal Type
                   </label>
                   <div className="space-y-2">
@@ -361,7 +361,7 @@ export default function SavedPage() {
                           onChange={() => toggleMealType(type)}
                           className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
                         />
-                        <span className="text-sm text-peat-700 capitalize">{type}</span>
+                        <span className="text-sm text-peat-700 dark:text-peat-300 capitalize">{type}</span>
                       </label>
                     ))}
                   </div>
@@ -369,7 +369,7 @@ export default function SavedPage() {
 
                 {/* Price level filter */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                  <label className="block text-sm font-medium text-peat-700 dark:text-peat-300 mb-2">
                     Budget
                   </label>
                   <div className="space-y-2">
@@ -381,7 +381,7 @@ export default function SavedPage() {
                           onChange={() => togglePriceLevel(level)}
                           className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
                         />
-                        <span className="text-sm text-peat-700">
+                        <span className="text-sm text-peat-700 dark:text-peat-300">
                           {level === 1 ? "£ - Budget" : level === 2 ? "££ - Mid-range" : "£££ - Premium"}
                         </span>
                       </label>
@@ -391,7 +391,7 @@ export default function SavedPage() {
 
                 {/* Complexity level filter */}
                 <div>
-                  <label className="block text-sm font-medium text-peat-700 mb-2">
+                  <label className="block text-sm font-medium text-peat-700 dark:text-peat-300 mb-2">
                     Complexity
                   </label>
                   <div className="space-y-2">
@@ -403,7 +403,7 @@ export default function SavedPage() {
                           onChange={() => toggleComplexityLevel(level)}
                           className="w-4 h-4 rounded border-peat-300 text-brine-600 focus:ring-brine-500"
                         />
-                        <span className="text-sm text-peat-700">
+                        <span className="text-sm text-peat-700 dark:text-peat-300">
                           {level.charAt(0).toUpperCase() + level.slice(1)}
                         </span>
                       </label>
@@ -416,7 +416,7 @@ export default function SavedPage() {
             {/* Results */}
             <div>
               {/* Results count */}
-              <div className="mb-4 text-sm text-peat-600">
+              <div className="mb-4 text-sm text-peat-600 dark:text-peat-400">
                 {filteredMeals.length === allMeals.length ? (
                   <span>{allMeals.length} saved meal{allMeals.length !== 1 ? 's' : ''}</span>
                 ) : (
@@ -428,9 +428,9 @@ export default function SavedPage() {
 
               {filteredMeals.length === 0 ? (
                 <div className="card text-center py-12">
-                  <div className="w-16 h-16 rounded-full bg-peat-100 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-full bg-peat-100 dark:bg-peat-800 flex items-center justify-center mx-auto mb-4">
                     <svg
-                      className="w-8 h-8 text-peat-400"
+                      className="w-8 h-8 text-peat-400 dark:text-peat-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -443,10 +443,10 @@ export default function SavedPage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-medium text-peat-900 mb-1">
+                  <h3 className="text-lg font-medium text-peat-900 dark:text-peat-100 mb-1">
                     No meals found
                   </h3>
-                  <p className="text-peat-600">
+                  <p className="text-peat-600 dark:text-peat-400">
                     Try adjusting your filters or search query
                   </p>
                 </div>
@@ -481,7 +481,7 @@ export default function SavedPage() {
                       <button
                         onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
-                        className="px-4 py-2 rounded-lg border border-peat-200 text-peat-700 hover:bg-peat-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-4 py-2 rounded-lg border border-peat-200 dark:border-peat-700 text-peat-700 dark:text-peat-300 hover:bg-peat-50 dark:hover:bg-peat-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         Previous
                       </button>
@@ -500,7 +500,7 @@ export default function SavedPage() {
 
                           if (showEllipsis) {
                             return (
-                              <span key={page} className="px-2 text-peat-400">
+                              <span key={page} className="px-2 text-peat-400 dark:text-peat-500">
                                 ...
                               </span>
                             );
@@ -517,7 +517,7 @@ export default function SavedPage() {
                               className={`w-10 h-10 rounded-lg transition-colors ${
                                 currentPage === page
                                   ? "bg-brine-600 text-white"
-                                  : "border border-peat-200 text-peat-700 hover:bg-peat-50"
+                                  : "border border-peat-200 dark:border-peat-700 text-peat-700 dark:text-peat-300 hover:bg-peat-50 dark:hover:bg-peat-800"
                               }`}
                             >
                               {page}
@@ -529,7 +529,7 @@ export default function SavedPage() {
                       <button
                         onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
-                        className="px-4 py-2 rounded-lg border border-peat-200 text-peat-700 hover:bg-peat-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-4 py-2 rounded-lg border border-peat-200 dark:border-peat-700 text-peat-700 dark:text-peat-300 hover:bg-peat-50 dark:hover:bg-peat-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         Next
                       </button>
