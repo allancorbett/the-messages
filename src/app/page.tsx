@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { capitalise, getCurrentSeason, getSeasonEmoji } from "@/lib/utils";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getCurrentSeason, getSeasonEmoji, capitalise } from "@/lib/utils";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -18,19 +18,6 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-peat-50 via-peat-50 to-brine-50">
-      {/* Header */}
-      <header className="max-w-5xl mx-auto px-4 py-6 flex items-center justify-between">
-        <h1 className="font-display text-2xl text-peat-900">The Messages</h1>
-        <div className="flex items-center gap-4">
-          <Link href="/login" className="btn-ghost">
-            Sign in
-          </Link>
-          <Link href="/signup" className="btn-primary">
-            Get started
-          </Link>
-        </div>
-      </header>
-
       {/* Hero */}
       <main className="max-w-5xl mx-auto px-4 pt-16 pb-24">
         <div className="text-center max-w-3xl mx-auto">
@@ -189,15 +176,6 @@ export default async function HomePage() {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-peat-200 bg-white/50">
-        <div className="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-peat-500">
-          <p>
-            Powered by seasonal ingredients and AI.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -1,29 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const COOKING_VERBS = [
-  "Baked by",
-  "Prepared by",
-  "Cooked by",
-  "Seasoned by",
-  "Crafted by",
-  "Whisked by",
-  "Stirred by",
-  "Kneaded by",
-  "Simmered by",
-  "Grilled by",
-  "Roasted by",
-  "Sautéed by",
-  "Assembled by",
-  "Plated by",
-  "Garnished by",
-  "Infused by",
-  "Marinated by",
-  "Blended by",
-  "Braised by",
-  "Steamed by",
+  "Baked",
+  "Prepared",
+  "Cooked",
+  "Seasoned",
+  "Crafted",
+  "Whisked",
+  "Stirred",
+  "Kneaded",
+  "Simmered",
+  "Grilled",
+  "Roasted",
+  "Sautéed",
+  "Assembled",
+  "Plated",
+  "Garnished",
+  "Infused",
+  "Marinated",
+  "Blended",
+  "Braised",
+  "Steamed",
 ];
 
 export function Footer() {
@@ -44,11 +44,11 @@ export function Footer() {
 
   return (
     <footer className="py-6 px-4 border-t border-peat-200 bg-peat-50">
-      <div className="max-w-7xl mx-auto text-center">
+      <div className="max-w-7xl mx-auto text-end">
         <p className="text-sm text-peat-600">
-          <span className="inline-block min-w-[120px] transition-opacity duration-300">
+           <span className="inline min-w-[120px] animate-fade-in duration-300">
             {verb}
-          </span>{" "}
+          </span> by seasonal ingredients, AI and {" "}
           <Link
             href="https://superallan.com"
             target="_blank"
