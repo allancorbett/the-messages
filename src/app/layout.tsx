@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Footer } from "@/components/Footer";
+import AuthRedirectHandler from "@/components/AuthRedirectHandler";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://the-messages.vercel.app";
@@ -87,6 +88,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen font-body flex flex-col">
+        <AuthRedirectHandler />
         <div className="flex-1">{children}</div>
         <Footer />
         <Analytics />
